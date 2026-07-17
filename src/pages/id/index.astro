@@ -1,148 +1,17 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Hero from '../components/home/Hero.astro';
-import AboutTeaser from '../components/home/AboutTeaser.astro';
-import Services from '../components/home/Services.astro';
-import Portfolio from '../components/home/Portfolio.astro';
-import Testimonials from '../components/home/Testimonials.astro';
-import WhyUs from '../components/home/WhyUs.astro';
-import Pricing from '../components/home/Pricing.astro';
-import BlogSection from '../components/home/BlogSection.astro';
-import FAQ from '../components/home/FAQ.astro';
-import Contact from '../components/home/Contact.astro';
-import { getPageData, getArticles, getSettings } from '../lib/sheets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPageData } from '../../lib/sheets';
 
-const [page, articles, settings] = await Promise.all([
-  getPageData('en', 'home'),
-  getArticles('en'),
-  getSettings(),
-]);
-
-const latestArticles = articles.slice(0, 3);
-
-// --- Konten hardcode di bawah ini (sesuai keputusan Anda) ---
-// Ganti teks/gambar sesuai kebutuhan asli. Untuk versi ID, duplikasi pola yang sama
-// di src/pages/id/index.astro dengan teks berbeda.
-
-const services: { icon: string; title: string; description: string; size?: 'wide' | 'narrow' }[] = [
-  { icon: '🎨', title: 'Web Design', description: 'Desain modern dan responsif.', size: 'wide' },
-  { icon: '💻', title: 'Web Development', description: 'Development custom sesuai kebutuhan.' },
-  { icon: '🛒', title: 'E-Commerce', description: 'Toko online siap jual.' },
-  { icon: '🔍', title: 'SEO Optimization', description: 'Optimasi untuk mesin pencari.' },
-  { icon: '🚀', title: 'Hosting & Deploy', description: 'Setup hosting dan deployment.' },
-  { icon: '🛠️', title: 'Maintenance', description: 'Perawatan dan update rutin.', size: 'wide' },
-  { icon: '📱', title: 'Mobile Friendly', description: 'Tampilan optimal di semua device.' },
-  { icon: '📈', title: 'Analytics Setup', description: 'Pasang tracking & reporting.' },
-];
-
-const portfolioItems = [
-  { title: 'Project Satu', category: 'Company Profile', image: 'https://picsum.photos/600/400?1', url: 'https://example.com' },
-  { title: 'Project Dua', category: 'E-Commerce', image: 'https://picsum.photos/600/400?2', url: 'https://example.com' },
-  { title: 'Project Tiga', category: 'Landing Page', image: 'https://picsum.photos/600/400?3', url: 'https://example.com' },
-  { title: 'Project Empat', category: 'Blog', image: 'https://picsum.photos/600/400?4', url: 'https://example.com' },
-  { title: 'Project Lima', category: 'Portfolio', image: 'https://picsum.photos/600/400?5', url: 'https://example.com' },
-  { title: 'Project Enam', category: 'Web App', image: 'https://picsum.photos/600/400?6', url: 'https://example.com' },
-];
-
-const testimonials = [
-  { name: 'Budi Santoso', role: 'CEO, Perusahaan A', quote: 'Hasilnya sangat memuaskan, tim sangat responsif dan profesional.', featured: true },
-  { name: 'Sari Dewi', role: 'Owner, Toko B', quote: 'Website jadi lebih cepat dan mudah dikelola.' },
-  { name: 'Andi Wijaya', role: 'Marketing, Startup C', quote: 'Komunikasi lancar dari awal sampai selesai.' },
-  { name: 'Rina Putri', role: 'Founder, Brand D', quote: 'Desainnya modern, sesuai dengan yang kami inginkan.' },
-];
-
-const whyUsItems = [
-  { icon: '⚡', title: 'Cepat', description: 'Proses development yang efisien.' },
-  { icon: '🔒', title: 'Aman', description: 'Praktik keamanan yang teruji.' },
-  { icon: '🎯', title: 'Sesuai Kebutuhan', description: 'Solusi custom, bukan template generik.' },
-  { icon: '💬', title: 'Komunikasi Jelas', description: 'Update progress secara rutin.' },
-  { icon: '📊', title: 'SEO Friendly', description: 'Dibangun dengan best practice SEO.' },
-  { icon: '🔄', title: 'Revisi Fleksibel', description: 'Ruang revisi sesuai kesepakatan.' },
-  { icon: '💰', title: 'Harga Transparan', description: 'Tidak ada biaya tersembunyi.' },
-  { icon: '🤝', title: 'Support Purna Jual', description: 'Bantuan setelah project selesai.' },
-];
-
-const pricingTiers = [
-  {
-    name: 'Starter',
-    price: 'Rp 2.500.000',
-    features: ['1-3 halaman', 'Desain responsif', 'Free domain 1 tahun'],
-    ctaHref: '/#contact',
-  },
-  {
-    name: 'Professional',
-    price: 'Rp 5.000.000',
-    features: ['5-8 halaman', 'Blog/Artikel', 'SEO dasar', 'Support 3 bulan'],
-    ctaHref: '/#contact',
-    popular: true,
-  },
-  {
-    name: 'E-Commerce',
-    price: 'Rp 10.000.000',
-    features: ['Toko online lengkap', 'Payment gateway', 'Manajemen produk', 'Support 6 bulan'],
-    ctaHref: '/#contact',
-  },
-];
-
-const faqItems = [
-  { question: 'Berapa lama proses pengerjaan?', answer: 'Umumnya 2-4 minggu tergantung kompleksitas.' },
-  { question: 'Apakah bisa request desain custom?', answer: 'Bisa, kami sesuaikan dengan brand Anda.' },
-  { question: 'Bagaimana sistem pembayaran?', answer: 'DP 50% di awal, sisanya saat project selesai.' },
-  { question: 'Apakah termasuk hosting?', answer: 'Tergantung paket, cek detail di section Harga.' },
-  { question: 'Bisa revisi berapa kali?', answer: 'Sesuai paket yang dipilih, umumnya 2-3 kali revisi.' },
-  { question: 'Apakah support setelah selesai?', answer: 'Ya, ada masa support sesuai paket.' },
-  { question: 'Bagaimana cara mulai project?', answer: 'Hubungi kami lewat form kontak atau WhatsApp.' },
-  { question: 'Apakah bisa migrasi dari WordPress?', answer: 'Bisa, itu memang salah satu spesialisasi kami.' },
-];
+const page = await getPageData('id', 'home');
 ---
 
 <BaseLayout
-  locale="en"
+  locale="id"
   title={page.meta_title || page.title}
   description={page.meta_description}
-  path="/"
-  enPath="/"
-  idPath="/"
+  enPath="/" idPath="/"
+  path="/id/"
 >
-  <Hero
-    title={page.title}
-    tagline={page.description}
-    ctaLabel="Get Started"
-    ctaHref="/#contact"
-    image={page.featured_image || 'https://picsum.photos/800/600'}
-  />
-
-  <AboutTeaser
-    title="About Us"
-    text="We help businesses build modern, fast, and SEO-friendly websites."
-    ctaLabel="Learn More"
-    ctaHref="/about/"
-  />
-
-  <Services title="Our Services" items={services} />
-
-  <Portfolio title="Our Portfolio" items={portfolioItems} />
-
-  <Testimonials title="What Clients Say" items={testimonials} />
-
-  <WhyUs title="Why Kukode" items={whyUsItems} />
-
-  <Pricing title="Pricing Plans" tiers={pricingTiers} />
-
-  <BlogSection
-    title="Latest Articles"
-    locale="en"
-    articles={latestArticles}
-    viewAllLabel="View All"
-  />
-
-  <FAQ title="Frequently Asked Questions" items={faqItems} />
-
-  <Contact
-    title="Get In Touch"
-    whatsappNumber={settings.whatsapp_number || '6281234567890'}
-    namePlaceholder="Your Name"
-    messagePlaceholder="Your Message"
-    submitLabel="Send via WhatsApp"
-  />
+  <h1>{page.title}</h1>
+  <p>{page.description}</p>
 </BaseLayout>
