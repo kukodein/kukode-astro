@@ -16,7 +16,7 @@ const [settings, headerNav] = await Promise.all([
 // Kontrol tampil/sembunyi language switcher dari Settings sheet.
 // key: show_language_switcher, value: "true" atau "false" (default true kalau belum diisi).
 const showLangSwitcher = settings.show_language_switcher !== 'false';
-const otherLocale: Locale = locale === 'en' ? 'en' : 'id';
+const otherLocale: Locale = locale === 'en' ? 'id' : 'en';
 
 // Path halaman saat ini dipakai untuk link switcher — versi sederhana: selalu ke Home
 // versi locale lain, karena mapping path-per-halaman antar-locale (terutama artikel)
