@@ -1,0 +1,31 @@
+---
+interface WhyItem {
+  title: string;
+  description: string;
+  icon: string;
+}
+interface Props {
+  title: string;
+  items: WhyItem[]; // sebaiknya persis 8 item
+}
+const { title, items } = Astro.props;
+---
+
+<section class="py-5">
+  <div class="container">
+    <h2 class="font-heading fw-bold text-center mb-5">{title}</h2>
+    <div class="row g-4">
+      {items.map((item) => (
+        <div class="col-md-6">
+          <div class="d-flex gap-3">
+            <div class="fs-3">{item.icon}</div>
+            <div>
+              <h3 class="font-heading h6 fw-bold mb-1">{item.title}</h3>
+              <p class="text-muted small mb-0">{item.description}</p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,65 @@
+---
+interface FaqItem {
+  question: string;
+  answer: string;
+}
+interface Props {
+  title: string;
+  items: FaqItem[]; // sebaiknya persis 8 item, akan dibagi 4 kiri + 4 kanan
+}
+const { title, items } = Astro.props;
+
+const half = Math.ceil(items.length / 2);
+const leftItems = items.slice(0, half);
+const rightItems = items.slice(half);
+---
+
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="font-heading fw-bold text-center mb-5">{title}</h2>
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="accordion" id="faqAccordionLeft">
+          {leftItems.map((item, i) => (
+            <div class="accordion-item mb-2 rounded-3 overflow-hidden">
+              <h3 class="accordion-header">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target={`#faqLeft${i}`}
+                >
+                  {item.question}
+                </button>
+              </h3>
+              <div id={`faqLeft${i}`} class="accordion-collapse collapse" data-bs-parent="#faqAccordionLeft">
+                <div class="accordion-body text-muted">{item.answer}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="accordion" id="faqAccordionRight">
+          {rightItems.map((item, i) => (
+            <div class="accordion-item mb-2 rounded-3 overflow-hidden">
+              <h3 class="accordion-header">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target={`#faqRight${i}`}
+                >
+                  {item.question}
+                </button>
+              </h3>
+              <div id={`faqRight${i}`} class="accordion-collapse collapse" data-bs-parent="#faqAccordionRight">
+                <div class="accordion-body text-muted">{item.answer}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

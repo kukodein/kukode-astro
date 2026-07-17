@@ -1,0 +1,87 @@
+---
+import { getSettings, getNavigation, type Locale } from '../lib/sheets';
+import { localizedHref } from '../lib/i18n-utils';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const [settings, headerNav] = await Promise.all([
+  getSettings(),
+  getNavigation(locale, 'header'),
+]);
+
+// Kontrol tampil/sembunyi language switcher dari Settings sheet.
+// key: show_language_switcher, value: "true" atau "false" (default true kalau belum diisi).
+const showLangSwitcher = settings.show_language_switcher !== 'false';
+const otherLocale: Locale = locale === 'en' ? 'en' : 'id';
+
+// Path halaman saat ini dipakai untuk link switcher — versi sederhana: selalu ke Home
+// versi locale lain, karena mapping path-per-halaman antar-locale (terutama artikel)
+// butuh info article_id yang tidak tersedia di komponen generik ini.
+// Kalau butuh switcher yang presisi per-halaman, oper prop `currentPath` dari tiap page.
+---
+
+<header class="kk-navbar sticky-top">
+  <nav class="navbar navbar-expand-lg py-3">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2" href={localizedHref(locale, '/')}>
+        {settings.logo_url && <img src={settings.logo_url} alt={settings.site_name} height="32" />}
+        <span class="fw-bold">{settings.site_name}</span>
+      </a>
+
+      <button
+        class="navbar-toggler border-0"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#mainNav"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+          {headerNav.map((item) => (
+            <li class="nav-item">
+              <a class="nav-link px-3" href={localizedHref(locale, item.url)}>{item.label}</a>
+            </li>
+          ))}
+
+          {/* Reserve slot ini SELALU dirender (walau kosong) supaya lebar navbar
+              tidak berubah saat switcher disembunyikan — mencegah layout shift. */}
+          <li class="nav-item lang-switcher-slot">
+            {showLangSwitcher && (
+              <a
+                class="btn btn-sm btn-outline-secondary ms-lg-2"
+                href={localizedHref(otherLocale, '/')}
+              >
+                {otherLocale.toUpperCase()}
+              </a>
+            )}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<style>
+  .kk-navbar {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    z-index: 1030;
+  }
+
+  /* Reserve ruang tetap untuk slot switcher supaya tidak ada layout shift
+     antara kondisi tampil vs sembunyi (min-width kira-kira lebar tombol "EN"/"ID"). */
+  .lang-switcher-slot {
+    min-width: 3.25rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+</style>

@@ -1,0 +1,78 @@
+---
+import { getSettings, getNavigation, type Locale } from '../lib/sheets';
+import { localizedHref } from '../lib/i18n-utils';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const [settings, footerNav] = await Promise.all([
+  getSettings(),
+  getNavigation(locale, 'footer'),
+]);
+
+const socialLinks = [
+  { label: 'Instagram', url: settings.instagram },
+  { label: 'Facebook', url: settings.facebook },
+  { label: 'X', url: settings.x },
+  { label: 'TikTok', url: settings.tiktok },
+  { label: 'YouTube', url: settings.youtube },
+  { label: 'LinkedIn', url: settings.linkedin },
+].filter((s) => s.url); // hanya tampilkan yang isian URL-nya ada di sheet
+---
+
+<footer class="kk-footer py-5 mt-5">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-6 col-md-3">
+        <h6 class="fw-bold mb-3">{settings.site_name}</h6>
+        <p class="text-muted small">{settings.description}</p>
+      </div>
+
+      <div class="col-6 col-md-3">
+        <h6 class="fw-bold mb-3">Navigasi</h6>
+        <ul class="list-unstyled">
+          {footerNav.map((item) => (
+            <li class="mb-2">
+              <a class="text-muted text-decoration-none" href={localizedHref(locale, item.url)}>
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="col-6 col-md-3">
+        <h6 class="fw-bold mb-3">Sosial Media</h6>
+        <ul class="list-unstyled">
+          {socialLinks.map((social) => (
+            <li class="mb-2">
+              <a class="text-muted text-decoration-none" href={social.url} target="_blank" rel="noopener noreferrer">
+                {social.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="col-6 col-md-3">
+        <h6 class="fw-bold mb-3">Kontak</h6>
+        {settings.whatsapp_number && (
+          <p class="text-muted small mb-1">WhatsApp: {settings.whatsapp_number}</p>
+        )}
+      </div>
+    </div>
+
+    <hr class="my-4" />
+    <p class="text-muted small mb-0 text-center">{settings.copyright_text}</p>
+  </div>
+</footer>
+
+<style>
+  .kk-footer {
+    background: #f8f9fa;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+  }
+</style>

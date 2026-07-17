@@ -1,0 +1,31 @@
+---
+interface Props {
+  title: string;
+  tagline: string;
+  ctaLabel: string;
+  ctaHref: string;
+  image: string;
+}
+const { title, tagline, ctaLabel, ctaHref, image } = Astro.props;
+---
+
+<section class="kk-hero py-5">
+  <div class="container py-5">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <h1 class="font-heading fw-bold display-4 mb-3">{title}</h1>
+        <p class="fs-5 text-muted mb-4">{tagline}</p>
+        <a href={ctaHref} class="btn btn-primary btn-lg px-4">{ctaLabel}</a>
+      </div>
+      <div class="col-lg-6">
+        <img src={image} alt={title} class="img-fluid rounded-4 shadow-lg" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .kk-hero {
+    background: linear-gradient(180deg, #f8f9fc 0%, #ffffff 100%);
+  }
+</style>

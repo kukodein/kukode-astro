@@ -1,0 +1,46 @@
+---
+interface PricingTier {
+  name: string;
+  price: string;
+  period?: string;
+  features: string[];
+  ctaHref: string;
+  popular?: boolean;
+}
+interface Props {
+  title: string;
+  tiers: PricingTier[]; // Starter, Professional, E-Commerce
+}
+const { title, tiers } = Astro.props;
+---
+
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="font-heading fw-bold text-center mb-5">{title}</h2>
+    <div class="row g-4 justify-content-center">
+      {tiers.map((tier) => (
+        <div class="col-md-6 col-lg-4">
+          <div class={`h-100 p-4 rounded-4 bg-white ${tier.popular ? 'shadow-lg border border-primary border-2' : 'shadow-sm'}`}>
+            {tier.popular && <span class="badge bg-primary mb-2">Paling Populer</span>}
+            <h3 class="font-heading h4 fw-bold mb-1">{tier.name}</h3>
+            <p class="mb-4">
+              <span class="fs-3 fw-bold">{tier.price}</span>
+              {tier.period && <span class="text-muted">/{tier.period}</span>}
+            </p>
+            <ul class="list-unstyled mb-4">
+              {tier.features.map((f) => (
+                <li class="mb-2">✓ {f}</li>
+              ))}
+            </ul>
+            <a
+              href={tier.ctaHref}
+              class={`btn w-100 ${tier.popular ? 'btn-primary' : 'btn-outline-primary'}`}
+            >
+              Pilih Paket
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

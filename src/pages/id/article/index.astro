@@ -5,7 +5,7 @@ import { getArticles } from '../../../lib/sheets';
 const articles = await getArticles('id');
 ---
 
-<BaseLayout locale="id" title="Artikel" description="Artikel terbaru" enPath="/article/" idPath="/article/">
+<BaseLayout locale="id" title="Artikel" description="Artikel terbaru" enPath="/article/" idPath="/article/" path="/id/article/">
   <h1>Artikel</h1>
   <ul class="article-list">
     {articles.map((article) => (

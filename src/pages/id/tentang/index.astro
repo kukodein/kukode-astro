@@ -2,7 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getPageData } from '../../../lib/sheets';
 
-const page = await getPageData('id', 'tentang');
+const page = await getPageData('id', 'about');
 ---
 
 <BaseLayout
@@ -10,6 +10,7 @@ const page = await getPageData('id', 'tentang');
   title={page.meta_title || page.title}
   description={page.meta_description}
   enPath="/about/" idPath="/tentang/"
+  path="/id/tentang/"
 >
   <h1>{page.title}</h1>
   <p>{page.description}</p>

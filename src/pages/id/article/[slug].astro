@@ -24,6 +24,11 @@ const alternateSlugEn = await getArticleAlternateSlug(article.article_id, 'en');
   description={article.excerpt}
   enPath={alternateSlugEn ? `/article/${alternateSlugEn}` : undefined}
   idPath={`/article/${article.slug}`}
+  path={`/id/article/${article.slug}`}
+  image={article.image_url}
+  type="article"
+  publishedDate={article.published_date}
+  modifiedDate={article.date_modified}
 >
   <article>
     <h1>{article.title}</h1>

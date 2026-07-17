@@ -1,0 +1,73 @@
+---
+interface PortfolioItem {
+  title: string;
+  category: string;
+  image: string;
+  url: string;
+}
+interface Props {
+  title: string;
+  items: PortfolioItem[]; // sebaiknya persis 6 item
+}
+const { title, items } = Astro.props;
+---
+
+<section class="py-5">
+  <div class="container">
+    <h2 class="font-heading fw-bold text-center mb-5">{title}</h2>
+    <div class="row g-4">
+      {items.map((item) => (
+        <div class="col-md-6 col-lg-4">
+          <a href={item.url} target="_blank" rel="noopener noreferrer" class="kk-portfolio-card d-block text-decoration-none">
+            <div class="kk-browser-frame rounded-4 overflow-hidden shadow-sm">
+              <div class="kk-browser-bar d-flex align-items-center gap-1 px-3 py-2">
+                <span class="kk-dot bg-danger"></span>
+                <span class="kk-dot bg-warning"></span>
+                <span class="kk-dot bg-success"></span>
+              </div>
+              <div class="kk-browser-body position-relative">
+                <img src={item.image} alt={item.title} class="w-100" />
+                <div class="kk-overlay d-flex align-items-center justify-content-center">
+                  <span class="btn btn-light btn-sm">Lihat Project</span>
+                </div>
+              </div>
+            </div>
+            <p class="text-muted small mt-2 mb-0">{item.category}</p>
+            <h3 class="font-heading h6 fw-bold">{item.title}</h3>
+          </a>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .kk-browser-bar {
+    background: #e9ecef;
+  }
+  .kk-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .kk-browser-body {
+    overflow: hidden;
+  }
+  .kk-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+  .kk-portfolio-card:hover .kk-overlay {
+    opacity: 1;
+  }
+  .kk-portfolio-card:hover img {
+    transform: scale(1.05);
+  }
+  .kk-browser-body img {
+    transition: transform 0.3s ease;
+  }
+</style>

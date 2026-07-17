@@ -4,6 +4,12 @@ import { buildCsvUrl, type SheetKey } from './sheets-config';
 const RETRY_ATTEMPTS = 3;
 const RETRY_DELAY_MS = 2000;
 
+// Cache di memory (per-process). Sheet yang sama tidak di-fetch ulang selama
+// dev server / proses build ini masih hidup — beda halaman yang butuh sheet
+// yang sama (misal Settings & Navigation dipakai di semua halaman lewat BaseLayout)
+// akan pakai hasil fetch yang sama, bukan fetch baru tiap kali.
+const sheetCache = new Map<SheetKey, Promise<unknown[]>>();
+
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -19,6 +25,21 @@ function sleep(ms: number) {
  * benerin masalah fetch-nya (koneksi/sharing setting/gid), lalu trigger rebuild lagi.
  */
 async function fetchSheet<T = Record<string, string>>(sheetKey: SheetKey): Promise<T[]> {
+  const cached = sheetCache.get(sheetKey);
+  if (cached) return cached as Promise<T[]>;
+
+  const promise = fetchSheetUncached<T>(sheetKey).catch((err) => {
+    // Jangan cache kegagalan — biar request berikutnya bisa coba fetch lagi
+    // (misal setelah gangguan koneksi sesaat), bukan langsung gagal permanen
+    // sampai dev server di-restart.
+    sheetCache.delete(sheetKey);
+    throw err;
+  });
+  sheetCache.set(sheetKey, promise);
+  return promise;
+}
+
+async function fetchSheetUncached<T = Record<string, string>>(sheetKey: SheetKey): Promise<T[]> {
   const url = buildCsvUrl(sheetKey);
   let lastError: unknown;
 
@@ -75,6 +96,7 @@ export interface ArticleRow {
   body: string;
   image_url: string;
   published_date: string;
+  date_modified: string; // kolom baru — kosongkan sama dengan published_date kalau belum pernah diedit
   status: string;
 }
 

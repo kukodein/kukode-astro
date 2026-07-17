@@ -1,0 +1,56 @@
+---
+interface Props {
+  title: string;
+  whatsappNumber: string; // format internasional tanpa "+", mis. "6281234567890"
+  namePlaceholder: string;
+  messagePlaceholder: string;
+  submitLabel: string;
+}
+const { title, whatsappNumber, namePlaceholder, messagePlaceholder, submitLabel } = Astro.props;
+---
+
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+        <h2 class="font-heading fw-bold text-center mb-4">{title}</h2>
+        <form id="kk-contact-form" class="bg-white p-4 rounded-4 shadow-sm">
+          <div class="mb-3">
+            <input
+              type="text"
+              id="kk-contact-name"
+              class="form-control"
+              placeholder={namePlaceholder}
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <textarea
+              id="kk-contact-message"
+              class="form-control"
+              rows="4"
+              placeholder={messagePlaceholder}
+              required
+            ></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">{submitLabel}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script is:inline define:vars={{ whatsappNumber }}>
+  const form = document.getElementById('kk-contact-form');
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('kk-contact-name').value.trim();
+    const message = document.getElementById('kk-contact-message').value.trim();
+
+    const text = `Halo, saya ${name}.\n\n${message}`;
+    const encodedText = encodeURIComponent(text);
+    const waUrl = `https://wa.me/${whatsappNumber}?text=${encodedText}`;
+
+    window.location.href = waUrl;
+  });
+</script>

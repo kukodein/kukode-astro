@@ -1,0 +1,25 @@
+{
+  "redirects": [
+    {
+      "source": "/article/old-slug-name",
+      "destination": "/article/new-slug-name",
+      "permanent": true
+    },
+    {
+      "source": "/id/article/slug-lama",
+      "destination": "/id/article/slug-baru",
+      "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "index, follow"
+        }
+      ]
+    }
+  ]
+}
