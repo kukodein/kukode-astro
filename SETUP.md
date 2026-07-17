@@ -1,12 +1,93 @@
 # Panduan Setup — dari Nol sampai Live
 
-## 1. Isi konfigurasi Sheets
+## Panduan Google Sheets
+
+### Kenapa tidak pakai Google Sheets API resmi (service account)?
+Project ini fetch data lewat **CSV export URL** (`docs.google.com/spreadsheets/d/.../export?format=csv`), bukan Google Sheets API v4 dengan API key/service account. Alasannya: konten di sheet ini memang akan jadi konten publik di website, jadi tidak ada gunanya bikin otentikasi rumit untuk data yang toh akan ditampilkan ke semua orang. Konsekuensinya: **spreadsheet harus di-set public (Anyone with the link → Viewer)**.
+
+> Kalau suatu saat ada data yang benar-benar harus privat (misal draft yang sensitif), jangan taruh di spreadsheet ini — sistem ini tidak didesain untuk itu.
+
+### Setup — Singkat
+1. Buat 1 spreadsheet baru di Google Sheets, buat tab-tab sesuai daftar di bawah.
+2. Klik **Share** (kanan atas) → **General access** → ubah dari "Restricted" jadi **"Anyone with the link"** → role **Viewer**.
+3. Ambil **Spreadsheet ID** dari URL:
+   ```
+   https://docs.google.com/spreadsheets/d/INI_SPREADSHEET_ID/edit
+   ```
+4. Untuk tiap tab, klik tab-nya sampai aktif, lihat URL — ada `#gid=123456789` di akhir. Itu **gid** tab tersebut.
+5. Isi `SPREADSHEET_ID` dan semua `gid` di `src/lib/sheets-config.ts`.
+6. Selesai — tidak perlu Google Cloud Console, tidak perlu API key, tidak perlu service account.
+
+---
+
+## Daftar Tab & Kolom
+
+### `Pages_EN` dan `Pages_ID`
+Format key-value, dipakai untuk halaman statis (Home, About).
+
+| Kolom | Tipe | Keterangan |
+|---|---|---|
+| `page` | text | Identifier halaman: `home` atau `about` |
+| `key` | text | Nama field, misal `title`, `description`, `meta_title`, `meta_description` |
+| `value` | text | Isi field tersebut |
+
+Contoh baris:
+```
+page=home, key=title, value=Selamat Datang
+page=home, key=description, value=Ini adalah deskripsi halaman home
+page=home, key=meta_title, value=Nama Situs - Home
+page=home, key=meta_description, value=Deskripsi untuk SEO
+page=about, key=title, value=Tentang Kami
+...
+```
+
+### `Articles_EN` dan `Articles_ID`
+Satu baris = satu artikel. **`article_id` harus sama** antara baris di `Articles_EN` dan `Articles_ID` untuk artikel yang sama — ini kunci yang menghubungkan versi bahasa (dipakai untuk hreflang).
+
+| Kolom | Tipe | Keterangan |
+|---|---|---|
+| `article_id` | text | ID unik artikel, sama di kedua tab bahasa untuk artikel yang sama, misal `art-001` |
+| `slug` | text | Slug URL, boleh beda antar bahasa (misal `first-article` vs `artikel-pertama`) |
+| `title` | text | Judul artikel |
+| `excerpt` | text | Ringkasan pendek, tampil di halaman listing & meta description |
+| `body` | text (Markdown) | Isi artikel lengkap, ditulis pakai sintaks Markdown |
+| `image_url` | text (URL) | Link gambar cover, hosting eksternal |
+| `published_date` | text (`YYYY-MM-DD`) | Tanggal publish, dipakai untuk urutan (terbaru dulu) |
+| `status` | text | `published` atau `draft` — hanya yang `published` yang ditampilkan |
+
+### `Navigation_EN` dan `Navigation_ID`
+Isi menu header dan footer.
+
+| Kolom | Tipe | Keterangan |
+|---|---|---|
+| `group` | text | `header` atau `footer` |
+| `order` | number | Urutan tampil (angka kecil di depan) |
+| `label` | text | Teks link yang tampil ke user |
+| `url` | text | Path tujuan, **tanpa** prefix `/id/` (misal `/about/`, bukan `/id/about/`) — prefix ditambahkan otomatis oleh kode |
+
+### `Settings`
+Global, tidak per-bahasa (key-value, satu tab saja untuk kedua bahasa).
+
+| Kolom | Tipe | Keterangan |
+|---|---|---|
+| `key` | text | Nama setting: `favicon_url`, `logo_url`, `site_name`, `copyright_text` |
+| `value` | text | Isi setting tersebut |
+
+---
+
+### Cara nambah field baru
+Kalau nanti butuh field baru (misal `og_image` untuk halaman), tinggal tambah baris baru di tab yang relevan — tidak perlu ubah struktur kolom (untuk tab yang formatnya key-value: Pages & Settings). Untuk tab yang formatnya kolom tetap (Articles, Navigation), tambah kolom baru dan update kode di `src/lib/sheets.ts` (tambahkan field ke interface `ArticleRow`/`NavigationRow`) supaya field baru itu ke-baca.
+
+
+## Panduan Deployment
+
+### 1. Isi konfigurasi Sheets
 - Buka `src/lib/sheets-config.ts`
 - Ganti `SPREADSHEET_ID` dengan ID spreadsheet Anda (dari URL Google Sheets Anda)
 - Ganti tiap `gid` sesuai tab yang sudah dibuat (lihat di URL saat tab itu aktif: `...#gid=123456`)
 - Set sharing spreadsheet: **Share → General access → Anyone with the link → Viewer**
 
-## 2. Push ke GitHub
+### 2. Push ke GitHub
 ```bash
 cd astro-wp-migration
 git init
@@ -20,24 +101,24 @@ git branch -M main
 git push -u origin main
 ```
 
-## 3. Buat project di Vercel
+### 3. Buat project di Vercel
 1. Buka https://vercel.com, login pakai akun GitHub Anda.
 2. **Add New → Project**, pilih repo yang baru di-push.
 3. Vercel otomatis mendeteksi framework Astro — biarkan default, klik **Deploy**.
 4. Setelah build pertama selesai (build ini akan sukses/gagal tergantung apakah `SPREADSHEET_ID` sudah benar dan sheet sudah public — kalau gagal, cek Build Logs, biasanya karena config di langkah 1 belum benar).
 
-## 4. Ambil Deploy Hook URL
+### 4. Ambil Deploy Hook URL
 1. Di dashboard project Vercel: **Settings → Git → Deploy Hooks**.
 2. Buat hook baru: nama bebas (misal `scheduled-rebuild`), branch `main`.
 3. Copy URL yang muncul (bentuknya `https://api.vercel.com/v1/integrations/deploy/...`) — ini rahasia, jangan taruh langsung di kode.
 
-## 5. Simpan Deploy Hook URL sebagai GitHub Secret
+### 5. Simpan Deploy Hook URL sebagai GitHub Secret
 1. Di repo GitHub Anda: **Settings → Secrets and variables → Actions → New repository secret**.
 2. Name: `VERCEL_DEPLOY_HOOK_URL`
 3. Value: paste URL dari langkah 4.
 4. Save.
 
-## 6. Selesai — workflow sudah otomatis jalan
+### 6. Selesai — workflow sudah otomatis jalan
 File `.github/workflows/scheduled-rebuild.yml` sudah ada di repo Anda dan akan otomatis:
 - Jalan tiap jam (di menit ke-0, waktu UTC — kalau ingin sesuaikan ke jam WIB tertentu, edit cron expression-nya)
 - Trigger Vercel untuk fetch ulang Google Sheets dan build ulang situs
@@ -45,12 +126,12 @@ File `.github/workflows/scheduled-rebuild.yml` sudah ada di repo Anda dan akan o
 **Test manual (opsional, untuk memastikan semua tersambung benar):**
 Di repo GitHub → tab **Actions** → pilih workflow "Scheduled Rebuild" → **Run workflow** (tombol ini muncul karena ada `workflow_dispatch` di file YAML). Cek di dashboard Vercel apakah build baru muncul setelah itu.
 
-## 7. Custom domain (opsional)
+### 7. Custom domain (opsional)
 Kalau sudah punya domain sendiri: **Vercel project → Settings → Domains → Add**, ikuti instruksi untuk arahkan DNS. Setelah domain aktif, jangan lupa update `site: 'https://domain.com'` di `astro.config.mjs` jadi domain asli Anda (dipakai untuk sitemap & hreflang), lalu commit & push.
 
 ---
 
-## Catatan penting soal keandalan
+### Catatan penting soal keandalan
 - Kalau build gagal (misal Google Sheets sedang tidak bisa diakses), **situs yang sedang live TIDAK ikut down** — Vercel tetap menyajikan deployment terakhir yang sukses. [High confidence, berdasarkan perilaku default Vercel — sebaiknya dikonfirmasi ulang di dokumentasi Vercel saat setup, karena kebijakan platform bisa berubah]
 - Kode fetch Sheets sudah retry otomatis 3x sebelum benar-benar dianggap gagal, untuk menangani gangguan koneksi sesaat.
 - Kalau build gagal terus-menerus, cek Build Logs di Vercel — pesan errornya sudah dibuat spesifik (menyebutkan sheet mana yang gagal dan kemungkinan penyebabnya).
