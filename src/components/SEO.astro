@@ -36,9 +36,9 @@ const {
 
 const siteUrl = Astro.site?.origin ?? 'https://domain.com';
 const canonicalUrl = `${siteUrl}${path}`;
-const ogImage = image ?? `${siteUrl}/og-default.jpg`; // fallback kalau halaman tidak punya gambar sendiri
+const ogImage = image ?? `/image/default-thumbnail.jpg`; // fallback kalau halaman tidak punya gambar sendiri
 const siteName = 'Kukode';
-const twitterHandle = '@kukode'; // ganti sesuai handle asli Anda
+const twitterHandle = '@kukode_id'; // ganti sesuai handle asli Anda
 
 function absoluteEnUrl(p: string): string {
   return `${siteUrl}${p}`;
