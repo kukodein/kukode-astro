@@ -2,7 +2,8 @@
 import SEO from '../components/SEO.astro';
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
-import type { Locale } from '../lib/sheets';
+// import type { Locale } from '../lib/sheets';
+import { getSettings, type Locale } from '../lib/sheets';
 
 interface Props {
   locale: Locale;
@@ -17,6 +18,8 @@ interface Props {
   modifiedDate?: string;
 }
 
+// Fetch dijalankan saat build (SSG) — bukan di browser.
+const settings = await getSettings();
 const { locale, title, description, path, enPath, idPath, image, type, publishedDate, modifiedDate } =
   Astro.props;
 ---
@@ -26,7 +29,9 @@ const { locale, title, description, path, enPath, idPath, image, type, published
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href={settings.favicon_url} />
     <title>{title}</title>
+    {description && <meta name="description" content={description} />}
 
     <SEO
       locale={locale}
