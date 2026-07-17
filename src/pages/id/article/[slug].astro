@@ -1,0 +1,34 @@
+---
+import { marked } from 'marked';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getArticles, getArticleAlternateSlug } from '../../../lib/sheets';
+
+export async function getStaticPaths() {
+  const articles = await getArticles('id');
+  return articles.map((article) => ({
+    params: { slug: article.slug },
+    props: { article },
+  }));
+}
+
+const { article } = Astro.props;
+const bodyHtml = marked.parse(article.body);
+
+// Cari padanan slug versi EN lewat article_id.
+const alternateSlugEn = await getArticleAlternateSlug(article.article_id, 'en');
+---
+
+<BaseLayout
+  locale="id"
+  title={article.title}
+  description={article.excerpt}
+  enPath={alternateSlugEn ? `/article/${alternateSlugEn}` : undefined}
+  idPath={`/article/${article.slug}`}
+>
+  <article>
+    <h1>{article.title}</h1>
+    <time datetime={article.published_date} class="text-muted d-block mb-3">{article.published_date}</time>
+    {article.image_url && <img src={article.image_url} alt={article.title} class="img-fluid rounded mb-3" />}
+    <div class="article-body" set:html={bodyHtml} />
+  </article>
+</BaseLayout>

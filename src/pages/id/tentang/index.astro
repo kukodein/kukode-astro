@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getPageData } from '../../../lib/sheets';
+
+const page = await getPageData('id', 'tentang');
+---
+
+<BaseLayout
+  locale="id"
+  title={page.meta_title || page.title}
+  description={page.meta_description}
+  enPath="/about/" idPath="/tentang/"
+>
+  <h1>{page.title}</h1>
+  <p>{page.description}</p>
+</BaseLayout>

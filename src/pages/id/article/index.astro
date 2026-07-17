@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getArticles } from '../../../lib/sheets';
+
+const articles = await getArticles('id');
+---
+
+<BaseLayout locale="id" title="Artikel" description="Artikel terbaru" enPath="/article/" idPath="/article/">
+  <h1>Artikel</h1>
+  <ul class="article-list">
+    {articles.map((article) => (
+      <li>
+        <a href={`/id/article/${article.slug}`}>
+          {article.image_url && <img src={article.image_url} alt={article.title} />}
+          <h2>{article.title}</h2>
+          <p>{article.excerpt}</p>
+          <time datetime={article.published_date}>{article.published_date}</time>
+        </a>
+      </li>
+    ))}
+  </ul>
+</BaseLayout>
