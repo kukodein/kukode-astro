@@ -1,9 +1,8 @@
 ---
 import SEO from '../components/SEO.astro';
-import Navbar from '../components/Navbar.astro';
+import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-// import type { Locale } from '../lib/sheets';
-import { getSettings, type Locale } from '../lib/sheets';
+import type { Locale } from '../lib/sheets';
 
 interface Props {
   locale: Locale;
@@ -18,20 +17,16 @@ interface Props {
   modifiedDate?: string;
 }
 
-// Fetch dijalankan saat build (SSG) — bukan di browser.
-const settings = await getSettings();
 const { locale, title, description, path, enPath, idPath, image, type, publishedDate, modifiedDate } =
   Astro.props;
 ---
 
 <!DOCTYPE html>
-<html lang={locale}>
+<html lang={locale} data-bs-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href={settings.favicon_url} />
     <title>{title}</title>
-    {description && <meta name="description" content={description} />}
 
     <SEO
       locale={locale}
@@ -49,29 +44,35 @@ const { locale, title, description, path, enPath, idPath, image, type, published
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Figtree:wght@600;700;800&family=Inter:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <style>
-      body { font-family: 'Inter', sans-serif; }
-      h1, h2, h3, h4, h5, h6, .font-heading { font-family: 'Figtree', sans-serif; }
-    </style>
-  </head>
-  <body class="d-flex flex-column min-vh-100">
-    <Navbar locale={locale} />
 
-    <main class="flex-grow-1">
+    <!-- Bootstrap divendorkan lokal di public/vendor — bukan CDN, sesuai permintaan -->
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Custom styles Kukode — di-extract dari <style> inline jadi file terpisah -->
+    <link href="/css/kukode.css" rel="stylesheet" />
+
+    <!-- Slot untuk aset tambahan yang cuma dipakai halaman tertentu (mis. Swiper CSS di homepage) -->
+    <slot name="extra-head" />
+  </head>
+  <body>
+    <Header locale={locale} />
+
+    <main class={`kk-template-${path === '/' || path === '/id/' ? 'home' : 'page'}`}>
       <slot />
     </main>
 
     <Footer locale={locale} />
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    ></script>
+    <!-- Bootstrap JS — divendorkan lokal -->
+    <script is:inline src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script global: navbar scroll effect + dark mode toggle (tombol ada di header, jadi perlu jalan di SEMUA halaman) -->
+    <script is:inline src="/js/kukode-global.js"></script>
+
+    <!-- Slot untuk script tambahan yang cuma dipakai halaman tertentu (mis. Swiper init + FAQ di homepage) -->
+    <slot name="extra-scripts" />
   </body>
 </html>

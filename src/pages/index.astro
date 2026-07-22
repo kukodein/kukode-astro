@@ -1,15 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Hero from '../components/home/Hero.astro';
-import AboutTeaser from '../components/home/AboutTeaser.astro';
-import Services from '../components/home/Services.astro';
-import Portfolio from '../components/home/Portfolio.astro';
-import Testimonials from '../components/home/Testimonials.astro';
-import WhyUs from '../components/home/WhyUs.astro';
-import Pricing from '../components/home/Pricing.astro';
 import BlogSection from '../components/home/BlogSection.astro';
-import FAQ from '../components/home/FAQ.astro';
-import Contact from '../components/home/Contact.astro';
 import { getPageData, getArticles, getSettings } from '../lib/sheets';
 
 const [page, articles, settings] = await Promise.all([
@@ -19,130 +10,431 @@ const [page, articles, settings] = await Promise.all([
 ]);
 
 const latestArticles = articles.slice(0, 3);
-
-// --- Konten hardcode di bawah ini (sesuai keputusan Anda) ---
-// Ganti teks/gambar sesuai kebutuhan asli. Untuk versi ID, duplikasi pola yang sama
-// di src/pages/id/index.astro dengan teks berbeda.
-
-const services: { icon: string; title: string; description: string; size?: 'wide' | 'narrow' }[] = [
-  { icon: '🎨', title: 'Web Design', description: 'Desain modern dan responsif.', size: 'wide' },
-  { icon: '💻', title: 'Web Development', description: 'Development custom sesuai kebutuhan.' },
-  { icon: '🛒', title: 'E-Commerce', description: 'Toko online siap jual.' },
-  { icon: '🔍', title: 'SEO Optimization', description: 'Optimasi untuk mesin pencari.' },
-  { icon: '🚀', title: 'Hosting & Deploy', description: 'Setup hosting dan deployment.' },
-  { icon: '🛠️', title: 'Maintenance', description: 'Perawatan dan update rutin.', size: 'wide' },
-  { icon: '📱', title: 'Mobile Friendly', description: 'Tampilan optimal di semua device.' },
-  { icon: '📈', title: 'Analytics Setup', description: 'Pasang tracking & reporting.' },
-];
-
-const portfolioItems = [
-  { title: 'Project Satu', category: 'Company Profile', image: 'https://picsum.photos/600/400?1', url: 'https://example.com' },
-  { title: 'Project Dua', category: 'E-Commerce', image: 'https://picsum.photos/600/400?2', url: 'https://example.com' },
-  { title: 'Project Tiga', category: 'Landing Page', image: 'https://picsum.photos/600/400?3', url: 'https://example.com' },
-  { title: 'Project Empat', category: 'Blog', image: 'https://picsum.photos/600/400?4', url: 'https://example.com' },
-  { title: 'Project Lima', category: 'Portfolio', image: 'https://picsum.photos/600/400?5', url: 'https://example.com' },
-  { title: 'Project Enam', category: 'Web App', image: 'https://picsum.photos/600/400?6', url: 'https://example.com' },
-];
-
-const testimonials = [
-  { name: 'Budi Santoso', role: 'CEO, Perusahaan A', quote: 'Hasilnya sangat memuaskan, tim sangat responsif dan profesional.', featured: true },
-  { name: 'Sari Dewi', role: 'Owner, Toko B', quote: 'Website jadi lebih cepat dan mudah dikelola.' },
-  { name: 'Andi Wijaya', role: 'Marketing, Startup C', quote: 'Komunikasi lancar dari awal sampai selesai.' },
-  { name: 'Rina Putri', role: 'Founder, Brand D', quote: 'Desainnya modern, sesuai dengan yang kami inginkan.' },
-];
-
-const whyUsItems = [
-  { icon: '⚡', title: 'Cepat', description: 'Proses development yang efisien.' },
-  { icon: '🔒', title: 'Aman', description: 'Praktik keamanan yang teruji.' },
-  { icon: '🎯', title: 'Sesuai Kebutuhan', description: 'Solusi custom, bukan template generik.' },
-  { icon: '💬', title: 'Komunikasi Jelas', description: 'Update progress secara rutin.' },
-  { icon: '📊', title: 'SEO Friendly', description: 'Dibangun dengan best practice SEO.' },
-  { icon: '🔄', title: 'Revisi Fleksibel', description: 'Ruang revisi sesuai kesepakatan.' },
-  { icon: '💰', title: 'Harga Transparan', description: 'Tidak ada biaya tersembunyi.' },
-  { icon: '🤝', title: 'Support Purna Jual', description: 'Bantuan setelah project selesai.' },
-];
-
-const pricingTiers = [
-  {
-    name: 'Starter',
-    price: 'Rp 2.500.000',
-    features: ['1-3 halaman', 'Desain responsif', 'Free domain 1 tahun'],
-    ctaHref: '/#contact',
-  },
-  {
-    name: 'Professional',
-    price: 'Rp 5.000.000',
-    features: ['5-8 halaman', 'Blog/Artikel', 'SEO dasar', 'Support 3 bulan'],
-    ctaHref: '/#contact',
-    popular: true,
-  },
-  {
-    name: 'E-Commerce',
-    price: 'Rp 10.000.000',
-    features: ['Toko online lengkap', 'Payment gateway', 'Manajemen produk', 'Support 6 bulan'],
-    ctaHref: '/#contact',
-  },
-];
-
-const faqItems = [
-  { question: 'Berapa lama proses pengerjaan?', answer: 'Umumnya 2-4 minggu tergantung kompleksitas.' },
-  { question: 'Apakah bisa request desain custom?', answer: 'Bisa, kami sesuaikan dengan brand Anda.' },
-  { question: 'Bagaimana sistem pembayaran?', answer: 'DP 50% di awal, sisanya saat project selesai.' },
-  { question: 'Apakah termasuk hosting?', answer: 'Tergantung paket, cek detail di section Harga.' },
-  { question: 'Bisa revisi berapa kali?', answer: 'Sesuai paket yang dipilih, umumnya 2-3 kali revisi.' },
-  { question: 'Apakah support setelah selesai?', answer: 'Ya, ada masa support sesuai paket.' },
-  { question: 'Bagaimana cara mulai project?', answer: 'Hubungi kami lewat form kontak atau WhatsApp.' },
-  { question: 'Apakah bisa migrasi dari WordPress?', answer: 'Bisa, itu memang salah satu spesialisasi kami.' },
-];
 ---
 
 <BaseLayout
   locale="en"
-  title={page.meta_title || page.title}
-  description={page.meta_description}
+  title="Kukode — Web Development Studio"
+  description="We design and build modern websites that load fast, rank well, and convert."
   path="/"
   enPath="/"
   idPath="/"
 >
-  <Hero
-    title={page.title}
-    tagline={page.description}
-    ctaLabel="Get Started"
-    ctaHref="/#contact"
-    image={page.featured_image || 'https://picsum.photos/800/600'}
-  />
+  <Fragment slot="extra-head">
+    <link href="/vendor/swiper/swiper-bundle.min.css" rel="stylesheet" />
+  </Fragment>
 
-  <AboutTeaser
-    title="About Us"
-    text="We help businesses build modern, fast, and SEO-friendly websites."
-    ctaLabel="Learn More"
-    ctaHref="/about/"
-  />
+  <section id="section-hero" class="kk-hero py-52">
+    <div class="container kk-hero-content">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-6 text-start order-lg-1 order-2">
+          <div class="kk-badge-pill mb-4"><span class="kk-dot"></span>Accepting New Projects</div>
+          <h1 class="mb-3">We build websites that genuinely work for your business.</h1>
+          <p class="fs-5 text-muted-kk mb-4">Not just good-looking — every site we build is fast, professional, and designed to convert. You talk directly to the developer, to Us, Kukode. No middlemen, no guesswork.</p>
+          <div class="d-flex gap-3">
+            <a href="#contact" class="btn btn-primary"> Get a Quote</a>
+            <a href="#portfolio" class="btn btn-outline-kk">See Our Work</a>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-2 order-1">
+          <div class="position-relative">
+            <div class="kk-card p-2 border-0 bg-transparent">
+              <img src="/image/en-home-section-hero.png" alt="Kukode product preview" class="img-fluid rounded-3 w-100" />
+            </div>
+            <div class="kk-float-card" style="position:absolute; top:100px; left:5px; background:var(--bs-body-bg); border-radius:var(--bs-border-radius-sm); box-shadow:0 20px 50px rgba(0,0,0,0.18); padding:0.75rem 1rem; font-size:0.8rem; font-weight:500;">⚡ 98/100 average site speed score</div>
+            <div class="kk-float-card" style="position:absolute; bottom:100px; right:5px; background:var(--bs-body-bg); border-radius:var(--bs-border-radius-sm); box-shadow:0 20px 50px rgba(0,0,0,0.18); padding:0.75rem 1rem; font-size:0.8rem; font-weight:500;">🔍 Built SEO-ready from day one</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <Services title="Our Services" items={services} />
+  <section id="trusted" class="py-4 bg-light">
+    <div class="container">
+      <p class="text-center text-muted-kk small mb-4">Businesses we've helped go online</p>
+      <div class="kk-logo-strip"><span>Acme</span><span>Northwind</span><span>Globex</span><span>Initech</span><span>Umbrella</span><span>Soylent</span></div>
+    </div>
+  </section>
 
-  <Portfolio title="Our Portfolio" items={portfolioItems} />
+  <!-- MARQUEE -->
+  <section id="section-marquee" class="marquee-wrap">
+    <div class="marquee-track">
+      <div class="marquee-item">Company Profile</div>
+      <div class="marquee-item">Landing Page</div>
+      <div class="marquee-item">Toko Online</div>
+      <div class="marquee-item">Redesign Website</div>
+      <div class="marquee-item">WordPress</div>
+      <div class="marquee-item">Next.js</div>
+      <div class="marquee-item">UI/UX Figma</div>
+      <div class="marquee-item">WooCommerce</div>
+      <div class="marquee-item">SEO Ready</div>
+      <div class="marquee-item">Mobile First</div>
+      <div class="marquee-item">Company Profile</div>
+      <div class="marquee-item">Landing Page</div>
+      <div class="marquee-item">Online Shop</div>
+      <div class="marquee-item">Redesign Website</div>
+      <div class="marquee-item">WordPress</div>
+      <div class="marquee-item">Next.js</div>
+      <div class="marquee-item">UI/UX Figma</div>
+      <div class="marquee-item">WooCommerce</div>
+      <div class="marquee-item">SEO Ready</div>
+      <div class="marquee-item">Mobile First</div>
+    </div>
+  </section>
 
-  <Testimonials title="What Clients Say" items={testimonials} />
+  <section id="numbers" class="kk-section">
+    <div class="container">
+      <div class="row g-4 text-center">
+        <div class="col-6 col-md-3"><div class="kk-stat-num">120+</div><p class="text-muted-kk small mb-0">Websites launched</p></div>
+        <div class="col-6 col-md-3"><div class="kk-stat-num">98</div><p class="text-muted-kk small mb-0">Avg. site speed score</p></div>
+        <div class="col-6 col-md-3"><div class="kk-stat-num">5yr</div><p class="text-muted-kk small mb-0">Building websites</p></div>
+        <div class="col-6 col-md-3"><div class="kk-stat-num">99%</div><p class="text-muted-kk small mb-0">Clients who'd hire us again</p></div>
+      </div>
+    </div>
+  </section>
 
-  <WhyUs title="Why Kukode" items={whyUsItems} />
+  <section id="about-us" class="kk-section kk-gradient-alt">
+    <div class="container">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-6">
+          <img src="/image/en-home-section-tentang.png" alt="Kukode team at work" class="img-fluid" />
+        </div>
+        <div class="col-lg-6">
+          <p class="kk-eyebrow mb-2">About Kukode</p>
+          <h2 class="mb-3">A web development team that thinks like a business owner.</h2>
+          <p>We don't just write code. We make sure every website is a genuine business tool. Every design and technical decision is made with your end users and growth goals in mind, not just what looks good on a screen.</p>
+          <p>Indonesia-based, remote-ready, and fully committed to every project. You deal directly with Us — the person designing, coding, and delivering your site. No sales reps. No account managers. No end-of-project surprises.</p>
+          <a href="/about/" class="btn btn-outline-kk">Learn more about us</a>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <Pricing title="Pricing Plans" tiers={pricingTiers} />
+  <section id="services" class="kk-section">
+    <div class="container">
+      <div class="text-center mb-5">
+        <p class="kk-eyebrow mb-2">Services</p>
+        <h2>What can We help you with your business?</h2>
+        <p>From a brand-new site to a full overhaul of what you already have — every project is built by me, to the same high standard.</p>
+      </div>
+      <div class="row g-3">
+        <div class="col-6 col-md-8">
+          <div class="kk-card p-4 kk-why-card"><div class="kk-icon-circle">💻</div><h3 class="h6 font-heading fw-bold mb-1">Development</h3><p class="text-muted-kk small mb-0">Hand-built websites, coded to load fast and scale as you grow.</p></div>
+        </div>
+        <div class="col-6 col-md-4">
+          <div class="kk-card p-4 kk-why-card"><div class="kk-icon-circle">🎨</div><h3 class="h6 font-heading fw-bold mb-1">Web design</h3><p class="text-muted-kk small mb-0">Custom design that reflects your brand — not a recycled template.</p></div>
+        </div>
+        <div class="col-6 col-md-4">
+          <div class="kk-card p-4 kk-why-card"><div class="kk-icon-circle">🛒</div><h3 class="h6 font-heading fw-bold mb-1">Online Store Development</h3><p class="text-muted-kk small mb-0">E-commerce sites ready to take orders and payments from launch day.</p></div>
+        </div>
+        <div class="col-6 col-md-4">
+          <div class="kk-card p-4 kk-why-card"><div class="kk-icon-circle">🔍</div><h3 class="h6 font-heading fw-bold mb-1"> SEO Optimization</h3><p class="text-muted-kk small mb-0">On-page SEO built in from the start, so you show up when people search.</p></div>
+        </div>
+        <div class="col-6 col-md-4">
+          <div class="kk-card p-4 kk-why-card"><div class="kk-icon-circle">🛠️</div><h3 class="h6 font-heading fw-bold mb-1">Website Maintenance</h3><p class="text-muted-kk small mb-0">Ongoing updates, monitoring, and fixes — so the site keeps running smoothly.</p></div>
+        </div>
+        <div class="col-6 col-md-4">
+          <div class="kk-card p-4 kk-why-card"><div class="kk-icon-circle">🚀</div><h3 class="h6 font-heading fw-bold mb-1">Hosting & Deployment</h3><p class="text-muted-kk small mb-0">Fast, reliable hosting setup — without locking you into expensive plans.</p></div>
+        </div>
+        <div class="col-6 col-md-4">
+          <div class="kk-card p-4 kk-why-card"><div class="kk-icon-circle">📱</div><h3 class="h6 font-heading fw-bold mb-1"> Mobile-Friendly Design</h3><p class="text-muted-kk small mb-0">Every site is built to look and work great on phones first.</p></div>
+        </div>
+        <div class="col-6 col-md-4">
+          <div class="kk-card p-4 kk-why-card"><div class="kk-icon-circle">📈</div><h3 class="h6 font-heading fw-bold mb-1">Analytics & Tracking</h3><p class="text-muted-kk small mb-0">Know exactly how visitors find and use your site.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="process" class="kk-section kk-gradient-alt">
+    <div class="container">
+      <div class="text-center mb-5"><p class="kk-eyebrow mb-2">How We Work</p><h2>Simple, transparent, no drama.</h2><p class="mx-auto" style="max-width:560px;">From the first conversation to launch day — you always know exactly where your project stands.</p></div>
+      <div class="row g-3">
+        <div class="col-md-4 col-lg">
+          <div class="kk-card p-4 kk-step-card">
+            <span class="kk-step-tag d-none">Week 1</span>
+            <div class="kk-step-circle" style="margin:0 0 0.9rem;">1</div>
+            <h3 class="h6 font-heading fw-bold mb-1">Discovery Meet</h3>
+            <p class="text-muted-kk small mb-0">We talk through your business, goals, and what your current site is missing.</p>
+          </div>
+        </div>
+        <div class="col-md-4 col-lg">
+          <div class="kk-card p-4 kk-step-card">
+            <span class="kk-step-tag d-none">Week 1–2</span>
+            <div class="kk-step-circle" style="margin:0 0 0.9rem;">2</div>
+            <h3 class="h6 font-heading fw-bold mb-1">Design</h3>
+            <p class="text-muted-kk small mb-0">You'll see wireframes first, then a full visual design matching your brand.</p>
+          </div>
+        </div>
+        <div class="col-md-4 col-lg">
+          <div class="kk-card p-4 kk-step-card">
+            <span class="kk-step-tag d-none">Week 2–3</span>
+            <div class="kk-step-circle" style="margin:0 0 0.9rem;">3</div>
+            <h3 class="h6 font-heading fw-bold mb-1">Development</h3>
+            <p class="text-muted-kk small mb-0">We build the real thing — fast, responsive, and ready for search engines.</p>
+          </div>
+        </div>
+        <div class="col-md-4 col-lg">
+          <div class="kk-card p-4 kk-step-card">
+            <span class="kk-step-tag d-none">Week 3–4</span>
+            <div class="kk-step-circle" style="margin:0 0 0.9rem;">4</div>
+            <h3 class="h6 font-heading fw-bold mb-1">Testing & Review</h3>
+            <p class="text-muted-kk small mb-0">We test across devices, check page speed and SEO, then walk through it with you.</p>
+          </div>
+        </div>
+        <div class="col-md-4 col-lg">
+          <div class="kk-card p-4 kk-step-card">
+            <span class="kk-step-tag d-none">Week 4</span>
+            <div class="kk-step-circle" style="margin:0 0 0.9rem;">5</div>
+            <h3 class="h6 font-heading fw-bold mb-1">Launch & Support</h3>
+            <p class="text-muted-kk small mb-0">Your site goes live, and we stay on to handle anything that comes up.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="portfolio" class="kk-section">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-end mb-5">
+        <div><p class="kk-eyebrow mb-2">Our Work</p><h2 class="mb-0">Work that speaks for itself.</h2></div>
+        <a href="/portfolio/" class="btn btn-outline-kk btn-sm">See All Projects</a>
+      </div>
+      <div class="row g-3">
+        <div class="col-6 col-lg-4"><a href="#" class="kk-portfolio-card text-decoration-none text-reset d-block"><div class="kk-browser-frame"><div class="kk-browser-bar"><span></span><span></span><span></span></div><div class="kk-browser-body"><img src="https://picsum.photos/600/400?41" alt="Project one" /><div class="kk-overlay"><span class="btn btn-light btn-sm rounded-pill">View project</span></div></div></div><p class="text-muted-kk small mt-2 mb-1">Company Profile</p><h3 class="h6 font-heading fw-bold">Project One</h3></a></div>
+        <div class="col-6 col-lg-4"><a href="#" class="kk-portfolio-card text-decoration-none text-reset d-block"><div class="kk-browser-frame"><div class="kk-browser-bar"><span></span><span></span><span></span></div><div class="kk-browser-body"><img src="https://picsum.photos/600/400?42" alt="Project two" /><div class="kk-overlay"><span class="btn btn-light btn-sm rounded-pill">View project</span></div></div></div><p class="text-muted-kk small mt-2 mb-1">E-Commerce</p><h3 class="h6 font-heading fw-bold">Project Two</h3></a></div>
+        <div class="col-6 col-lg-4"><a href="#" class="kk-portfolio-card text-decoration-none text-reset d-block"><div class="kk-browser-frame"><div class="kk-browser-bar"><span></span><span></span><span></span></div><div class="kk-browser-body"><img src="https://picsum.photos/600/400?43" alt="Project three" /><div class="kk-overlay"><span class="btn btn-light btn-sm rounded-pill">View project</span></div></div></div><p class="text-muted-kk small mt-2 mb-1">Landing Page</p><h3 class="h6 font-heading fw-bold">Project Three</h3></a></div>
+        <div class="col-6 col-lg-4"><a href="#" class="kk-portfolio-card text-decoration-none text-reset d-block"><div class="kk-browser-frame"><div class="kk-browser-bar"><span></span><span></span><span></span></div><div class="kk-browser-body"><img src="https://picsum.photos/600/400?44" alt="Project four" /><div class="kk-overlay"><span class="btn btn-light btn-sm rounded-pill">View project</span></div></div></div><p class="text-muted-kk small mt-2 mb-1">Blog</p><h3 class="h6 font-heading fw-bold">Project Four</h3></a></div>
+        <div class="col-6 col-lg-4"><a href="#" class="kk-portfolio-card text-decoration-none text-reset d-block"><div class="kk-browser-frame"><div class="kk-browser-bar"><span></span><span></span><span></span></div><div class="kk-browser-body"><img src="https://picsum.photos/600/400?45" alt="Project five" /><div class="kk-overlay"><span class="btn btn-light btn-sm rounded-pill">View project</span></div></div></div><p class="text-muted-kk small mt-2 mb-1">Portfolio</p><h3 class="h6 font-heading fw-bold">Project Five</h3></a></div>
+        <div class="col-6 col-lg-4"><a href="#" class="kk-portfolio-card text-decoration-none text-reset d-block"><div class="kk-browser-frame"><div class="kk-browser-bar"><span></span><span></span><span></span></div><div class="kk-browser-body"><img src="https://picsum.photos/600/400?46" alt="Project six" /><div class="kk-overlay"><span class="btn btn-light btn-sm rounded-pill">View project</span></div></div></div><p class="text-muted-kk small mt-2 mb-1">Web App</p><h3 class="h6 font-heading fw-bold">Project Six</h3></a></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="stack" class="kk-section kk-gradient-alt">
+    <div class="container">
+      <div class="row g-4 align-items-start">
+        <div class="col-lg-4">
+          <div class="kk-eyebrow mb-2">Tech Stack</div>
+          <h2 class="mb-3">Built with the right tools.</h2>
+          <p>No chasing trends. Every tool is chosen because it consistently delivers the best outcome for the client's business.</p>
+        </div>
+        <div class="col-lg-8">
+          <div class="row g-4">
+            <div class="col-md-4">
+              <div class="text-uppercase text-secondary fw-bold fs-7 mb-2">Frontend</div>
+              <div class="d-flex flex-wrap gap-2">
+                <span class="tp-pill">HTML5</span><span class="tp-pill">CSS3 / SCSS</span>
+                <span class="tp-pill">JavaScript</span><span class="tp-pill">Tailwind CSS</span>
+                <span class="tp-pill">Next.js</span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="text-uppercase text-secondary fw-bold fs-7 mb-2">Backend &amp; CMS</div>
+              <div class="d-flex flex-wrap gap-2">
+                <span class="tp-pill">WordPress</span><span class="tp-pill">Elementor Pro</span>
+                <span class="tp-pill">WooCommerce</span><span class="tp-pill">PHP 8</span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="text-uppercase text-secondary fw-bold fs-7 mb-2">Design &amp; Tools</div>
+              <div class="d-flex flex-wrap gap-2">
+                <span class="tp-pill">Figma</span><span class="tp-pill">Canva Pro</span>
+                <span class="tp-pill">Git / GitHub</span><span class="tp-pill">Yoast SEO</span>
+                <span class="tp-pill">Cloudflare</span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="text-uppercase text-secondary fw-bold fs-7 mb-2">Payment &amp; API</div>
+              <div class="d-flex flex-wrap gap-2">
+                <span class="tp-pill">Midtrans</span><span class="tp-pill">Xendit</span>
+                <span class="tp-pill">WhatsApp API</span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="text-uppercase text-secondary fw-bold fs-7 mb-2">Analytics &amp; SEO</div>
+              <div class="d-flex flex-wrap gap-2">
+                <span class="tp-pill">Google Analytics</span>
+                <span class="tp-pill">Search Console</span>
+                <span class="tp-pill">PageSpeed</span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="text-uppercase text-secondary fw-bold fs-7 mb-2">Hosting</div>
+              <div class="d-flex flex-wrap gap-2">
+                <span class="tp-pill">Niagahoster</span><span class="tp-pill">Hostinger</span>
+                <span class="tp-pill">cPanel</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="testimony" class="kk-section">
+    <div class="container">
+      <div class="text-center mb-5"><p class="kk-eyebrow mb-2">Testimonials</p><h2>Straight from the people we've worked with.</h2></div>
+      <div class="swiper kk-testi-swiper pt-1">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide kk-testi-slide">
+            <div class="kk-card p-4 h-100"><p class="mb-4">&ldquo;Our new site loads in under a second and our inquiries doubled in the first month.&rdquo;</p><div class="d-flex align-items-center gap-3"><div class="kk-icon-circle mb-0">👨‍💼</div><div><p class="fw-bold mb-0 small">Budi Santoso</p><p class="text-muted-kk small mb-0">CEO, Company A</p></div></div></div>
+          </div>
+          <div class="swiper-slide kk-testi-slide">
+            <div class="kk-card p-4 h-100"><p class="mb-4">&ldquo;I can update the site myself without calling anyone — that alone was worth it.&rdquo;</p><div class="d-flex align-items-center gap-3"><div class="kk-icon-circle mb-0">👩</div><div><p class="fw-bold mb-0 small">Sari Dewi</p><p class="text-muted-kk small mb-0">Owner, Store B</p></div></div></div>
+          </div>
+          <div class="swiper-slide kk-testi-slide">
+            <div class="kk-card p-4 h-100"><p class="mb-4">&ldquo;They actually explained what they were doing instead of just sending invoices.&rdquo;</p><div class="d-flex align-items-center gap-3"><div class="kk-icon-circle mb-0">👨‍⚕️</div><div><p class="fw-bold mb-0 small">Andi Wijaya</p><p class="text-muted-kk small mb-0">Marketing, Startup C</p></div></div></div>
+          </div>
+          <div class="swiper-slide kk-testi-slide">
+            <div class="kk-card p-4 h-100"><p class="mb-4">&ldquo;Finally a website that looks like it belongs to 2026, not 2015&rdquo;</p><div class="d-flex align-items-center gap-3"><div class="kk-icon-circle mb-0">👩</div><div><p class="fw-bold mb-0 small">Rina Putri</p><p class="text-muted-kk small mb-0">Founder, Brand D</p></div></div></div>
+          </div>
+          <div class="swiper-slide kk-testi-slide">
+            <div class="kk-card p-4 h-100"><p class="mb-4">&ldquo;Fast replies, fair pricing, and the site actually works on mobile.&rdquo;</p><div class="d-flex align-items-center gap-3"><div class="kk-icon-circle mb-0">👨‍💼</div><div><p class="fw-bold mb-0 small">Dimas Prakoso</p><p class="text-muted-kk small mb-0">Ops Lead, Company E</p></div></div></div>
+          </div>
+        </div>
+        <div class="swiper-pagination mt-3"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="why-kukode" class="kk-section bg-surface">
+    <div class="container">
+      <div class="text-center mb-5"><p class="kk-eyebrow mb-2">Why Kukode</p><h2>Here's what makes us genuinely different.</h2><p class="text-muted-kk mx-auto" style="max-width:560px;">Eight reasons clients come back for their next project.</p></div>
+      <div class="row g-3">
+        <div class="col-12 col-md-4">
+          <div class="kk-card p-4 kk-why-card"><div class="kk-icon-circle">🎯</div><h3 class="h6 font-heading fw-bold mb-1">Direct access to your developer</h3><p class="text-muted-kk small mb-0">No sales reps or project managers in between. Direct conversations mean faster decisions and zero lost context.</p></div>
+        </div>
+        <div class="col-6 col-md-4">
+          <div class="kk-card p-4 kk-why-card"><div class="kk-icon-circle">⚡</div><h3 class="h6 font-heading fw-bold mb-1">Launched in weeks</h3><p class="text-muted-kk small mb-0">An efficient, well-rehearsed development process gets you live in weeks, not months.</p></div>
+        </div>
+        <div class="col-6 col-md-4">
+          <div class="kk-card p-4 kk-why-card"><div class="kk-icon-circle">🔒</div><h3 class="h6 font-heading fw-bold mb-1">Secure by default</h3><p class="text-muted-kk small mb-0">Modern hosting means far fewer security headaches than an old setup.</p></div>
+        </div>
+        <div class="col-6 col-md-4">
+          <div class="kk-card p-4 kk-why-card"><div class="kk-icon-circle">🎯</div><h3 class="h6 font-heading fw-bold mb-1">Built around your goals</h3><p class="text-muted-kk small mb-0">Every site is built around your content and goals, not squeezed into a theme.</p></div>
+        </div>
+        <div class="col-6 col-md-4">
+          <div class="kk-card p-4 kk-why-card"><div class="kk-icon-circle">💬</div><h3 class="h6 font-heading fw-bold mb-1">Clear communication</h3><p class="text-muted-kk small mb-0">Regular updates so you always know exactly where the project stands.</p></div>
+        </div>
+        <div class="col-6 col-md-4">
+          <div class="kk-card p-4 kk-why-card"><div class="kk-icon-circle">📊</div><h3 class="h6 font-heading fw-bold mb-1">SEO-friendly</h3><p class="text-muted-kk small mb-0">Built with technical SEO best practices baked in from day one, not bolted on later.</p></div>
+        </div>
+        <div class="col-6 col-md-4">
+          <div class="kk-card p-4 kk-why-card"><div class="kk-icon-circle">🔄</div><h3 class="h6 font-heading fw-bold mb-1">Flexible revisions</h3><p class="text-muted-kk small mb-0">Room to iterate as agreed, so the end result actually matches your vision.</p></div>
+        </div>
+        <div class="col-6 col-md-4">
+          <div class="kk-card p-4 kk-why-card"><div class="kk-icon-circle">💰</div><h3 class="h6 font-heading fw-bold mb-1">Transparent pricing</h3><p class="text-muted-kk small mb-0">No hidden fees — what's quoted is what you pay, from Starter to E-Commerce.</p></div>
+        </div>
+        <div class="col-6 col-md-4">
+          <div class="kk-card p-4 kk-why-card"><div class="kk-icon-circle">🤝</div><h3 class="h6 font-heading fw-bold mb-1">Post-launch support</h3><p class="text-muted-kk small mb-0">We stick around after launch to fix issues and help you grow the site further.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing" class="kk-section kk-gradient-alt">
+    <div class="container">
+      <div class="text-center mb-5"><p class="kk-eyebrow mb-2">Pricing</p><h2>An investment that actually makes sense.</h2><p>No project is too small or too large. Everything is open for discussion — tailored to what you actually need.</p></div>
+      <div class="row g-3 align-items-stretch">
+        <div class="col-lg-4">
+          <div class="kk-card p-4 h-100">
+            <div class="h5 font-heading fw-bold mb-0">Starter</div>
+            <div class="fs-3 fw-bold">IDR 800K</div>
+            <div class="mb-3">≈ USD 50 / project</div>
+            <div class="text-muted">For businesses just stepping into the digital world with straightforward needs.</div>
+            <hr style="border-color:var(--bs-border-color)">
+            <div class="d-flex"><img src="/image/LetsIconsCheckRingDuotoneLine.svg" alt="check-icon"> Single-page landing page</div>
+            <div class="d-flex"><img src="/image/LetsIconsCheckRingDuotoneLine.svg" alt="check-icon" class="me-2">Fully responsive design</div>
+            <div class="d-flex"><img src="/image/LetsIconsCheckRingDuotoneLine.svg" alt="check-icon" class="me-2">WhatsApp button &amp; contact form</div>
+            <div class="d-flex"><img src="/image/LetsIconsCheckRingDuotoneLine.svg" alt="check-icon" class="me-2">Figma mockup before coding</div>
+            <div class="d-flex"><img src="/image/LetsIconsCheckRingDuotoneLine.svg" alt="check-icon" class="me-2">Delivered in 3–5 working days</div>
+            <a href="#contact" class="btn btn-outline-kk w-100 mt-4">Let's Talk</a>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="kk-card p-4 h-100 kk-pricing-popular">
+            <div class="h5 font-heading fw-bold mb-0">Professional <span class="badge rounded-pill text-bg-primary fw-normal">Most popular</span></div>
+            <div class="fs-3 fw-bold">IDR 1.5M</div>
+            <div class="mb-3">≈ USD 95 / project</div>
+            <div class="text-muted">For businesses that want to look the part and win client trust from day one.</div>
+            <hr style="border-color:var(--bs-border-color)">
+            <div class="d-flex"><img src="/image/LetsIconsCheckRingDuotoneLine.svg" alt="check-icon" class="me-2">4–6 page company profile</div>
+            <div class="d-flex"><img src="/image/LetsIconsCheckRingDuotoneLine.svg" alt="check-icon" class="me-2">Figma mockup + design revisions</div>
+            <div class="d-flex"><img src="/image/LetsIconsCheckRingDuotoneLine.svg" alt="check-icon" class="me-2">Basic on-page SEO setup</div>
+            <div class="d-flex"><img src="/image/LetsIconsCheckRingDuotoneLine.svg" alt="check-icon" class="me-2">Google Analytics configured</div>
+            <div class="d-flex"><img src="/image/LetsIconsCheckRingDuotoneLine.svg" alt="check-icon" class="me-2">Open revisions within scope</div>
+            <div class="d-flex"><img src="/image/LetsIconsCheckRingDuotoneLine.svg" alt="check-icon" class="me-2">Delivered in 7–10 working days</div>
+            <a href="#contact" class="btn btn-primary w-100 mt-4">Choose This Plan</a>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="kk-card p-4 h-100">
+            <div class="h5 font-heading fw-bold mb-0">E-Commerce</div>
+            <div class="fs-3 fw-bold">IDR 2.5M</div>
+            <div class="mb-3">≈ USD 158 / project</div>
+            <div class="text-muted">For businesses ready to sell online — commission-free, on their own terms.</div>
+            <hr style="border-color:var(--bs-border-color)">
+            <div class="d-flex"><img src="/image/LetsIconsCheckRingDuotoneLine.svg" alt="check-icon" class="me-2">Full WooCommerce store setup</div>
+            <div class="d-flex"><img src="/image/LetsIconsCheckRingDuotoneLine.svg" alt="check-icon" class="me-2">Product catalog &amp; inventory management</div>
+            <div class="d-flex"><img src="/image/LetsIconsCheckRingDuotoneLine.svg" alt="check-icon" class="me-2">Payment gateway integration</div>
+            <div class="d-flex"><img src="/image/LetsIconsCheckRingDuotoneLine.svg" alt="check-icon" class="me-2">Automatic shipping calculator</div>
+            <div class="d-flex"><img src="/image/LetsIconsCheckRingDuotoneLine.svg" alt="check-icon" class="me-2">Admin panel training included</div>
+            <a href="#contact" class="btn btn-outline-kk w-100 mt-4">Let's Talk</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <BlogSection
     title="Latest Articles"
     locale="en"
+    eyebrow="Blog"
     articles={latestArticles}
     viewAllLabel="View All"
   />
 
-  <FAQ title="Frequently Asked Questions" items={faqItems} />
+  <section id="faq" class="kk-section bg-surface">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <div class="kk-eyebrow mb-2">FAQ</div>
+          <h2 class="mb-3">Questions we hear all the time.</h2>
+          <p class="mb-4">Don't see yours here? Just ask, We will reply personally to every message.</p>
+          <a href="https://wa.me/6281234567890" class="btn btn-primary d-none d-lg-inline" target="_blank"> Message Me Directly</a>
+        </div>
+        <div class="col-lg-8">
+          <div class="kk-faq-item"><button class="kk-faq-q">How long does a project take? <span class="kk-faq-chevron">+</span></button><div class="kk-faq-a"><div class="kk-faq-a-inner">Usually 2–4 weeks depending on complexity.</div></div></div>
+          <div class="kk-faq-item"><button class="kk-faq-q">Can I request a custom design? <span class="kk-faq-chevron">+</span></button><div class="kk-faq-a"><div class="kk-faq-a-inner">Yes, we tailor every design to your brand.</div></div></div>
+          <div class="kk-faq-item"><button class="kk-faq-q">How does payment work? <span class="kk-faq-chevron">+</span></button><div class="kk-faq-a"><div class="kk-faq-a-inner">50% deposit upfront, remainder on completion.</div></div></div>
+          <div class="kk-faq-item"><button class="kk-faq-q">Is hosting included? <span class="kk-faq-chevron">+</span></button><div class="kk-faq-a"><div class="kk-faq-a-inner">Depends on the plan — see Pricing for details.</div></div></div>
+          <div class="kk-faq-item"><button class="kk-faq-q">How many revisions are included? <span class="kk-faq-chevron">+</span></button><div class="kk-faq-a"><div class="kk-faq-a-inner">Typically 2–3 rounds, depending on your plan.</div></div></div>
+          <div class="kk-faq-item"><button class="kk-faq-q">Is there support after launch? <span class="kk-faq-chevron">+</span></button><div class="kk-faq-a"><div class="kk-faq-a-inner">Yes, support period varies by plan.</div></div></div>
+          <div class="kk-faq-item"><button class="kk-faq-q">How do I get started? <span class="kk-faq-chevron">+</span></button><div class="kk-faq-a"><div class="kk-faq-a-inner">Reach out via the contact form or WhatsApp below.</div></div></div>
+          <div class="kk-faq-item"><button class="kk-faq-q">Can you migrate from WordPress or into WordPress? <span class="kk-faq-chevron">+</span></button><div class="kk-faq-a"><div class="kk-faq-a-inner">Yes — that's actually one of our specialties.</div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <Contact
-    title="Get In Touch"
-    whatsappNumber={settings.whatsapp_number || '6281234567890'}
-    namePlaceholder="Your Name"
-    messagePlaceholder="Your Message"
-    submitLabel="Send via WhatsApp"
-  />
+  <section id="contact" class="kk-section">
+    <div class="container">
+      <div class="kk-cta-band">
+        <p class="kk-eyebrow mb-2" style="color:rgba(255,255,255,0.85);">Let's Talk</p>
+        <h2 class="mb-3">Ready to go? Let's have a chat first.</h2>
+        <p class="mb-4 mx-auto" style="max-width:480px;">Free consultation, no pressure. Tell me about your business and I'll figure out the best path forward together.</p>
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+          <a href="/contact/" class="btn btn-light">Get a Quote</a>
+          <a href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer" class="btn btn-outline-light">Chat on WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <Fragment slot="extra-scripts">
+    <script is:inline src="/vendor/swiper/swiper-bundle.min.js"></script>
+    <script is:inline src="/js/kukode-home.js"></script>
+  </Fragment>
 </BaseLayout>

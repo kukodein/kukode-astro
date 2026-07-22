@@ -1,0 +1,79 @@
+---
+// Header/Navbar — dipakai global di semua halaman (dipasang di BaseLayout).
+// Konten nav item & CTA saat ini hardcoded mengikuti desain final yang diberikan,
+// bukan dari Sheets, konsisten dengan keputusan homepage sections yang hardcoded.
+import type { Locale } from '../lib/sheets';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+
+// Nav item ini adalah anchor ke section di HOMEPAGE. Karena header sekarang global
+// (dipakai juga di halaman About/Portfolio/Contact), href-nya diarahkan ke homepage
+// dulu (absolute path + anchor), bukan anchor polos "#services" yang cuma valid
+// kalau sedang di homepage.
+const homePath = locale === 'en' ? '/' : '/id/';
+
+const navItems =
+  locale === 'en'
+    ? [
+        { href: `${homePath}#services`, label: 'Services' },
+        { href: `${homePath}#process`, label: 'Process' },
+        { href: `${homePath}#portfolio`, label: 'Portfolio' },
+        { href: `${homePath}#pricing`, label: 'Pricing' },
+        { href: `${homePath}#blog`, label: 'Blog' },
+        { href: `${homePath}#faq`, label: 'FAQ' },
+      ]
+    : [
+        { href: `${homePath}#services`, label: 'Layanan' },
+        { href: `${homePath}#process`, label: 'Proses' },
+        { href: `${homePath}#portfolio`, label: 'Portofolio' },
+        { href: `${homePath}#pricing`, label: 'Harga' },
+        { href: `${homePath}#blog`, label: 'Blog' },
+        { href: `${homePath}#faq`, label: 'FAQ' },
+      ];
+
+const ctaLabel = locale === 'en' ? 'Get a Quote' : 'Minta Penawaran';
+
+// Language switcher: tampilkan flag bahasa yang SEDANG aktif, title menjelaskan
+// aksi switch ke bahasa lain. href mengarah ke halaman padanan di locale lain
+// (untuk sekarang selalu ke Home versi locale lain — lihat catatan di bawah).
+const langFlag = locale === 'en' ? '🇺🇸' : '🇮🇩';
+const langTitle = locale === 'en' ? 'Switch language to Indonesia' : 'Ganti bahasa ke Inggris';
+const langHref = locale === 'en' ? '/id/' : '/';
+---
+
+<header class="kk-navbar-wrap px-2">
+  <nav class="navbar navbar-expand-lg kk-navbar container p-1 p-lg-2">
+    <div class="container-fluid px-2">
+      <a class="navbar-brand d-flex align-items-center gap-2" href={homePath}>
+        <img src="/image/Logo-Kukode-Landscape.png" class="d-show-light d-none-dark" alt="Kukode" style="min-width: 32px" height="32px" />
+        <img src="/image/Logo-Kukode-Landscape-White.png" class="d-show-dark d-none-light" alt="Kukode" style="min-width: 32px" height="32px" />
+      </a>
+      <div class="d-flex d-lg-none gap-2">
+        <a href={langHref} class="kk-lang-toggle text-decoration-none" title={langTitle}>{langFlag}</a>
+        <button class="kk-theme-toggle ms-lg-1" id="themeToggleMobile" aria-label="Toggle dark mode">
+          <svg class="kk-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="kk-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        </button>
+        <button class="navbar-toggler border-0 btn p-1" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"><span class="navbar-toggler-icon" style="width:1.2em;height:1.2em;"></span></button>
+      </div>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1 my-2 my-lg-0">
+          {navItems.map((item) => (
+            <li class="nav-item"><a class="nav-link" href={item.href}>{item.label}</a></li>
+          ))}
+          <li class="nav-item ms-lg-2 mt-2 my-lg-0"><a class="btn btn-primary btn-sm" href={`${homePath}#contact`}>{ctaLabel}</a></li>
+          <li class="nav-item kk-lang-slot ms-lg-2 border-top border-lg-0 pt-3 pt-lg-0 justify-content-between d-none d-lg-flex">
+            <a href={langHref} class="kk-lang-toggle text-decoration-none" title={langTitle}>{langFlag}</a>
+            <button class="kk-theme-toggle ms-lg-1" id="themeToggle" aria-label="Toggle dark mode">
+              <svg class="kk-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+              <svg class="kk-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>

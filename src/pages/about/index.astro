@@ -12,6 +12,30 @@ const page = await getPageData('en', 'about');
   enPath="/about/" idPath="/tentang/"
   path="/about/"
 >
-  <h1>{page.title}</h1>
-  <p>{page.description}</p>
+
+  <section id="section-hero" class="kk-hero py-52">
+    <div class="container kk-hero-content">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-6 text-start order-lg-1 order-2">
+          <div class="kk-badge-pill mb-4"><span class="kk-dot"></span>Accepting New Projects</div>
+          <h1 class="mb-3">{page.title}</h1>
+          <p class="fs-5 text-muted-kk mb-4">{page.meta_description}</p>
+          <div class="d-flex gap-3">
+            <a href="#contact" class="btn btn-primary"> Get a Quote</a>
+            <a href="#portfolio" class="btn btn-outline-kk">See Our Work</a>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-2 order-1">
+          <div class="position-relative">
+            <div class="kk-card p-2 border-0 bg-transparent">
+              <img src="/image/en-home-section-hero.png" alt="Kukode product preview" class="img-fluid rounded-3 w-100" />
+            </div>
+            <div class="kk-float-card" style="position:absolute; top:100px; left:5px; background:var(--bs-body-bg); border-radius:var(--bs-border-radius-sm); box-shadow:0 20px 50px rgba(0,0,0,0.18); padding:0.75rem 1rem; font-size:0.8rem; font-weight:500;">⚡ 98/100 average site speed score</div>
+            <div class="kk-float-card" style="position:absolute; bottom:100px; right:5px; background:var(--bs-body-bg); border-radius:var(--bs-border-radius-sm); box-shadow:0 20px 50px rgba(0,0,0,0.18); padding:0.75rem 1rem; font-size:0.8rem; font-weight:500;">🔍 Built SEO-ready from day one</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </BaseLayout>
