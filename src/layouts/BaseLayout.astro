@@ -19,11 +19,32 @@ interface Props {
 
 const { locale, title, description, path, enPath, idPath, image, type, publishedDate, modifiedDate } =
   Astro.props;
+
+// Path untuk language switcher — path relatif TANPA domain (beda dari hreflang di SEO.astro
+// yang butuh absolute URL). Fallback ke Home versi bahasa lain kalau halaman ini belum ada
+// terjemahannya (enPath/idPath undefined) — opsi A yang disepakati, sederhana & aman.
+function buildSwitchLangHref(): string {
+  if (locale === 'en') {
+    if (!idPath) return '/id/';
+    return idPath === '/' ? '/id/' : `/id${idPath}`;
+  }
+  // locale === 'id' -> switch ke EN, enPath sudah tanpa prefix /id
+  return enPath || '/';
+}
+const switchLangHref = buildSwitchLangHref();
 ---
 
 <!DOCTYPE html>
-<html lang={locale} data-bs-theme="light">
+<html lang={locale}>
   <head>
+    <!-- Set tema SEBELUM apa pun dirender, supaya tidak ada "flash" light->dark.
+         Harus inline (bukan file eksternal) dan di posisi paling atas <head>. -->
+    <script is:inline>
+      (function () {
+        const saved = localStorage.getItem('kk-theme') || 'light';
+        document.documentElement.setAttribute('data-bs-theme', saved);
+      })();
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
@@ -58,7 +79,7 @@ const { locale, title, description, path, enPath, idPath, image, type, published
     <slot name="extra-head" />
   </head>
   <body>
-    <Header locale={locale} />
+    <Header locale={locale} switchLangHref={switchLangHref} />
 
     <main class={`kk-template-${path === '/' || path === '/id/' ? 'home' : 'page'}`}>
       <slot />

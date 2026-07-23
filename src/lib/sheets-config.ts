@@ -12,6 +12,7 @@ export const SHEET_GIDS = {
   navigation_en : '686566731', // ganti dengan gid tab Navigation_EN
   navigation_id : '797366802', // ganti dengan gid tab Navigation_ID
   settings      : '1893895348', // ganti dengan gid tab Settings (global, tidak per-bahasa)
+  simple_pages  : '1610984561', // ganti dengan gid tab Simple_Pages (1 tab untuk kedua bahasa)
 } as const;
 
 export type SheetKey = keyof typeof SHEET_GIDS;

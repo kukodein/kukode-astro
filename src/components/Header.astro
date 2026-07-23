@@ -6,8 +6,9 @@ import type { Locale } from '../lib/sheets';
 
 interface Props {
   locale: Locale;
+  switchLangHref: string; // path halaman padanan di bahasa lain (relatif, tanpa domain) — dihitung di BaseLayout dari enPath/idPath tiap halaman
 }
-const { locale } = Astro.props;
+const { locale, switchLangHref } = Astro.props;
 
 // Nav item ini adalah anchor ke section di HOMEPAGE. Karena header sekarang global
 // (dipakai juga di halaman About/Portfolio/Contact), href-nya diarahkan ke homepage
@@ -37,11 +38,12 @@ const navItems =
 const ctaLabel = locale === 'en' ? 'Get a Quote' : 'Minta Penawaran';
 
 // Language switcher: tampilkan flag bahasa yang SEDANG aktif, title menjelaskan
-// aksi switch ke bahasa lain. href mengarah ke halaman padanan di locale lain
-// (untuk sekarang selalu ke Home versi locale lain — lihat catatan di bawah).
+// aksi switch ke bahasa lain. href-nya sekarang mengarah ke HALAMAN PADANAN
+// sungguhan (bukan selalu Home) — dihitung di BaseLayout dari enPath/idPath
+// yang sudah dikirim tiap halaman untuk keperluan hreflang.
 const langFlag = locale === 'en' ? '🇺🇸' : '🇮🇩';
 const langTitle = locale === 'en' ? 'Switch language to Indonesia' : 'Ganti bahasa ke Inggris';
-const langHref = locale === 'en' ? '/id/' : '/';
+const langHref = switchLangHref;
 ---
 
 <header class="kk-navbar-wrap px-2">

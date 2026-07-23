@@ -94,10 +94,12 @@ export interface ArticleRow {
   title: string;
   excerpt: string;
   body: string;
-  image_url: string;
+  featured_image: string; // sebelumnya image_url — disamakan namanya dengan Simple_Pages
   published_date: string;
-  date_modified: string; // kolom baru — kosongkan sama dengan published_date kalau belum pernah diedit
+  date_modified: string; // kosongkan sama dengan published_date kalau belum pernah diedit
   status: string;
+  meta_title: string; // opsional — kalau kosong, fallback ke `title` saat dipakai
+  meta_description: string; // opsional — kalau kosong, fallback ke `excerpt` saat dipakai
 }
 
 export interface NavigationRow {
@@ -110,6 +112,20 @@ export interface NavigationRow {
 export interface SettingsRow {
   key: string;
   value: string;
+}
+
+export interface SimplePageRow {
+  page_id: string;
+  slug_en: string;
+  slug_id: string;
+  title_en: string;
+  title_id: string;
+  body_en: string;
+  body_id: string;
+  featured_image: string;
+  status: string;
+  meta_title: string;
+  meta_description: string;
 }
 
 // ---------- High-level getters ----------
@@ -161,6 +177,63 @@ export async function getArticleAlternateSlug(
   return match?.slug ?? null;
 }
 
+// Daftar slug yang sudah dipakai halaman hardcode — Simple_Pages TIDAK BOLEH
+// pakai slug ini, supaya tidak tabrakan route. Ditambah manual kalau nanti ada
+// halaman hardcode baru (mis. /portfolio/, /contact/).
+const RESERVED_SLUGS = ['about', 'tentang', 'article', 'portfolio', 'contact'];
+
+/**
+ * Ambil semua Simple_Pages yang published DAN punya isi untuk locale ini
+ * (slug/title/body tidak kosong). Baris yang cuma diisi 1 bahasa otomatis
+ * tidak generate halaman di locale yang kosong.
+ */
+export async function getSimplePages(locale: Locale): Promise<SimplePageRow[]> {
+  const rows = await fetchSheet<SimplePageRow>('simple_pages');
+  const slugKey = locale === 'en' ? 'slug_en' : 'slug_id';
+  const titleKey = locale === 'en' ? 'title_en' : 'title_id';
+
+  return rows.filter((row) => {
+    if (row.status !== 'published') return false;
+    const slug = row[slugKey]?.trim();
+    const title = row[titleKey]?.trim();
+    if (!slug || !title) return false; // locale ini belum diisi -> skip
+    if (RESERVED_SLUGS.includes(slug)) {
+      console.warn(
+        `[simple_pages] Slug "${slug}" (page_id: ${row.page_id}) bentrok dengan halaman hardcode ` +
+          `yang sudah ada — baris ini dilewati. Ganti slug-nya di sheet.`
+      );
+      return false;
+    }
+    return true;
+  });
+}
+
+/**
+ * Ambil satu Simple_Page berdasarkan slug (untuk locale tertentu).
+ */
+export async function getSimplePageBySlug(
+  locale: Locale,
+  slug: string
+): Promise<SimplePageRow | undefined> {
+  const pages = await getSimplePages(locale);
+  const slugKey = locale === 'en' ? 'slug_en' : 'slug_id';
+  return pages.find((p) => p[slugKey] === slug);
+}
+
+/**
+ * Cari slug versi locale lain untuk Simple_Page yang sama, dihubungkan lewat page_id.
+ * Return null kalau locale itu tidak diisi untuk halaman ini (mis. halaman EN-only).
+ */
+export async function getSimplePageAlternateSlug(
+  pageId: string,
+  targetLocale: Locale
+): Promise<string | null> {
+  const pages = await getSimplePages(targetLocale);
+  const slugKey = targetLocale === 'en' ? 'slug_en' : 'slug_id';
+  const match = pages.find((p) => p.page_id === pageId);
+  return match?.[slugKey] ?? null;
+}
+
 /**
  * Ambil navigasi (header atau footer) untuk satu locale, sudah terurut sesuai kolom `order`.
  */
@@ -184,4 +257,21 @@ export async function getSettings(): Promise<Record<string, string>> {
     result[row.key] = row.value;
   }
   return result;
+}
+
+/**
+ * Potong teks body (biasanya Markdown) jadi ringkasan pendek untuk meta_description,
+ * dipakai sebagai fallback kalau meta_description tidak diisi manual di sheet
+ * (terutama untuk Simple_Pages, yang tidak punya kolom excerpt tersendiri).
+ * Menghapus syntax Markdown paling umum dulu supaya hasilnya teks polos yang enak dibaca.
+ */
+export function truncateForMeta(body: string, maxLength = 160): string {
+  const plainText = body
+    .replace(/[#>*_`~-]/g, '') // hapus karakter markdown umum (heading, quote, bold, italic, code, list)
+    .replace(/\[(.*?)\]\(.*?\)/g, '$1') // [teks](url) -> teks
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (plainText.length <= maxLength) return plainText;
+  return plainText.slice(0, maxLength).trimEnd() + '…';
 }

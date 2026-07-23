@@ -21,20 +21,24 @@ const alternateSlugId = await getArticleAlternateSlug(article.article_id, 'id');
 
 <BaseLayout
   locale="en"
-  title={article.title}
-  description={article.excerpt}
+  title={article.meta_title || article.title}
+  description={article.meta_description || article.excerpt}
   enPath={`/article/${article.slug}`}
   idPath={alternateSlugId ? `/article/${alternateSlugId}` : undefined}
   path={`/article/${article.slug}`}
-  image={article.image_url}
+  image={article.featured_image}
   type="article"
   publishedDate={article.published_date}
   modifiedDate={article.date_modified}
 >
-  <article>
-    <h1>{article.title}</h1>
-    <time datetime={article.published_date} class="text-muted d-block mb-3">{article.published_date}</time>
-    {article.image_url && <img src={article.image_url} alt={article.title} class="img-fluid rounded mb-3" />}
-    <div class="article-body" set:html={bodyHtml} />
+  <article class="container py-5">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <h1>{article.title}</h1>
+        <time datetime={article.published_date} class="text-muted d-block mb-3">{article.published_date}</time>
+        {article.featured_image && <img src={article.featured_image} alt={article.title} class="img-fluid rounded-1 mb-3" />}
+        <div class="article-body" set:html={bodyHtml} />
+      </div>
+    </div>
   </article>
 </BaseLayout>

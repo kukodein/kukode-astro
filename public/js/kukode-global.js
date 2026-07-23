@@ -33,10 +33,11 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 // --- Dark mode toggle (desktop + mobile buttons, both in the shared header) ---
+// Note: the INITIAL theme (on page load) is set by a blocking inline script in
+// <head> — that has to run before first paint to avoid a light->dark flash, so
+// it can't live in this external file. This part only handles the click toggle.
 const themeToggle = document.getElementById('themeToggle');
 const htmlEl = document.documentElement;
-const savedTheme = localStorage.getItem('kk-theme') || 'light';
-htmlEl.setAttribute('data-bs-theme', savedTheme);
 
 themeToggle.addEventListener('click', () => {
   const current = htmlEl.getAttribute('data-bs-theme');

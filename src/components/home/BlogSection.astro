@@ -23,12 +23,12 @@ const { eyebrow, title, locale, articles, viewAllLabel } = Astro.props;
         <div class="col-md-4">
           <div class="kk-card p-2">
             <a href={localizedHref(locale, `/article/${article.slug}`)} class="text-decoration-none text-reset">
-              {article.image_url && (
-                <img src={article.image_url} alt={article.title} class="img-fluid rounded-3 w-100" />
+              {article.featured_image && (
+                <img src={article.featured_image} alt={article.title} class="img-fluid rounded-3 w-100 aspect-ratio-16-9" />
               )}
               <div class="m-2">
                 <time datetime={article.published_date} class="text-muted-kk small">{article.published_date}</time>
-                <h3 class="h6 font-heading fw-bold mt-1">{article.title}</h3>
+                <h3 class="h6 font-heading fw-bold mt-2">{article.title}</h3>
                 <p class="text-muted small">{article.excerpt}</p>
               </div>
             </a>

@@ -1,0 +1,42 @@
+---
+import { marked } from 'marked';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getSimplePages, getSimplePageAlternateSlug, truncateForMeta } from '../lib/sheets';
+
+export async function getStaticPaths() {
+  const pages = await getSimplePages('en');
+  return pages.map((page) => ({
+    params: { slug: page.slug_en },
+    props: { page },
+  }));
+}
+
+const { page } = Astro.props;
+const bodyHtml = marked.parse(page.body_en);
+
+// Cari padanan slug versi ID lewat page_id (bukan lewat slug, karena slug boleh beda per bahasa).
+// Bisa null kalau halaman ini EN-only (belum/tidak diterjemahkan).
+const alternateSlugId = await getSimplePageAlternateSlug(page.page_id, 'id');
+---
+
+<BaseLayout
+  locale="en"
+  title={page.meta_title || page.title_en}
+  description={page.meta_description || truncateForMeta(page.body_en)}
+  enPath={`/${page.slug_en}/`}
+  idPath={alternateSlugId ? `/${alternateSlugId}/` : undefined}
+  path={`/${page.slug_en}/`}
+  image={page.featured_image}
+>
+  <article class="container py-5">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <h1 class="mb-4">{page.title_en}</h1>
+        {page.featured_image && (
+          <img src={page.featured_image} alt={page.title_en} class="img-fluid rounded-1 mb-4 w-100" />
+        )}
+        <div class="kk-simple-page-body" set:html={bodyHtml} />
+      </div>
+    </div>
+  </article>
+</BaseLayout>

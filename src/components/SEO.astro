@@ -97,7 +97,7 @@ function absoluteIdUrl(p: string): string {
       description: description,
       image: ogImage,
       datePublished: new Date(publishedDate).toISOString(),
-      dateModified: new Date(modifiedDate ?? publishedDate).toISOString(),
+      dateModified: new Date(modifiedDate || publishedDate).toISOString(),
     })}
   />
 )}
