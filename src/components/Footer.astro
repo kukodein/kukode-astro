@@ -5,11 +5,13 @@
 // CATATAN PERBAIKAN: file HTML asli punya 2 kolom "Social" yang identik (kemungkinan
 // copy-paste tidak sengaja) - saya gabungkan jadi 1 kolom Social, supaya kembali ke
 // 4 kolom sesuai brief awal (Brand, Navigation, Social, Contact).
-import type { Locale } from '../lib/sheets';
+import { getSettings, type Locale } from '../lib/sheets';
 
 interface Props {
   locale: Locale;
 }
+
+const settings = await getSettings();
 const { locale } = Astro.props;
 const homePath = locale === 'en' ? '/' : '/id/';
 
@@ -36,10 +38,12 @@ const navItems =
         { href: '/id/tentang/', label: 'Tentang' },
       ];
 
-const copyright =
+const copyright = 
   locale === 'en'
-    ? '© 2026 Kukode Digital Technology · All rights reserved.'
-    : '© 2026 Kukode Digital Technology · Seluruh hak cipta dilindungi.';
+    ? settings.copyright_text_en
+    : locale === 'id'
+    ? settings.copyright_text_id
+    : '© 2026 Kukode Digital Technology · All rights reserved.';
 ---
 
 <footer class="kk-section kk-gradient-alt pb-4" style="border-top:1px solid var(--bs-border-color);">

@@ -15,8 +15,8 @@ const latestArticles = articles.slice(0, 3);
 
 <BaseLayout
   locale="en"
-  title="Kukode — Web Development Studio"
-  description="We design and build modern websites that load fast, rank well, and convert."
+  title={page.meta_title || page.title}
+  description={page.meta_description}
   path="/"
   enPath="/"
   idPath="/"
