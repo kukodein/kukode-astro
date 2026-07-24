@@ -18,19 +18,19 @@ const hasNext = currentPage < lastPage;
 {lastPage > 1 && (
   <nav aria-label="Pagination" class="d-flex justify-content-center gap-2 mt-5">
     {hasPrev && (
-      <a href={pageHref(currentPage - 1)} class="btn btn-sm btn-outline-kk">&larr;</a>
+      <a href={pageHref(currentPage - 1)} class="btn px-3 py-1 btn-outline-kk">Prev</a>
     )}
     {Array.from({ length: lastPage }, (_, i) => i + 1).map((pageNum) => (
       <a
         href={pageHref(pageNum)}
-        class={`btn btn-sm ${pageNum === currentPage ? 'btn-primary' : 'btn-outline-kk'}`}
+        class={`btn px-3 py-1 ${pageNum === currentPage ? 'btn-primary' : 'btn-outline-kk'}`}
         aria-current={pageNum === currentPage ? 'page' : undefined}
       >
         {pageNum}
       </a>
     ))}
     {hasNext && (
-      <a href={pageHref(currentPage + 1)} class="btn btn-sm btn-outline-kk">&rarr;</a>
+      <a href={pageHref(currentPage + 1)} class="btn px-3 py-1 btn-outline-kk">Next</a>
     )}
   </nav>
 )}

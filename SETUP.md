@@ -20,9 +20,9 @@ Project ini fetch data lewat **CSV export URL** (`docs.google.com/spreadsheets/d
 
 ---
 
-## Daftar Tab & Kolom
+### Daftar Tab & Kolom
 
-### `Pages_EN` dan `Pages_ID`
+#### `Pages_EN` dan `Pages_ID`
 Format key-value, dipakai untuk halaman statis (Home, About).
 
 | Kolom | Tipe | Keterangan |
@@ -41,21 +41,78 @@ page=about, key=title, value=Tentang Kami
 ...
 ```
 
-### `Articles_EN` dan `Articles_ID`
+#### `Articles_EN` dan `Articles_ID`
 Satu baris = satu artikel. **`article_id` harus sama** antara baris di `Articles_EN` dan `Articles_ID` untuk artikel yang sama — ini kunci yang menghubungkan versi bahasa (dipakai untuk hreflang).
 
 | Kolom | Tipe | Keterangan |
 |---|---|---|
 | `article_id` | text | ID unik artikel, sama di kedua tab bahasa untuk artikel yang sama, misal `art-001` |
 | `slug` | text | Slug URL, boleh beda antar bahasa (misal `first-article` vs `artikel-pertama`) |
-| `title` | text | Judul artikel |
-| `excerpt` | text | Ringkasan pendek, tampil di halaman listing & meta description |
+| `title` | text | Judul artikel (tampil sebagai H1 di halaman) |
+| `excerpt` | text | Ringkasan pendek, tampil di halaman listing |
 | `body` | text (Markdown) | Isi artikel lengkap, ditulis pakai sintaks Markdown |
-| `image_url` | text (URL) | Link gambar cover, hosting eksternal |
+| `featured_image` | text (URL) | Link gambar cover, hosting eksternal — nama kolom ini disamakan dengan Simple_Pages |
+| `category` | text | Key kategori (`category_id` di tab `Categories`), SAMA di kedua tab bahasa untuk artikel di kategori yang sama, misal `information` |
 | `published_date` | text (`YYYY-MM-DD`) | Tanggal publish, dipakai untuk urutan (terbaru dulu) |
+| `date_modified` | text (`YYYY-MM-DD`) | Tanggal edit terakhir, dipakai untuk meta SEO — kosongkan sama dengan `published_date` kalau belum pernah diedit |
 | `status` | text | `published` atau `draft` — hanya yang `published` yang ditampilkan |
+| `meta_title` | text | Opsional. Judul untuk tag `<title>`/SEO — kalau kosong, fallback ke `title` |
+| `meta_description` | text | Opsional. Deskripsi untuk meta SEO — kalau kosong, fallback ke `excerpt` |
 
-### `Navigation_EN` dan `Navigation_ID`
+Listing artikel (`/article/`, `/id/article/`) dipaginasi 12 artikel per halaman, path-based: halaman 1 di `/article/`, halaman 2+ di `/article/page/2/`, dst (bukan `?page=2` — lihat alasan teknis di percakapan sebelumnya, intinya supaya tetap SEO-friendly di situs static).
+
+#### `Categories`
+Satu tab untuk kedua bahasa (mirip `Simple_Pages`) — `category_id` adalah key yang dipakai di kolom `category` pada Articles.
+
+| Kolom | Tipe | Keterangan |
+|---|---|---|
+| `category_id` | text | Key unik, dipakai untuk mencocokkan kolom `category` di Articles, misal `information` |
+| `slug_en` | text | Slug URL EN, misal `information` |
+| `slug_id` | text | Slug URL ID, misal `informasi` |
+| `name_en` | text | Nama tampil EN, misal `Information` |
+| `name_id` | text | Nama tampil ID, misal `Informasi` |
+
+Route: `/category/` (daftar semua kategori), `/category/[slug]/` (daftar artikel dalam kategori itu) — dan padanan `/id/category/...` untuk versi ID.
+
+#### `Portfolio`
+**Tidak per-bahasa** — portfolio cuma punya 1 URL global (`/portfolio/`), tidak ada versi `/id/portfolio/`.
+
+| Kolom | Tipe | Keterangan |
+|---|---|---|
+| `portfolio_id` | text | ID unik |
+| `slug` | text | Slug URL (cuma 1, tidak per-bahasa) |
+| `title` | text | Judul project |
+| `description` | text (Markdown) | Deskripsi/isi halaman detail |
+| `featured_image` | text (URL) | Gambar cover |
+| `project_url` | text (URL) | Opsional — link ke live project, ditampilkan sebagai tombol "Visit Project" |
+| `published_date` | text (`YYYY-MM-DD`) | Dipakai untuk urutan (terbaru dulu) |
+| `status` | text | `published` atau `draft` |
+| `meta_title` | text | Opsional, fallback ke `title` |
+| `meta_description` | text | Opsional, fallback ke `description` |
+
+Route: `/portfolio/` (listing + paginasi 12/halaman, `/portfolio/page/2/` dst), `/portfolio/[slug]/` (detail).
+
+#### `Simple_Pages`
+Untuk halaman sederhana yang cuma butuh judul + body panjang, tanpa section custom (Privacy Policy, Terms, dst). Satu baris = satu halaman, **kedua bahasa dalam satu baris** (beda dari Pages_EN/Pages_ID yang terpisah tab) — supaya edit 1 halaman cukup di 1 tempat. Route otomatis di-generate dari sheet ini — tambah baris baru = tambah halaman baru, tanpa sentuh kode.
+
+| Kolom | Tipe | Keterangan |
+|---|---|---|
+| `page_id` | text | ID unik internal, misal `privacy-policy` |
+| `slug_en` | text | Slug URL versi EN. Kosongkan kalau halaman ini tidak punya versi EN |
+| `slug_id` | text | Slug URL versi ID. Kosongkan kalau halaman ini tidak punya versi ID |
+| `title_en` | text | Judul EN |
+| `title_id` | text | Judul ID |
+| `body_en` | text (Markdown) | Isi EN |
+| `body_id` | text (Markdown) | Isi ID |
+| `featured_image` | text (URL) | Sama seperti Articles — dipakai untuk og:image |
+| `status` | text | `published` atau `draft` |
+| `meta_title` | text | Opsional, fallback ke `title_en`/`title_id` |
+| `meta_description` | text | Opsional, fallback ke potongan 160 karakter pertama dari `body_en`/`body_id` |
+
+Kalau `slug_id`/`title_id`/`body_id` dikosongkan, halaman itu cuma generate route EN (tidak error, tidak generate halaman ID kosong) — begitu juga sebaliknya. Slug juga tidak boleh sama dengan slug halaman hardcode yang sudah ada (`about`, `tentang`, `article`, `portfolio`, `contact`) — kalau bentrok, baris itu dilewati saat build dan muncul warning di log.
+
+#### `Navigation_EN` dan `Navigation_ID`
+
 Isi menu header dan footer.
 
 | Kolom | Tipe | Keterangan |
@@ -65,7 +122,7 @@ Isi menu header dan footer.
 | `label` | text | Teks link yang tampil ke user |
 | `url` | text | Path tujuan, **tanpa** prefix `/id/` (misal `/about/`, bukan `/id/about/`) — prefix ditambahkan otomatis oleh kode |
 
-### `Settings`
+#### `Settings`
 Global, tidak per-bahasa (key-value, satu tab saja untuk kedua bahasa).
 
 | Kolom | Tipe | Keterangan |
@@ -77,6 +134,7 @@ Global, tidak per-bahasa (key-value, satu tab saja untuk kedua bahasa).
 
 ### Cara nambah field baru
 Kalau nanti butuh field baru (misal `og_image` untuk halaman), tinggal tambah baris baru di tab yang relevan — tidak perlu ubah struktur kolom (untuk tab yang formatnya key-value: Pages & Settings). Untuk tab yang formatnya kolom tetap (Articles, Navigation), tambah kolom baru dan update kode di `src/lib/sheets.ts` (tambahkan field ke interface `ArticleRow`/`NavigationRow`) supaya field baru itu ke-baca.
+
 
 
 ## Panduan Deployment

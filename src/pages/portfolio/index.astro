@@ -19,13 +19,23 @@ const items = allItems.slice(0, PAGE_SIZE);
   <div class="container py-5">
     <h1 class="mb-4">Portfolio</h1>
     <div class="row g-4">
+      <h2 class="visually-hidden">List of Portfolio</h2>
       {items.map((item) => (
         <div class="col-md-6 col-lg-4">
-          <a href={`/portfolio/${item.slug}/`} class="text-decoration-none text-reset d-block">
-            {item.featured_image && (
-              <img src={item.featured_image} alt={item.title} class="img-fluid rounded-3 mb-2 w-100" />
-            )}
-            <h2 class="h6 font-heading fw-bold">{item.title}</h2>
+          <a href={`/portfolio/${item.slug}/`} class="kk-portfolio-card text-decoration-none text-reset d-block">
+            <div class="kk-browser-frame">
+              <div class="kk-browser-bar"><span></span><span></span><span></span></div>
+              <div class="kk-browser-body">
+                {item.featured_image && (
+                  <img src={item.featured_image} alt={item.title} />
+                )}
+                <div class="kk-overlay"><span class="btn btn-light btn-sm rounded-pill">View project</span></div>
+              </div>
+            </div>
+            <div class="m-2">
+              <p class="text-muted-kk small mb-1">Company Profile</p>
+              <h3 class="h6 font-heading fw-bold">{item.title}</h3>
+            </div>
           </a>
         </div>
       ))}
