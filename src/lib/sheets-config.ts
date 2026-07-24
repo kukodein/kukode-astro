@@ -8,11 +8,13 @@ export const SHEET_GIDS = {
   pages_en      : '2024513039', // ganti dengan gid tab Pages_EN
   pages_id      : '1802581701', // ganti dengan gid tab Pages_ID
   articles_en   : '1887654328', // ganti dengan gid tab Articles_EN
-  articles_id   : '126605301', // ganti dengan gid tab Articles_ID
-  navigation_en : '686566731', // ganti dengan gid tab Navigation_EN
-  navigation_id : '797366802', // ganti dengan gid tab Navigation_ID
+  articles_id   : '126605301',  // ganti dengan gid tab Articles_ID
+  navigation_en : '686566731',  // ganti dengan gid tab Navigation_EN
+  navigation_id : '797366802',  // ganti dengan gid tab Navigation_ID
   settings      : '1893895348', // ganti dengan gid tab Settings (global, tidak per-bahasa)
   simple_pages  : '1610984561', // ganti dengan gid tab Simple_Pages (1 tab untuk kedua bahasa)
+  categories    : '334017664',  // ganti dengan gid tab Categories (1 tab untuk kedua bahasa)
+  portfolio     : '1063417461', // ganti dengan gid tab Portfolio (tidak per-bahasa — cuma 1 URL global)
 } as const;
 
 export type SheetKey = keyof typeof SHEET_GIDS;

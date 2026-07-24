@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCategories } from '../../lib/sheets';
+
+const categories = await getCategories();
+---
+
+<BaseLayout locale="en" title="Categories" description="Browse articles by category" enPath="/category/" idPath="/category/" path="/category/">
+  <div class="container py-5">
+    <h1 class="mb-4">Categories</h1>
+    <div class="row g-3">
+      {categories.map((cat) => (
+        <div class="col-md-4">
+          <a href={`/category/${cat.slug_en}/`} class="kk-card d-block p-4 text-decoration-none text-reset">
+            <h2 class="h6 font-heading fw-bold mb-0">{cat.name_en}</h2>
+          </a>
+        </div>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

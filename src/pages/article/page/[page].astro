@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ArticleGrid from '../../../components/ArticleGrid.astro';
+import Pagination from '../../../components/Pagination.astro';
+import { getArticles } from '../../../lib/sheets';
+
+export async function getStaticPaths() {
+  const PAGE_SIZE = 12;
+
+  const allArticles = await getArticles('en');
+  const lastPage = Math.max(1, Math.ceil(allArticles.length / PAGE_SIZE));
+
+  // Halaman 1 sudah ditangani src/pages/article/index.astro -> mulai dari 2.
+  const paths = [];
+  for (let pageNum = 2; pageNum <= lastPage; pageNum++) {
+    const start = (pageNum - 1) * PAGE_SIZE;
+    paths.push({
+      params: { page: String(pageNum) },
+      props: {
+        articles: allArticles.slice(start, start + PAGE_SIZE),
+        currentPage: pageNum,
+        lastPage,
+      },
+    });
+  }
+  return paths;
+}
+
+const { articles, currentPage, lastPage } = Astro.props;
+---
+
+<BaseLayout
+  locale="en"
+  title={`Articles — Page ${currentPage}`}
+  description="Latest articles"
+  path={`/article/page/${currentPage}/`}
+>
+  <div class="container py-5">
+    <h1 class="mb-4">Articles</h1>
+    <ArticleGrid articles={articles} locale="en" />
+    <Pagination currentPage={currentPage} lastPage={lastPage} basePath="/article" />
+  </div>
+</BaseLayout>

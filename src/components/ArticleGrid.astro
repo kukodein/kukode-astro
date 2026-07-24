@@ -1,0 +1,27 @@
+---
+import type { ArticleRow, Locale } from '../lib/sheets';
+
+interface Props {
+  articles: ArticleRow[];
+  locale: Locale;
+}
+const { articles, locale } = Astro.props;
+const articleBasePath = locale === 'en' ? '/article' : '/id/article';
+---
+
+<div class="row g-4">
+  {articles.map((article) => (
+    <div class="col-md-4">
+      <a href={`${articleBasePath}/${article.slug}`} class="text-decoration-none text-reset d-block">
+        {article.featured_image && (
+          <img src={article.featured_image} alt={article.title} class="img-fluid rounded-3 mb-3 w-100 aspect-ratio-16-9" />
+        )}
+        <time datetime={article.published_date} class="text-muted-kk small mb-1 d-block">
+          {article.published_date}
+        </time>
+        <h2 class="h6 font-heading fw-bold">{article.title}</h2>
+        <p class="text-muted-kk small">{article.excerpt}</p>
+      </a>
+    </div>
+  ))}
+</div>

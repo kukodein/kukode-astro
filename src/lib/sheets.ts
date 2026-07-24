@@ -95,6 +95,7 @@ export interface ArticleRow {
   excerpt: string;
   body: string;
   featured_image: string; // sebelumnya image_url — disamakan namanya dengan Simple_Pages
+  category: string; // key penghubung ke tab Categories (category_id) — SAMA di kedua bahasa
   published_date: string;
   date_modified: string; // kosongkan sama dengan published_date kalau belum pernah diedit
   status: string;
@@ -123,6 +124,27 @@ export interface SimplePageRow {
   body_en: string;
   body_id: string;
   featured_image: string;
+  status: string;
+  meta_title: string;
+  meta_description: string;
+}
+
+export interface CategoryRow {
+  category_id: string; // key yang dipakai di kolom `category` Articles — SAMA di kedua bahasa
+  slug_en: string;
+  slug_id: string;
+  name_en: string;
+  name_id: string;
+}
+
+export interface PortfolioRow {
+  portfolio_id: string;
+  slug: string; // cuma 1 slug (tidak per-bahasa) — portfolio cuma py 1 URL global
+  title: string;
+  description: string;
+  featured_image: string;
+  project_url: string; // link ke live project (opsional)
+  published_date: string;
   status: string;
   meta_title: string;
   meta_description: string;
@@ -180,7 +202,7 @@ export async function getArticleAlternateSlug(
 // Daftar slug yang sudah dipakai halaman hardcode — Simple_Pages TIDAK BOLEH
 // pakai slug ini, supaya tidak tabrakan route. Ditambah manual kalau nanti ada
 // halaman hardcode baru (mis. /portfolio/, /contact/).
-const RESERVED_SLUGS = ['about', 'tentang', 'article', 'portfolio', 'contact'];
+const RESERVED_SLUGS = ['about', 'tentang', 'article', 'portfolio', 'contact', 'category'];
 
 /**
  * Ambil semua Simple_Pages yang published DAN punya isi untuk locale ini
@@ -274,4 +296,62 @@ export function truncateForMeta(body: string, maxLength = 160): string {
 
   if (plainText.length <= maxLength) return plainText;
   return plainText.slice(0, maxLength).trimEnd() + '…';
+}
+
+// ---------- Categories ----------
+
+/**
+ * Ambil semua kategori. CategoryRow tidak per-bahasa (1 tab untuk semua),
+ * jadi tidak perlu filter locale di sini — cuma dipakai untuk lookup slug/nama.
+ */
+export async function getCategories(): Promise<CategoryRow[]> {
+  return fetchSheet<CategoryRow>('categories');
+}
+
+/**
+ * Cari 1 kategori berdasarkan category_id (key yang sama dipakai di kolom
+ * `category` Articles).
+ */
+export async function getCategoryById(categoryId: string): Promise<CategoryRow | undefined> {
+  const categories = await getCategories();
+  return categories.find((c) => c.category_id === categoryId);
+}
+
+/**
+ * Cari 1 kategori berdasarkan slug untuk locale tertentu — dipakai di halaman
+ * /category/[slug]/ untuk resolve slug URL balik ke category_id.
+ */
+export async function getCategoryBySlug(
+  locale: Locale,
+  slug: string
+): Promise<CategoryRow | undefined> {
+  const categories = await getCategories();
+  const slugKey = locale === 'en' ? 'slug_en' : 'slug_id';
+  return categories.find((c) => c[slugKey] === slug);
+}
+
+/**
+ * Ambil semua artikel published dalam satu kategori (locale tertentu), terurut terbaru dulu.
+ */
+export async function getArticlesByCategory(
+  locale: Locale,
+  categoryId: string
+): Promise<ArticleRow[]> {
+  const articles = await getArticles(locale);
+  return articles.filter((a) => a.category === categoryId);
+}
+
+// ---------- Portfolio ----------
+// Portfolio TIDAK per-bahasa — cuma 1 URL global (/portfolio/), tidak ada versi /id/portfolio/.
+
+export async function getPortfolioItems(): Promise<PortfolioRow[]> {
+  const rows = await fetchSheet<PortfolioRow>('portfolio');
+  return rows
+    .filter((p) => p.status === 'published')
+    .sort((a, b) => (a.published_date < b.published_date ? 1 : -1));
+}
+
+export async function getPortfolioBySlug(slug: string): Promise<PortfolioRow | undefined> {
+  const items = await getPortfolioItems();
+  return items.find((p) => p.slug === slug);
 }

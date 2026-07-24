@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Pagination from '../../components/Pagination.astro';
+import { getPortfolioItems } from '../../lib/sheets';
+
+const PAGE_SIZE = 12;
+const allItems = await getPortfolioItems();
+const lastPage = Math.max(1, Math.ceil(allItems.length / PAGE_SIZE));
+const items = allItems.slice(0, PAGE_SIZE);
+---
+
+<BaseLayout
+  locale="en"
+  title="Portfolio"
+  description="Recent web development projects by Kukode"
+  enPath="/portfolio/"
+  path="/portfolio/"
+>
+  <div class="container py-5">
+    <h1 class="mb-4">Portfolio</h1>
+    <div class="row g-4">
+      {items.map((item) => (
+        <div class="col-md-6 col-lg-4">
+          <a href={`/portfolio/${item.slug}/`} class="text-decoration-none text-reset d-block">
+            {item.featured_image && (
+              <img src={item.featured_image} alt={item.title} class="img-fluid rounded-3 mb-2 w-100" />
+            )}
+            <h2 class="h6 font-heading fw-bold">{item.title}</h2>
+          </a>
+        </div>
+      ))}
+    </div>
+    <Pagination currentPage={1} lastPage={lastPage} basePath="/portfolio" />
+  </div>
+</BaseLayout>

@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ArticleGrid from '../../../components/ArticleGrid.astro';
+import { getCategories, getArticlesByCategory } from '../../../lib/sheets';
+
+export async function getStaticPaths() {
+  const categories = await getCategories();
+  return categories
+    .filter((cat) => cat.slug_id) // skip kategori yang belum ada versi ID-nya
+    .map((cat) => ({
+      params: { slug: cat.slug_id },
+      props: { category: cat },
+    }));
+}
+
+const { category } = Astro.props;
+const articles = await getArticlesByCategory('id', category.category_id);
+
+const alternateSlugEn = category.slug_en || undefined;
+---
+
+<BaseLayout
+  locale="id"
+  title={`Artikel ${category.name_id}`}
+  description={`Jelajahi semua artikel di kategori ${category.name_id}`}
+  enPath={alternateSlugEn ? `/category/${alternateSlugEn}/` : undefined}
+  idPath={`/category/${category.slug_id}/`}
+  path={`/id/category/${category.slug_id}/`}
+>
+  <div class="container py-5">
+    <h1 class="mb-4">{category.name_id}</h1>
+    {articles.length > 0 ? (
+      <ArticleGrid articles={articles} locale="id" />
+    ) : (
+      <p class="text-muted-kk">Belum ada artikel di kategori ini.</p>
+    )}
+  </div>
+</BaseLayout>

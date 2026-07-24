@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Pagination from '../../../components/Pagination.astro';
+import { getPortfolioItems } from '../../../lib/sheets';
+
+export async function getStaticPaths() {
+  const PAGE_SIZE = 12;
+  
+  const allItems = await getPortfolioItems();
+  const lastPage = Math.max(1, Math.ceil(allItems.length / PAGE_SIZE));
+
+  const paths = [];
+  for (let pageNum = 2; pageNum <= lastPage; pageNum++) {
+    const start = (pageNum - 1) * PAGE_SIZE;
+    paths.push({
+      params: { page: String(pageNum) },
+      props: {
+        items: allItems.slice(start, start + PAGE_SIZE),
+        currentPage: pageNum,
+        lastPage,
+      },
+    });
+  }
+  return paths;
+}
+
+const { items, currentPage, lastPage } = Astro.props;
+---
+
+<BaseLayout
+  locale="en"
+  title={`Portfolio — Page ${currentPage}`}
+  description="Recent web development projects by Kukode"
+  path={`/portfolio/page/${currentPage}/`}
+>
+  <div class="container py-5">
+    <h1 class="mb-4">Portfolio</h1>
+    <div class="row g-4">
+      {items.map((item) => (
+        <div class="col-md-6 col-lg-4">
+          <a href={`/portfolio/${item.slug}/`} class="text-decoration-none text-reset d-block">
+            {item.featured_image && (
+              <img src={item.featured_image} alt={item.title} class="img-fluid rounded-3 mb-2 w-100 aspect-ratio-16-9" />
+            )}
+            <h2 class="h6 font-heading fw-bold">{item.title}</h2>
+          </a>
+        </div>
+      ))}
+    </div>
+    <Pagination currentPage={currentPage} lastPage={lastPage} basePath="/portfolio" />
+  </div>
+</BaseLayout>

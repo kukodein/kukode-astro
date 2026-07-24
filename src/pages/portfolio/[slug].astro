@@ -1,0 +1,38 @@
+---
+import { marked } from 'marked';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPortfolioItems } from '../../lib/sheets';
+
+export async function getStaticPaths() {
+  const items = await getPortfolioItems();
+  return items.map((item) => ({
+    params: { slug: item.slug },
+    props: { item },
+  }));
+}
+
+const { item } = Astro.props;
+const descriptionHtml = marked.parse(item.description);
+---
+
+<BaseLayout
+  locale="en"
+  title={item.meta_title || item.title}
+  description={item.meta_description || item.description}
+  enPath={`/portfolio/${item.slug}/`}
+  path={`/portfolio/${item.slug}/`}
+  image={item.featured_image}
+>
+  <div class="container py-5">
+    <h1 class="mb-3">{item.title}</h1>
+    {item.featured_image && (
+      <img src={item.featured_image} alt={item.title} class="img-fluid rounded-3 mb-4" />
+    )}
+    <div class="kk-portfolio-detail-body" set:html={descriptionHtml} />
+    {item.project_url && (
+      <a href={item.project_url} target="_blank" rel="noopener noreferrer" class="btn btn-primary mt-4">
+        Visit Project
+      </a>
+    )}
+  </div>
+</BaseLayout>

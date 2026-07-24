@@ -1,0 +1,36 @@
+---
+interface Props {
+  currentPage: number;
+  lastPage: number;
+  basePath: string; // path listing TANPA trailing slash, mis. "/article" atau "/id/article" atau "/portfolio"
+}
+const { currentPage, lastPage, basePath } = Astro.props;
+
+// Halaman 1 selalu di basePath langsung (mis. /article/), halaman 2+ di /page/N/
+function pageHref(pageNum: number): string {
+  return pageNum === 1 ? `${basePath}/` : `${basePath}/page/${pageNum}/`;
+}
+
+const hasPrev = currentPage > 1;
+const hasNext = currentPage < lastPage;
+---
+
+{lastPage > 1 && (
+  <nav aria-label="Pagination" class="d-flex justify-content-center gap-2 mt-5">
+    {hasPrev && (
+      <a href={pageHref(currentPage - 1)} class="btn btn-sm btn-outline-kk">&larr;</a>
+    )}
+    {Array.from({ length: lastPage }, (_, i) => i + 1).map((pageNum) => (
+      <a
+        href={pageHref(pageNum)}
+        class={`btn btn-sm ${pageNum === currentPage ? 'btn-primary' : 'btn-outline-kk'}`}
+        aria-current={pageNum === currentPage ? 'page' : undefined}
+      >
+        {pageNum}
+      </a>
+    ))}
+    {hasNext && (
+      <a href={pageHref(currentPage + 1)} class="btn btn-sm btn-outline-kk">&rarr;</a>
+    )}
+  </nav>
+)}

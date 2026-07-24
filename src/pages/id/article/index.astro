@@ -1,22 +1,19 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ArticleGrid from '../../../components/ArticleGrid.astro';
+import Pagination from '../../../components/Pagination.astro';
 import { getArticles } from '../../../lib/sheets';
 
-const articles = await getArticles('id');
+const PAGE_SIZE = 12;
+const allArticles = await getArticles('id');
+const lastPage = Math.max(1, Math.ceil(allArticles.length / PAGE_SIZE));
+const articles = allArticles.slice(0, PAGE_SIZE);
 ---
 
 <BaseLayout locale="id" title="Artikel" description="Artikel terbaru" enPath="/article/" idPath="/article/" path="/id/article/">
-  <h1>Artikel</h1>
-  <ul class="article-list">
-    {articles.map((article) => (
-      <li>
-        <a href={`/id/article/${article.slug}`}>
-          {article.featured_image && <img src={article.featured_image} alt={article.title} />}
-          <h2>{article.title}</h2>
-          <p>{article.excerpt}</p>
-          <time datetime={article.published_date}>{article.published_date}</time>
-        </a>
-      </li>
-    ))}
-  </ul>
+  <div class="container py-5">
+    <h1 class="mb-4">Artikel</h1>
+    <ArticleGrid articles={articles} locale="id" />
+    <Pagination currentPage={1} lastPage={lastPage} basePath="/id/article" />
+  </div>
 </BaseLayout>
