@@ -26,14 +26,12 @@ const items = allItems.slice(0, PAGE_SIZE);
             <div class="kk-browser-frame">
               <div class="kk-browser-bar"><span></span><span></span><span></span></div>
               <div class="kk-browser-body">
-                {item.featured_image && (
-                  <img src={item.featured_image} alt={item.title} />
-                )}
+                <img src={item.featured_image || '/image/default-featured-image.jpg'} alt={item.title} style="min-height:100px;" />
                 <div class="kk-overlay"><span class="btn btn-light btn-sm rounded-pill">View project</span></div>
               </div>
             </div>
             <div class="m-2">
-              <p class="text-muted-kk small mb-1">Company Profile</p>
+              <p class="text-muted-kk small mb-1">Company Profile &bull; 2025</p>
               <h3 class="h6 font-heading fw-bold">{item.title}</h3>
             </div>
           </a>

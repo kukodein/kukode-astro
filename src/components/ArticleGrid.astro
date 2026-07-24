@@ -15,9 +15,7 @@ const articleBasePath = locale === 'en' ? '/article' : '/id/article';
     <div class="col-6 col-md-4">
       <div class="kk-card p-2">
         <a href={`${articleBasePath}/${article.slug}`} class="text-decoration-none text-reset d-block">
-          {article.featured_image && (
-            <img src={article.featured_image} alt={article.title} class="img-fluid rounded-3 mb-3 w-100 aspect-ratio-16-9" />
-          )}
+          <img src={article.featured_image || '/image/default-featured-image.jpg'} alt={article.title} class="img-fluid rounded-3 w-100 aspect-ratio-16-9 bg-light" style="min-height:100px;" />
           <div class="m-2">
             <time datetime={article.published_date} class="text-muted-kk small mb-1 d-block">
               {article.published_date}
