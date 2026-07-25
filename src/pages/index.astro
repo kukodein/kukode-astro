@@ -1,11 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BlogSection from '../components/home/BlogSection.astro';
-// import { getPageData, getSettings } from '../lib/sheets';
-import { getPageFields, getArticles } from '../lib/sheets';
+import { getPageFields, getArticles, parseIndexedList } from '../lib/sheets';
 
 const [homeFields, articles] = await Promise.all([
-  // getPageData('en', 'home'),
   getPageFields('home'),
   getArticles('en'),
 ]);
@@ -16,13 +14,37 @@ const latestArticles = articles.slice(0, 3);
 
 // Home body tetap hardcode di bawah — ini cuma override title/meta/gambar
 // dari sheet Pages (page_id: "home"), kalau baris itu ada & diisi.
-// const homeFields = await getPageFields('home');
 const pageTitle = homeFields?.title_en || 'Kukode — Web Development Studio';
 const pageDescription =
   homeFields?.meta_description_en ||
   'We design and build modern websites that load fast, rank well, and convert.';
 const pageMetaTitle = homeFields?.meta_title_en || pageTitle;
 const pageImage = homeFields?.featured_image;
+
+// Services — array-in-cell dari sheet Pages (baris "home"), format:
+//   service_1 = icon|title|description|width(opsional, col-md-N, default 4)
+// Kalau belum diisi di sheet sama sekali, fallback ke default di bawah supaya
+// section ini tidak kosong.
+const serviceRows = parseIndexedList(homeFields ?? {}, 'service');
+const DEFAULT_SERVICES = [
+  { icon: '💻', title: 'Development', description: 'Hand-built websites, coded to load fast and scale as you grow.', width: '8' },
+  { icon: '🎨', title: 'Web design', description: 'Custom design that reflects your brand — not a recycled template.', width: '4' },
+  { icon: '🛒', title: 'Online Store Development', description: 'E-commerce sites ready to take orders and payments from launch day.', width: '4' },
+  { icon: '🔍', title: 'SEO Optimization', description: 'On-page SEO built in from the start, so you show up when people search.', width: '4' },
+  { icon: '🛠️', title: 'Website Maintenance', description: 'Ongoing updates, monitoring, and fixes — so the site keeps running smoothly.', width: '4' },
+  { icon: '🚀', title: 'Hosting & Deployment', description: 'Fast, reliable hosting setup — without locking you into expensive plans.', width: '4' },
+  { icon: '📱', title: 'Mobile-Friendly Design', description: 'Every site is built to look and work great on phones first.', width: '4' },
+  { icon: '📈', title: 'Analytics & Tracking', description: 'Know exactly how visitors find and use your site.', width: '4' },
+];
+const services =
+  serviceRows.length > 0
+    ? serviceRows.map(([icon, title, description, width]) => ({
+        icon,
+        title,
+        description,
+        width: width || '4',
+      }))
+    : DEFAULT_SERVICES;
 
 ---
 
@@ -133,30 +155,15 @@ const pageImage = homeFields?.featured_image;
         <p>From a brand-new site to a full overhaul of what you already have — every project is built by me, to the same high standard.</p>
       </div>
       <div class="row g-3">
-        <div class="col-6 col-md-8">
-          <div class="kk-card p-4 kk-why-card"><div class="kk-icon-circle">💻</div><h3 class="h6 font-heading fw-bold mb-1">Development</h3><p class="text-muted-kk small mb-0">Hand-built websites, coded to load fast and scale as you grow.</p></div>
-        </div>
-        <div class="col-6 col-md-4">
-          <div class="kk-card p-4 kk-why-card"><div class="kk-icon-circle">🎨</div><h3 class="h6 font-heading fw-bold mb-1">Web design</h3><p class="text-muted-kk small mb-0">Custom design that reflects your brand — not a recycled template.</p></div>
-        </div>
-        <div class="col-6 col-md-4">
-          <div class="kk-card p-4 kk-why-card"><div class="kk-icon-circle">🛒</div><h3 class="h6 font-heading fw-bold mb-1">Online Store Development</h3><p class="text-muted-kk small mb-0">E-commerce sites ready to take orders and payments from launch day.</p></div>
-        </div>
-        <div class="col-6 col-md-4">
-          <div class="kk-card p-4 kk-why-card"><div class="kk-icon-circle">🔍</div><h3 class="h6 font-heading fw-bold mb-1"> SEO Optimization</h3><p class="text-muted-kk small mb-0">On-page SEO built in from the start, so you show up when people search.</p></div>
-        </div>
-        <div class="col-6 col-md-4">
-          <div class="kk-card p-4 kk-why-card"><div class="kk-icon-circle">🛠️</div><h3 class="h6 font-heading fw-bold mb-1">Website Maintenance</h3><p class="text-muted-kk small mb-0">Ongoing updates, monitoring, and fixes — so the site keeps running smoothly.</p></div>
-        </div>
-        <div class="col-6 col-md-4">
-          <div class="kk-card p-4 kk-why-card"><div class="kk-icon-circle">🚀</div><h3 class="h6 font-heading fw-bold mb-1">Hosting & Deployment</h3><p class="text-muted-kk small mb-0">Fast, reliable hosting setup — without locking you into expensive plans.</p></div>
-        </div>
-        <div class="col-6 col-md-4">
-          <div class="kk-card p-4 kk-why-card"><div class="kk-icon-circle">📱</div><h3 class="h6 font-heading fw-bold mb-1"> Mobile-Friendly Design</h3><p class="text-muted-kk small mb-0">Every site is built to look and work great on phones first.</p></div>
-        </div>
-        <div class="col-6 col-md-4">
-          <div class="kk-card p-4 kk-why-card"><div class="kk-icon-circle">📈</div><h3 class="h6 font-heading fw-bold mb-1">Analytics & Tracking</h3><p class="text-muted-kk small mb-0">Know exactly how visitors find and use your site.</p></div>
-        </div>
+        {services.map((service) => (
+          <div class={`col-6 col-md-${service.width}`}>
+            <div class="kk-card p-4 kk-why-card">
+              <div class="kk-icon-circle">{service.icon}</div>
+              <h3 class="h6 font-heading fw-bold mb-1">{service.title}</h3>
+              <p class="text-muted-kk small mb-0">{service.description}</p>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   </section>

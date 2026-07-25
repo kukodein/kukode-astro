@@ -334,6 +334,37 @@ export function truncateForMeta(body: string, maxLength = 160): string {
   return plainText.slice(0, maxLength).trimEnd() + '…';
 }
 
+/**
+ * Parser untuk pola "array-in-cell": key ber-index (mis. service_1, service_2, ...)
+ * yang tiap valuenya dipisah delimiter (default `|`) untuk beberapa field sekaligus.
+ * Loop berhenti begitu index-nya tidak ketemu di `fields`.
+ *
+ * Contoh sheet:
+ *   service_1 = ⚡|Fast delivery|Efficient process
+ *   service_2 = 🔒|Secure|Modern hosting
+ * -> parseIndexedList(fields, 'service') menghasilkan:
+ *   [['⚡','Fast delivery','Efficient process'], ['🔒','Secure','Modern hosting']]
+ *
+ * Sengaja pakai delimited string (bukan JSON di 1 sel) supaya aman diedit orang
+ * non-developer di Google Sheets — JSON gampang rusak kalau kena auto-format
+ * "smart quotes" Sheets atau salah taruh koma, dan errornya tidak jelas ke user.
+ */
+export function parseIndexedList(
+  fields: Record<string, string>,
+  prefix: string,
+  delimiter = '|'
+): string[][] {
+  const result: string[][] = [];
+  let i = 1;
+  while (true) {
+    const raw = fields[`${prefix}_${i}`];
+    if (!raw) break;
+    result.push(raw.split(delimiter).map((s) => s.trim()));
+    i++;
+  }
+  return result;
+}
+
 // ---------- Categories ----------
 
 /**
