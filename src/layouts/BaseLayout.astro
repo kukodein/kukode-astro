@@ -37,8 +37,6 @@ const switchLangHref = buildSwitchLangHref();
 <!DOCTYPE html>
 <html lang={locale}>
   <head>
-    <!-- Set tema SEBELUM apa pun dirender, supaya tidak ada "flash" light->dark.
-         Harus inline (bukan file eksternal) dan di posisi paling atas <head>. -->
     <script is:inline>
       (function () {
         const saved = localStorage.getItem('kk-theme') || 'light';
@@ -63,10 +61,8 @@ const switchLangHref = buildSwitchLangHref();
     />
 
 
-    <!-- For modern browsers supporting PNG favicons -->
+    <!-- Favicons -->
     <link rel="icon" type="image/png" href="/favicon.png">
-    
-    <!-- Legacy backup for older environments (optional) -->
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.png">
 
     <!-- Google Fonts -->
@@ -77,13 +73,13 @@ const switchLangHref = buildSwitchLangHref();
       rel="stylesheet"
     />
 
-    <!-- Bootstrap divendorkan lokal di public/vendor — bukan CDN, sesuai permintaan -->
+    <!-- Bootstrap CSS -->
     <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
 
-    <!-- Custom styles Kukode — di-extract dari <style> inline jadi file terpisah -->
+    <!-- Custom Styles -->
     <link href="/css/kukode.css" rel="stylesheet" />
 
-    <!-- Slot untuk aset tambahan yang cuma dipakai halaman tertentu (mis. Swiper CSS di homepage) -->
+    <!-- Snippet Additional CSS Style -->
     <slot name="extra-head" />
   </head>
   <body>
@@ -95,13 +91,13 @@ const switchLangHref = buildSwitchLangHref();
 
     <Footer locale={locale} />
 
-    <!-- Bootstrap JS — divendorkan lokal -->
+    <!-- Bootstrap JS -->
     <script is:inline src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Script global: navbar scroll effect + dark mode toggle (tombol ada di header, jadi perlu jalan di SEMUA halaman) -->
+    <!-- Custom Script -->
     <script is:inline src="/js/kukode-global.js"></script>
 
-    <!-- Slot untuk script tambahan yang cuma dipakai halaman tertentu (mis. Swiper init + FAQ di homepage) -->
+    <!-- Snippet Additional JS Script -->
     <slot name="extra-scripts" />
   </body>
 </html>

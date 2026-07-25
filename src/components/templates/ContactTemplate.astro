@@ -1,0 +1,64 @@
+---
+import type { Locale } from '../../lib/sheets';
+import { getSettings } from '../../lib/sheets';
+
+interface Props {
+  locale: Locale;
+  title: string;
+  bodyHtml: string;
+  address?: string;
+  email?: string;
+  hours?: string;
+}
+const { locale, title, bodyHtml, address, email, hours } = Astro.props;
+
+const settings = await getSettings();
+const whatsappNumber = settings.whatsapp_number || '6281234567890';
+
+const labels =
+  locale === 'en'
+    ? { address: 'Address', email: 'Email', hours: 'Business Hours', name: 'Your Name', message: 'Your Message', submit: 'Send via WhatsApp' }
+    : { address: 'Alamat', email: 'Email', hours: 'Jam Operasional', name: 'Nama Anda', message: 'Pesan Anda', submit: 'Kirim via WhatsApp' };
+---
+
+<div class="container py-5">
+  <h1 class="mb-4">{title}</h1>
+  <div class="row g-5">
+    <div class="col-lg-5">
+      <div class="kk-page-body mb-4" set:html={bodyHtml} />
+      <ul class="list-unstyled">
+        {address && (
+          <li class="mb-3"><strong>{labels.address}</strong><br />{address}</li>
+        )}
+        {email && (
+          <li class="mb-3"><strong>{labels.email}</strong><br /><a href={`mailto:${email}`}>{email}</a></li>
+        )}
+        {hours && (
+          <li class="mb-3"><strong>{labels.hours}</strong><br />{hours}</li>
+        )}
+      </ul>
+    </div>
+    <div class="col-lg-7">
+      <form id="kk-contact-page-form" class="kk-card p-4">
+        <div class="mb-3">
+          <input type="text" id="kk-contact-page-name" class="form-control" placeholder={labels.name} required />
+        </div>
+        <div class="mb-3">
+          <textarea id="kk-contact-page-message" class="form-control" rows="5" placeholder={labels.message} required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">{labels.submit}</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script is:inline define:vars={{ whatsappNumber }}>
+  const form = document.getElementById('kk-contact-page-form');
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('kk-contact-page-name').value.trim();
+    const message = document.getElementById('kk-contact-page-message').value.trim();
+    const text = `Halo, saya ${name}.\n\n${message}`;
+    window.location.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`;
+  });
+</script>

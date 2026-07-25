@@ -1,0 +1,21 @@
+---
+import type { Locale } from '../../lib/sheets';
+
+interface Props {
+  locale: Locale;
+  title: string;
+  bodyHtml: string;
+  featuredImage?: string;
+}
+const { locale, title, bodyHtml, featuredImage } = Astro.props;
+const eyebrow = locale === 'en' ? 'About Us' : 'Tentang Kami';
+---
+
+<div class="container py-5 text-center">
+  <p class="kk-eyebrow mb-2">{eyebrow}</p>
+  <h1 class="mb-4">{title}</h1>
+  {featuredImage && (
+    <img src={featuredImage} alt={title} class="img-fluid rounded-4 mb-4 mx-auto" style="max-width: 720px;" />
+  )}
+  <div class="kk-page-body col-md-8 mx-auto text-start" set:html={bodyHtml} />
+</div>

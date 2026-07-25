@@ -12,7 +12,7 @@ export async function getStaticPaths() {
 }
 
 const { article } = Astro.props;
-const bodyHtml = marked.parse(article.body);
+const bodyHtml = await marked.parse(article.body);
 
 // Cari padanan slug versi ID lewat article_id (bukan lewat slug, karena slug boleh beda per bahasa).
 // Bisa null kalau artikel ini belum diterjemahkan -> hreflang untuk id tidak akan dirender.

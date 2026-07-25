@@ -1,22 +1,36 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BlogSection from '../components/home/BlogSection.astro';
-import { getPageData, getArticles, getSettings } from '../lib/sheets';
+// import { getPageData, getSettings } from '../lib/sheets';
+import { getPageFields, getArticles } from '../lib/sheets';
 
-const [page, articles, settings] = await Promise.all([
-  getPageData('en', 'home'),
+const [homeFields, articles] = await Promise.all([
+  // getPageData('en', 'home'),
+  getPageFields('home'),
   getArticles('en'),
-  getSettings(),
 ]);
 
 // Limit for showing Articles
 const latestArticles = articles.slice(0, 3);
+
+
+// Home body tetap hardcode di bawah — ini cuma override title/meta/gambar
+// dari sheet Pages (page_id: "home"), kalau baris itu ada & diisi.
+// const homeFields = await getPageFields('home');
+const pageTitle = homeFields?.title_en || 'Kukode — Web Development Studio';
+const pageDescription =
+  homeFields?.meta_description_en ||
+  'We design and build modern websites that load fast, rank well, and convert.';
+const pageMetaTitle = homeFields?.meta_title_en || pageTitle;
+const pageImage = homeFields?.featured_image;
+
 ---
 
 <BaseLayout
   locale="en"
-  title={page.meta_title || page.title}
-  description={page.meta_description}
+  title={pageMetaTitle}
+  description={pageDescription}
+  image={pageImage}
   path="/"
   enPath="/"
   idPath="/"

@@ -82,11 +82,22 @@ async function fetchSheetUncached<T = Record<string, string>>(sheetKey: SheetKey
 
 export type Locale = 'en' | 'id';
 
-export interface PageRow {
-  page: string;
+export interface PageKVRow {
+  page_id: string;
   key: string;
   value: string;
 }
+
+// Nilai `template` yang valid untuk halaman ber-template. `home` TIDAK termasuk
+// di sini karena Home tetap file hardcode (index.astro) — baris "home" di sheet
+// Pages cuma dipakai untuk override title/meta, bukan untuk generate route.
+export type PageTemplate =
+  | 'about'
+  | 'contact'
+  | 'service'
+  | 'simple'
+  | 'simple_wide'
+  | 'simple_blank';
 
 export interface ArticleRow {
   article_id: string;
@@ -115,20 +126,6 @@ export interface SettingsRow {
   value: string;
 }
 
-export interface SimplePageRow {
-  page_id: string;
-  slug_en: string;
-  slug_id: string;
-  title_en: string;
-  title_id: string;
-  body_en: string;
-  body_id: string;
-  featured_image: string;
-  status: string;
-  meta_title: string;
-  meta_description: string;
-}
-
 export interface CategoryRow {
   category_id: string; // key yang dipakai di kolom `category` Articles — SAMA di kedua bahasa
   slug_en: string;
@@ -153,18 +150,28 @@ export interface PortfolioRow {
 // ---------- High-level getters ----------
 
 /**
- * Ambil semua field satu Page (misal 'home' atau 'about'), sudah di-pivot
- * dari format {page, key, value} jadi object flat: { title: '...', description: '...' }
+ * Ambil SEMUA baris tab Pages dan pivot dari format {page_id, key, value}
+ * jadi Map<page_id, {key: value}> — 1 lookup, dipakai semua fungsi Pages di bawah.
  */
-export async function getPageData(locale: Locale, pageKey: string): Promise<Record<string, string>> {
-  const rows = await fetchSheet<PageRow>(locale === 'en' ? 'pages_en' : 'pages_id');
-  const pageRows = rows.filter((r) => r.page === pageKey);
+async function getAllPagesPivoted(): Promise<Map<string, Record<string, string>>> {
+  const rows = await fetchSheet<PageKVRow>('pages');
+  const pivoted = new Map<string, Record<string, string>>();
 
-  const result: Record<string, string> = {};
-  for (const row of pageRows) {
-    result[row.key] = row.value;
+  for (const row of rows) {
+    if (!pivoted.has(row.page_id)) pivoted.set(row.page_id, {});
+    pivoted.get(row.page_id)![row.key] = row.value;
   }
-  return result;
+  return pivoted;
+}
+
+/**
+ * Ambil field mentah (belum di-filter locale) untuk SATU page_id — dipakai untuk
+ * kasus seperti Home, yang cuma butuh title/meta dari sheet ini tapi body-nya
+ * tetap hardcode di index.astro (bukan halaman ber-template).
+ */
+export async function getPageFields(pageId: string): Promise<Record<string, string> | undefined> {
+  const pivoted = await getAllPagesPivoted();
+  return pivoted.get(pageId);
 }
 
 /**
@@ -199,61 +206,90 @@ export async function getArticleAlternateSlug(
   return match?.slug ?? null;
 }
 
-// Daftar slug yang sudah dipakai halaman hardcode — Simple_Pages TIDAK BOLEH
-// pakai slug ini, supaya tidak tabrakan route. Ditambah manual kalau nanti ada
-// halaman hardcode baru (mis. /portfolio/, /contact/).
-const RESERVED_SLUGS = ['about', 'tentang', 'article', 'portfolio', 'contact', 'category'];
+// Daftar slug yang dipakai NAMESPACE ROUTE hardcode — halaman ber-template TIDAK BOLEH
+// pakai slug ini, supaya tidak tabrakan. `about`/`tentang`/`contact` SENGAJA tidak lagi
+// di sini karena sekarang justru DIHASILKAN oleh sistem template ini, bukan hardcode.
+const RESERVED_SLUGS = ['article', 'portfolio', 'category'];
+
+export interface TemplatedPage {
+  page_id: string;
+  template: PageTemplate;
+  slug: string;
+  title: string;
+  body: string;
+  featured_image: string;
+  meta_title: string;
+  meta_description: string;
+  // Field khusus template tertentu — kosong string kalau tidak dipakai template ini.
+  icon: string; // service
+  price_from: string; // service
+  address: string; // contact
+  email: string; // contact
+  hours: string; // contact
+}
 
 /**
- * Ambil semua Simple_Pages yang published DAN punya isi untuk locale ini
- * (slug/title/body tidak kosong). Baris yang cuma diisi 1 bahasa otomatis
- * tidak generate halaman di locale yang kosong.
+ * Ambil semua halaman ber-template yang published DAN punya isi untuk locale ini.
+ * Baris tanpa `template` (mis. "home", yang cuma dipakai untuk override meta)
+ * otomatis tidak ikut — itu bukan halaman yang di-generate router ini.
  */
-export async function getSimplePages(locale: Locale): Promise<SimplePageRow[]> {
-  const rows = await fetchSheet<SimplePageRow>('simple_pages');
-  const slugKey = locale === 'en' ? 'slug_en' : 'slug_id';
-  const titleKey = locale === 'en' ? 'title_en' : 'title_id';
+export async function getPages(locale: Locale): Promise<TemplatedPage[]> {
+  const pivoted = await getAllPagesPivoted();
+  const result: TemplatedPage[] = [];
 
-  return rows.filter((row) => {
-    if (row.status !== 'published') return false;
-    const slug = row[slugKey]?.trim();
-    const title = row[titleKey]?.trim();
-    if (!slug || !title) return false; // locale ini belum diisi -> skip
+  for (const [pageId, fields] of pivoted.entries()) {
+    const template = fields.template as PageTemplate | undefined;
+    if (!template) continue; // baris meta-only (mis. "home") -> skip, bukan route
+    if (fields.status !== 'published') continue;
+
+    const slug = (locale === 'en' ? fields.slug_en : fields.slug_id)?.trim();
+    const title = (locale === 'en' ? fields.title_en : fields.title_id)?.trim();
+    if (!slug || !title) continue; // locale ini belum diisi -> skip
+
     if (RESERVED_SLUGS.includes(slug)) {
       console.warn(
-        `[simple_pages] Slug "${slug}" (page_id: ${row.page_id}) bentrok dengan halaman hardcode ` +
-          `yang sudah ada — baris ini dilewati. Ganti slug-nya di sheet.`
+        `[pages] Slug "${slug}" (page_id: ${pageId}) bentrok dengan namespace route hardcode ` +
+          `(article/portfolio/category) — baris ini dilewati. Ganti slug-nya di sheet.`
       );
-      return false;
+      continue;
     }
-    return true;
-  });
+
+    result.push({
+      page_id: pageId,
+      template,
+      slug,
+      title,
+      body: (locale === 'en' ? fields.body_en : fields.body_id) ?? '',
+      featured_image: fields.featured_image ?? '',
+      meta_title: (locale === 'en' ? fields.meta_title_en : fields.meta_title_id) ?? '',
+      meta_description: (locale === 'en' ? fields.meta_description_en : fields.meta_description_id) ?? '',
+      icon: fields.icon ?? '',
+      price_from: fields.price_from ?? '',
+      address: fields.address ?? '',
+      email: fields.email ?? '',
+      hours: fields.hours ?? '',
+    });
+  }
+
+  return result;
 }
 
 /**
- * Ambil satu Simple_Page berdasarkan slug (untuk locale tertentu).
+ * Ambil satu halaman ber-template berdasarkan slug (untuk locale tertentu).
  */
-export async function getSimplePageBySlug(
-  locale: Locale,
-  slug: string
-): Promise<SimplePageRow | undefined> {
-  const pages = await getSimplePages(locale);
-  const slugKey = locale === 'en' ? 'slug_en' : 'slug_id';
-  return pages.find((p) => p[slugKey] === slug);
+export async function getPageBySlug(locale: Locale, slug: string): Promise<TemplatedPage | undefined> {
+  const pages = await getPages(locale);
+  return pages.find((p) => p.slug === slug);
 }
 
 /**
- * Cari slug versi locale lain untuk Simple_Page yang sama, dihubungkan lewat page_id.
+ * Cari slug versi locale lain untuk halaman yang sama, dihubungkan lewat page_id.
  * Return null kalau locale itu tidak diisi untuk halaman ini (mis. halaman EN-only).
  */
-export async function getSimplePageAlternateSlug(
-  pageId: string,
-  targetLocale: Locale
-): Promise<string | null> {
-  const pages = await getSimplePages(targetLocale);
-  const slugKey = targetLocale === 'en' ? 'slug_en' : 'slug_id';
+export async function getPageAlternateSlug(pageId: string, targetLocale: Locale): Promise<string | null> {
+  const pages = await getPages(targetLocale);
   const match = pages.find((p) => p.page_id === pageId);
-  return match?.[slugKey] ?? null;
+  return match?.slug ?? null;
 }
 
 /**

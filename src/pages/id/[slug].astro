@@ -1,41 +1,66 @@
 ---
 import { marked } from 'marked';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getSimplePages, getSimplePageAlternateSlug, truncateForMeta } from '../../lib/sheets';
+import SimpleTemplate from '../../components/templates/SimpleTemplate.astro';
+import SimpleWideTemplate from '../../components/templates/SimpleWideTemplate.astro';
+import SimpleBlankTemplate from '../../components/templates/SimpleBlankTemplate.astro';
+import AboutTemplate from '../../components/templates/AboutTemplate.astro';
+import ServiceTemplate from '../../components/templates/ServiceTemplate.astro';
+import ContactTemplate from '../../components/templates/ContactTemplate.astro';
+import { getPages, getPageAlternateSlug, truncateForMeta } from '../../lib/sheets';
 
 export async function getStaticPaths() {
-  const pages = await getSimplePages('id');
+  const pages = await getPages('id');
   return pages.map((page) => ({
-    params: { slug: page.slug_id },
+    params: { slug: page.slug },
     props: { page },
   }));
 }
 
 const { page } = Astro.props;
-const bodyHtml = marked.parse(page.body_id);
-
-// Cari padanan slug versi EN lewat page_id.
-const alternateSlugEn = await getSimplePageAlternateSlug(page.page_id, 'en');
+const bodyHtml = page.body ? await marked.parse(page.body) : '';
+const alternateSlugEn = await getPageAlternateSlug(page.page_id, 'en');
 ---
 
 <BaseLayout
   locale="id"
-  title={page.meta_title || page.title_id}
-  description={page.meta_description || truncateForMeta(page.body_id)}
+  title={page.meta_title || page.title}
+  description={page.meta_description || (page.body ? truncateForMeta(page.body) : undefined)}
   enPath={alternateSlugEn ? `/${alternateSlugEn}/` : undefined}
-  idPath={`/${page.slug_id}/`}
-  path={`/id/${page.slug_id}/`}
+  idPath={`/${page.slug}/`}
+  path={`/id/${page.slug}/`}
   image={page.featured_image}
 >
-  <article class="container py-5">
-    <div class="row">
-      <div class="col-lg-8 mx-auto">
-        <h1 class="mb-4">{page.title_en}</h1>
-        {page.featured_image && (
-          <img src={page.featured_image} alt={page.title_en} class="img-fluid rounded-1 mb-4 w-100" />
-        )}
-        <div class="kk-simple-page-body" set:html={bodyHtml} />
-      </div>
-    </div>
-  </article>
+  {page.template === 'about' && (
+    <AboutTemplate locale="id" title={page.title} bodyHtml={bodyHtml} featuredImage={page.featured_image} />
+  )}
+  {page.template === 'contact' && (
+    <ContactTemplate
+      locale="id"
+      title={page.title}
+      bodyHtml={bodyHtml}
+      address={page.address}
+      email={page.email}
+      hours={page.hours}
+    />
+  )}
+  {page.template === 'service' && (
+    <ServiceTemplate
+      locale="id"
+      title={page.title}
+      bodyHtml={bodyHtml}
+      featuredImage={page.featured_image}
+      icon={page.icon}
+      priceFrom={page.price_from}
+    />
+  )}
+  {page.template === 'simple' && (
+    <SimpleTemplate title={page.title} bodyHtml={bodyHtml} featuredImage={page.featured_image} />
+  )}
+  {page.template === 'simple_wide' && (
+    <SimpleWideTemplate title={page.title} bodyHtml={bodyHtml} featuredImage={page.featured_image} />
+  )}
+  {page.template === 'simple_blank' && (
+    <SimpleBlankTemplate title={page.title} bodyHtml={bodyHtml} featuredImage={page.featured_image} />
+  )}
 </BaseLayout>

@@ -1,0 +1,30 @@
+---
+import type { Locale } from '../../lib/sheets';
+
+interface Props {
+  locale: Locale;
+  title: string;
+  bodyHtml: string;
+  featuredImage?: string;
+  icon?: string;
+  priceFrom?: string;
+}
+const { locale, title, bodyHtml, featuredImage, icon, priceFrom } = Astro.props;
+
+const priceLabel = locale === 'en' ? 'Starting from' : 'Mulai dari';
+const ctaLabel = locale === 'en' ? 'Ask About This Service' : 'Tanya Soal Layanan Ini';
+const contactHref = locale === 'en' ? '/contact/' : '/id/kontak/'; // sesuaikan kalau slug contact ID Anda beda
+---
+
+<div class="container py-5">
+  <div class="col-md-8 mx-auto">
+    {icon && <div class="kk-icon-circle fs-2 mb-3">{icon}</div>}
+    <h1 class="mb-2">{title}</h1>
+    {priceFrom && (
+      <p class="text-muted-kk mb-4">{priceLabel} <span class="fw-bold text-body">{priceFrom}</span></p>
+    )}
+    {featuredImage && <img src={featuredImage} alt={title} class="img-fluid rounded mb-4" />}
+    <div class="kk-page-body mb-4" set:html={bodyHtml} />
+    <a href={contactHref} class="btn btn-primary">{ctaLabel}</a>
+  </div>
+</div>

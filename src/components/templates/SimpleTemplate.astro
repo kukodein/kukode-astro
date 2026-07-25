@@ -1,0 +1,16 @@
+---
+interface Props {
+  title: string;
+  bodyHtml: string;
+  featuredImage?: string;
+}
+const { title, bodyHtml, featuredImage } = Astro.props;
+---
+
+<article class="container py-5">
+  <div class="col-md-8 mx-auto">
+    <h1 class="mb-4">{title}</h1>
+    {featuredImage && <img src={featuredImage} alt={title} class="img-fluid rounded mb-4 w-100" />}
+    <div class="kk-page-body" set:html={bodyHtml} />
+  </div>
+</article>
