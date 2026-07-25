@@ -220,6 +220,8 @@ export interface TemplatedPage {
   featured_image: string;
   meta_title: string;
   meta_description: string;
+  published_date: string; // opsional di sheet — dipakai untuk <lastmod> sitemap
+  date_modified: string; // opsional di sheet — fallback ke published_date kalau kosong
   // Field khusus template tertentu — kosong string kalau tidak dipakai template ini.
   icon: string; // service
   price_from: string; // service
@@ -263,6 +265,8 @@ export async function getPages(locale: Locale): Promise<TemplatedPage[]> {
       featured_image: fields.featured_image ?? '',
       meta_title: (locale === 'en' ? fields.meta_title_en : fields.meta_title_id) ?? '',
       meta_description: (locale === 'en' ? fields.meta_description_en : fields.meta_description_id) ?? '',
+      published_date: fields.published_date ?? '',
+      date_modified: fields.date_modified ?? '',
       icon: fields.icon ?? '',
       price_from: fields.price_from ?? '',
       address: fields.address ?? '',

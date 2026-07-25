@@ -2,26 +2,27 @@
 import { defineConfig } from 'astro/config';
 
 import sitemap from '@astrojs/sitemap';
-import { getArticles, getPortfolioItems } from './src/lib/sheets.ts';
+import { getArticles, getPortfolioItems, getPages, getPageFields } from './src/lib/sheets.ts';
 
 const SITE_URL = 'https://kukode.com'; // ganti dengan domain asli Anda
 
 /**
- * Bangun lookup "path -> tanggal terakhir diubah" dari Articles (EN+ID) dan
- * Portfolio, dipakai untuk isi <lastmod> di sitemap (seperti RankMath).
- *
- * Catatan: Pages (About/Contact/Service/Simple Page) dan Home BELUM punya
- * kolom tanggal di sheet, jadi belum ikut dapat <lastmod> — kalau nanti mau,
- * tambah kolom `published_date`/`date_modified` ke sheet Pages dan perluas
- * fungsi ini.
+ * Bangun lookup "path -> tanggal terakhir diubah" dari Articles (EN+ID),
+ * Portfolio, dan Pages (EN+ID) — dipakai untuk isi <lastmod> di sitemap
+ * (seperti RankMath). Untuk Pages, kolom published_date/date_modified di
+ * sheet OPSIONAL — kalau kosong, halaman itu cuma tidak dapat <lastmod>,
+ * bukan error.
  */
 async function buildLastmodMap() {
   const map = new Map(); // path (tanpa domain) -> tanggal ISO
 
-  const [articlesEn, articlesId, portfolioItems] = await Promise.all([
+  const [articlesEn, articlesId, portfolioItems, pagesEn, pagesId, homeFields] = await Promise.all([
     getArticles('en'),
     getArticles('id'),
     getPortfolioItems(),
+    getPages('en'),
+    getPages('id'),
+    getPageFields('home'),
   ]);
 
   for (const article of articlesEn) {
@@ -35,6 +36,21 @@ async function buildLastmodMap() {
   for (const item of portfolioItems) {
     if (item.published_date) {
       map.set(`/portfolio/${item.slug}/`, new Date(item.published_date).toISOString());
+    }
+  }
+  for (const page of pagesEn) {
+    const date = page.date_modified || page.published_date;
+    if (date) map.set(`/${page.slug}/`, new Date(date).toISOString());
+  }
+  for (const page of pagesId) {
+    const date = page.date_modified || page.published_date;
+    if (date) map.set(`/id/${page.slug}/`, new Date(date).toISOString());
+  }
+  if (homeFields) {
+    const homeDate = homeFields.date_modified || homeFields.published_date;
+    if (homeDate) {
+      map.set('/', new Date(homeDate).toISOString());
+      map.set('/id/', new Date(homeDate).toISOString());
     }
   }
 
