@@ -20,12 +20,13 @@ export async function getStaticPaths() {
 const { page } = Astro.props;
 const bodyHtml = page.body ? await marked.parse(page.body) : '';
 const alternateSlugEn = await getPageAlternateSlug(page.page_id, 'en');
+const pageDescription = page.meta_description || (page.body ? truncateForMeta(page.body) : undefined);
 ---
 
 <BaseLayout
   locale="id"
   title={page.meta_title || page.title}
-  description={page.meta_description || (page.body ? truncateForMeta(page.body) : undefined)}
+  description={pageDescription}
   enPath={alternateSlugEn ? `/${alternateSlugEn}/` : undefined}
   idPath={`/${page.slug}/`}
   path={`/id/${page.slug}/`}
@@ -52,6 +53,7 @@ const alternateSlugEn = await getPageAlternateSlug(page.page_id, 'en');
       featuredImage={page.featured_image}
       icon={page.icon}
       priceFrom={page.price_from}
+      description={pageDescription}
     />
   )}
   {page.template === 'simple' && (

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import JsonLd from '../components/JsonLd.astro';
 import BlogSection from '../components/home/BlogSection.astro';
 import { getPageFields, getArticles, parseIndexedList } from '../lib/sheets';
 
@@ -45,6 +46,28 @@ const services =
         width: width || '4',
       }))
     : DEFAULT_SERVICES;
+
+// FAQ — array jadi single source of truth untuk HTML yang tampil DAN JSON-LD FAQPage schema,
+// supaya isi keduanya tidak pernah beda (syarat wajib Google untuk structured data).
+const faqItems = [
+  { question: 'How long does a project take?', answer: 'Usually 2–4 weeks depending on complexity.' },
+  { question: 'Can I request a custom design?', answer: 'Yes, we tailor every design to your brand.' },
+  { question: 'How does payment work?', answer: '50% deposit upfront, remainder on completion.' },
+  { question: 'Is hosting included?', answer: 'Depends on the plan — see Pricing for details.' },
+  { question: 'How many revisions are included?', answer: 'Typically 2–3 rounds, depending on your plan.' },
+  { question: 'Is there support after launch?', answer: 'Yes, support period varies by plan.' },
+  { question: 'How do I get started?', answer: 'Reach out via the contact form or WhatsApp below.' },
+  { question: 'Can you migrate from WordPress or into WordPress?', answer: "Yes — that's actually one of our specialties." },
+];
+const faqPageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqItems.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: { '@type': 'Answer', text: item.answer },
+  })),
+};
 
 ---
 
@@ -418,23 +441,19 @@ const services =
   />
 
   <section id="faq" class="kk-section bg-surface">
+    <JsonLd data={faqPageSchema} />
     <div class="container">
       <div class="row g-4">
         <div class="col-lg-4">
           <div class="kk-eyebrow mb-2">FAQ</div>
           <h2 class="mb-3">Questions we hear all the time.</h2>
-          <p class="mb-5">Don't see yours here? Just ask, We will reply personally to every message.</p>
-          <a href="https://wa.me/6281234567890" class="btn btn-primary d-none d-lg-inline" target="_blank"> Message Me Directly</a>
+          <p class="mb-4">Don't see yours here? Just ask — I reply personally to every message.</p>
+          <a href="https://wa.me/6281234567890" class="btn btn-primary" target="_blank"> Message Me Directly</a>
         </div>
         <div class="col-lg-8">
-          <div class="kk-faq-item"><button class="kk-faq-q">How long does a project take? <span class="kk-faq-chevron">+</span></button><div class="kk-faq-a"><div class="kk-faq-a-inner">Usually 2–4 weeks depending on complexity.</div></div></div>
-          <div class="kk-faq-item"><button class="kk-faq-q">Can I request a custom design? <span class="kk-faq-chevron">+</span></button><div class="kk-faq-a"><div class="kk-faq-a-inner">Yes, we tailor every design to your brand.</div></div></div>
-          <div class="kk-faq-item"><button class="kk-faq-q">How does payment work? <span class="kk-faq-chevron">+</span></button><div class="kk-faq-a"><div class="kk-faq-a-inner">50% deposit upfront, remainder on completion.</div></div></div>
-          <div class="kk-faq-item"><button class="kk-faq-q">Is hosting included? <span class="kk-faq-chevron">+</span></button><div class="kk-faq-a"><div class="kk-faq-a-inner">Depends on the plan — see Pricing for details.</div></div></div>
-          <div class="kk-faq-item"><button class="kk-faq-q">How many revisions are included? <span class="kk-faq-chevron">+</span></button><div class="kk-faq-a"><div class="kk-faq-a-inner">Typically 2–3 rounds, depending on your plan.</div></div></div>
-          <div class="kk-faq-item"><button class="kk-faq-q">Is there support after launch? <span class="kk-faq-chevron">+</span></button><div class="kk-faq-a"><div class="kk-faq-a-inner">Yes, support period varies by plan.</div></div></div>
-          <div class="kk-faq-item"><button class="kk-faq-q">How do I get started? <span class="kk-faq-chevron">+</span></button><div class="kk-faq-a"><div class="kk-faq-a-inner">Reach out via the contact form or WhatsApp below.</div></div></div>
-          <div class="kk-faq-item"><button class="kk-faq-q">Can you migrate from WordPress or into WordPress? <span class="kk-faq-chevron">+</span></button><div class="kk-faq-a"><div class="kk-faq-a-inner">Yes — that's actually one of our specialties.</div></div></div>
+          {faqItems.map((item) => (
+            <div class="kk-faq-item"><button class="kk-faq-q">{item.question} <span class="kk-faq-chevron">+</span></button><div class="kk-faq-a"><div class="kk-faq-a-inner">{item.answer}</div></div></div>
+          ))}
         </div>
       </div>
     </div>

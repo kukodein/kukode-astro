@@ -1,5 +1,7 @@
 ---
 import type { Locale } from '../../lib/sheets';
+import { getSettings } from '../../lib/sheets';
+import JsonLd from '../JsonLd.astro';
 
 interface Props {
   locale: Locale;
@@ -8,15 +10,29 @@ interface Props {
   featuredImage?: string;
   icon?: string;
   priceFrom?: string;
+  description?: string;
 }
-const { locale, title, bodyHtml, featuredImage, icon, priceFrom } = Astro.props;
+const { locale, title, bodyHtml, featuredImage, icon, priceFrom, description } = Astro.props;
 
 const priceLabel = locale === 'en' ? 'Starting from' : 'Mulai dari';
 const ctaLabel = locale === 'en' ? 'Ask About This Service' : 'Tanya Soal Layanan Ini';
 const contactHref = locale === 'en' ? '/contact/' : '/id/kontak/'; // sesuaikan kalau slug contact ID Anda beda
+
+const settings = await getSettings();
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: title,
+  ...(description && { description }),
+  provider: { '@type': 'Organization', name: settings.site_name || 'Kukode' },
+  ...(priceFrom && {
+    offers: { '@type': 'Offer', priceCurrency: 'IDR', price: priceFrom.replace(/[^0-9]/g, '') || undefined },
+  }),
+};
 ---
 
 <div class="container py-5">
+  <JsonLd data={serviceSchema} />
   <div class="col-md-8 mx-auto">
     {icon && <div class="kk-icon-circle fs-2 mb-3">{icon}</div>}
     <h1 class="mb-2">{title}</h1>

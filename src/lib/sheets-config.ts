@@ -1,21 +1,31 @@
-// Ganti SPREADSHEET_ID dengan ID spreadsheet Anda.
-// ID diambil dari URL: https://docs.google.com/spreadsheets/d/**INI_ID_NYA**/edit
-export const SPREADSHEET_ID = '1FRcpOJtNDmdYXi_NBqrCra8vg1vU07huIMSMyXejobo';
+// SPREADSHEET_ID dan semua gid tab sekarang dibaca dari .env — BUKAN hardcode di sini.
+// File ini murni logic, aman ditimpa update dari Claude kapan saja tanpa
+// menghapus nilai yang sudah Anda isi di .env.
+//
+// Isi nilai aslinya di file .env (lihat .env.example untuk daftar lengkap variabel).
 
-// Tiap tab/sheet punya "gid" unik (lihat di URL saat tab itu aktif: ...#gid=123456).
-// Isi gid di bawah ini sesuai tab yang sudah Anda buat.
+function requireEnv(name: string): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(
+      `Environment variable "${name}" belum diisi. Copy .env.example jadi .env, lalu isi nilainya. ` +
+        `Lihat README/sheet.md untuk cara ambil SPREADSHEET_ID dan gid tiap tab.`
+    );
+  }
+  return value;
+}
+
+export const SPREADSHEET_ID = requireEnv('PUBLIC_SPREADSHEET_ID');
+
 export const SHEET_GIDS = {
-  pages_en      : '2024513039', // ganti dengan gid tab Pages_EN --> DELETE
-  pages_id      : '1802581701', // ganti dengan gid tab Pages_ID --> DELETE
-  simple_pages  : '1610984561', // ganti dengan gid tab Simple_Pages --> DELETE
-  pages         : '1146874689',  // ganti dengan gid tab Pages — key-value, 1 tab untuk SEMUA halaman & bahasa
-  articles_en   : '1887654328', // ganti dengan gid tab Articles_EN
-  articles_id   : '126605301',  // ganti dengan gid tab Articles_ID
-  navigation_en : '686566731',  // ganti dengan gid tab Navigation_EN
-  navigation_id : '797366802',  // ganti dengan gid tab Navigation_ID
-  settings      : '1893895348', // ganti dengan gid tab Settings (global, tidak per-bahasa)
-  categories    : '334017664',  // ganti dengan gid tab Categories (1 tab untuk kedua bahasa)
-  portfolio     : '1063417461', // ganti dengan gid tab Portfolio (tidak per-bahasa — cuma 1 URL global)
+  articles_en: requireEnv('PUBLIC_SHEET_GID_ARTICLES_EN'),
+  articles_id: requireEnv('PUBLIC_SHEET_GID_ARTICLES_ID'),
+  navigation_en: requireEnv('PUBLIC_SHEET_GID_NAVIGATION_EN'),
+  navigation_id: requireEnv('PUBLIC_SHEET_GID_NAVIGATION_ID'),
+  settings: requireEnv('PUBLIC_SHEET_GID_SETTINGS'),
+  pages: requireEnv('PUBLIC_SHEET_GID_PAGES'),
+  categories: requireEnv('PUBLIC_SHEET_GID_CATEGORIES'),
+  portfolio: requireEnv('PUBLIC_SHEET_GID_PORTFOLIO'),
 } as const;
 
 export type SheetKey = keyof typeof SHEET_GIDS;

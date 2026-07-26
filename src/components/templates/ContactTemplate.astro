@@ -1,6 +1,7 @@
 ---
 import type { Locale } from '../../lib/sheets';
 import { getSettings } from '../../lib/sheets';
+import JsonLd from '../JsonLd.astro';
 
 interface Props {
   locale: Locale;
@@ -14,6 +15,18 @@ const { locale, title, bodyHtml, address, email, hours } = Astro.props;
 
 const settings = await getSettings();
 const whatsappNumber = settings.whatsapp_number || '6281234567890';
+const siteUrl = Astro.site?.origin ?? 'https://domain.com';
+
+const localBusinessSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: settings.site_name || 'Kukode',
+  url: siteUrl,
+  ...(address && { address: { '@type': 'PostalAddress', streetAddress: address } }),
+  ...(email && { email }),
+  ...(hours && { openingHours: hours }),
+  ...(whatsappNumber && { telephone: `+${whatsappNumber}` }),
+};
 
 const labels =
   locale === 'en'
@@ -22,6 +35,7 @@ const labels =
 ---
 
 <div class="container py-5">
+  <JsonLd data={localBusinessSchema} />
   <h1 class="mb-4">{title}</h1>
   <div class="row g-5">
     <div class="col-lg-5">

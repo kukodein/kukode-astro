@@ -1,10 +1,16 @@
 // @ts-check
+import 'dotenv/config'; // load .env SEBELUM import lain di bawah ini butuh env var
 import { defineConfig } from 'astro/config';
 
 import sitemap from '@astrojs/sitemap';
 import { getArticles, getPortfolioItems, getPages, getPageFields } from './src/lib/sheets.ts';
 
-const SITE_URL = 'https://kukode.com'; // ganti dengan domain asli Anda
+const SITE_URL = process.env.PUBLIC_SITE_URL;
+if (!SITE_URL) {
+  throw new Error(
+    'Environment variable "PUBLIC_SITE_URL" belum diisi. Copy .env.example jadi .env, lalu isi domain Anda.'
+  );
+}
 
 /**
  * Bangun lookup "path -> tanggal terakhir diubah" dari Articles (EN+ID),

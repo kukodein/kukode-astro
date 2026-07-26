@@ -2,7 +2,8 @@
 import SEO from '../components/SEO.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import type { Locale } from '../lib/sheets';
+import JsonLd from '../components/JsonLd.astro';
+import { getSettings, type Locale } from '../lib/sheets';
 
 interface Props {
   locale: Locale;
@@ -32,11 +33,40 @@ function buildSwitchLangHref(): string {
   return enPath || '/';
 }
 const switchLangHref = buildSwitchLangHref();
+
+// Google Analytics — opsional, dikontrol lewat .env. Kosongkan PUBLIC_GA_MEASUREMENT_ID
+// untuk menonaktifkan total (tidak ada script GA yang di-load sama sekali, tidak ada
+// dampak performa untuk situs yang belum mau pasang GA).
+const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID;
+
+// Organization schema — global, di semua halaman. Field sosial (instagram/facebook/dst)
+// OPSIONAL di sheet Settings — kalau belum diisi, cuma tidak ikut di sameAs (bukan error).
+const settings = await getSettings();
+const siteUrl = Astro.site?.origin ?? 'https://domain.com';
+const socialLinks = [
+  settings.instagram,
+  settings.facebook,
+  settings.x,
+  settings.linkedin,
+  settings.youtube,
+  settings.tiktok,
+].filter(Boolean);
+
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: settings.site_name || 'Kukode',
+  url: siteUrl,
+  ...(settings.logo_url && { logo: settings.logo_url }),
+  ...(socialLinks.length > 0 && { sameAs: socialLinks }),
+};
 ---
 
 <!DOCTYPE html>
 <html lang={locale}>
   <head>
+    <!-- Set tema SEBELUM apa pun dirender, supaya tidak ada "flash" light->dark.
+         Harus inline (bukan file eksternal) dan di posisi paling atas <head>. -->
     <script is:inline>
       (function () {
         const saved = localStorage.getItem('kk-theme') || 'light';
@@ -60,7 +90,6 @@ const switchLangHref = buildSwitchLangHref();
       idPath={idPath}
     />
 
-
     <!-- Favicons -->
     <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.png">
@@ -81,6 +110,20 @@ const switchLangHref = buildSwitchLangHref();
 
     <!-- Snippet Additional CSS Style -->
     <slot name="extra-head" />
+
+    <JsonLd data={organizationSchema} />
+
+    {gaMeasurementId && (
+      <>
+        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}></script>
+        <script is:inline define:vars={{ gaMeasurementId }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag() { dataLayer.push(arguments); }
+          gtag('js', new Date());
+          gtag('config', gaMeasurementId);
+        </script>
+      </>
+    )}
   </head>
   <body>
     <Header locale={locale} switchLangHref={switchLangHref} />
@@ -94,7 +137,7 @@ const switchLangHref = buildSwitchLangHref();
     <!-- Bootstrap JS -->
     <script is:inline src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Custom Script -->
+    <!-- Custom Script Global -->
     <script is:inline src="/js/kukode-global.js"></script>
 
     <!-- Snippet Additional JS Script -->
