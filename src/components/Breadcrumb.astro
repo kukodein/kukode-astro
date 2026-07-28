@@ -1,0 +1,37 @@
+---
+// Breadcrumb visual. Item terakhir = halaman saat ini (tanpa url, tanpa link).
+// Data items ini SAMA dengan yang dikirim ke SEO.astro untuk JSON-LD BreadcrumbList —
+// jangan bikin daftar terpisah di masing-masing halaman, biar breadcrumb yang keliatan
+// dan structured data-nya selalu konsisten (mismatch antara keduanya bisa kena flag Google).
+interface BreadcrumbItem {
+  name: string;
+  url?: string; // kosongkan untuk item terakhir (halaman aktif)
+}
+
+interface Props {
+  items: BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+---
+
+{items.length > 1 && (
+  <nav aria-label="breadcrumb" class="kk-breadcrumb-nav py-3">
+    {/* <div class="container"> */}
+      <ol class="breadcrumb mb-0 small flex-nowrap align-items-center">
+        {items.map((item, index) => {
+          const isLast = index === items.length - 1;
+          return (
+            <li class={`breadcrumb-item ${isLast ? 'active text-truncate' : 'd-flex'}`} aria-current={isLast ? 'page' : undefined}>
+              {isLast || !item.url ? (
+                <span>{item.name}</span>
+              ) : (
+                <a href={item.url} class="text-muted-kk text-decoration-none">{item.name}</a>
+              )}
+            </li>
+          );
+        })}
+      </ol>
+    {/* </div> */}
+  </nav>
+)}

@@ -17,10 +17,23 @@ interface Props {
   publishedDate?: string;
   modifiedDate?: string;
   robots?: string; // opsional override manual — kalau tidak diisi, SEO.astro pakai default environment-aware (noindex otomatis di luar Production)
+  breadcrumbItems?: { name: string; url?: string }[]; // diteruskan ke SEO untuk JSON-LD BreadcrumbList
 }
 
-const { locale, title, description, path, enPath, idPath, image, type, publishedDate, modifiedDate, robots } =
-  Astro.props;
+const { 
+  locale, 
+  title, 
+  description, 
+  path, 
+  enPath, 
+  idPath, 
+  image, 
+  type, 
+  publishedDate, 
+  modifiedDate, 
+  robots,
+  breadcrumbItems,
+} = Astro.props;
 
 // Path untuk language switcher — path relatif TANPA domain (beda dari hreflang di SEO.astro
 // yang butuh absolute URL). Fallback ke Home versi bahasa lain kalau halaman ini belum ada
@@ -88,6 +101,7 @@ const organizationSchema = {
       enPath={enPath}
       idPath={idPath}
       robots={robots}
+      breadcrumbItems={breadcrumbItems}
     />
 
     <!-- Favicons -->

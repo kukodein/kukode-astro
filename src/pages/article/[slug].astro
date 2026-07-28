@@ -2,6 +2,8 @@
 import { marked } from 'marked';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getArticles, getArticleAlternateSlug } from '../../lib/sheets';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import { breadcrumbLabels } from '../../lib/i18n-utils';
 
 export async function getStaticPaths() {
   const articles = await getArticles('en');
@@ -17,6 +19,13 @@ const bodyHtml = await marked.parse(article.body);
 // Cari padanan slug versi ID lewat article_id (bukan lewat slug, karena slug boleh beda per bahasa).
 // Bisa null kalau artikel ini belum diterjemahkan -> hreflang untuk id tidak akan dirender.
 const alternateSlugId = await getArticleAlternateSlug(article.article_id, 'id');
+
+const labels = breadcrumbLabels('en');
+const breadcrumbItems = [
+  { name: labels.home, url: '/' },
+  { name: labels.articles, url: '/article/' },
+  { name: article.title },
+];
 ---
 
 <BaseLayout
@@ -30,15 +39,21 @@ const alternateSlugId = await getArticleAlternateSlug(article.article_id, 'id');
   type="article"
   publishedDate={article.published_date}
   modifiedDate={article.date_modified}
+  breadcrumbItems={breadcrumbItems}
 >
-  <article class="container py-5">
+  <div class="container py-5">
     <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <Breadcrumb items={breadcrumbItems} />
+      </div>
+    </div>
+    <article class="row">
       <div class="col-lg-8 mx-auto">
         <h1>{article.title}</h1>
         <time datetime={article.published_date} class="text-muted d-block mb-3">{article.published_date}</time>
         {article.featured_image && <img src={article.featured_image} alt={article.title} class="img-fluid rounded-1 mb-3" />}
         <div class="article-body" set:html={bodyHtml} />
       </div>
-    </div>
-  </article>
+    </article>
+  </div>
 </BaseLayout>
