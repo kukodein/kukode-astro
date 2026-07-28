@@ -16,9 +16,10 @@ interface Props {
   type?: 'website' | 'article';
   publishedDate?: string;
   modifiedDate?: string;
+  robots?: string; // opsional override manual — kalau tidak diisi, SEO.astro pakai default environment-aware (noindex otomatis di luar Production)
 }
 
-const { locale, title, description, path, enPath, idPath, image, type, publishedDate, modifiedDate } =
+const { locale, title, description, path, enPath, idPath, image, type, publishedDate, modifiedDate, robots } =
   Astro.props;
 
 // Path untuk language switcher — path relatif TANPA domain (beda dari hreflang di SEO.astro
@@ -65,8 +66,6 @@ const organizationSchema = {
 <!DOCTYPE html>
 <html lang={locale}>
   <head>
-    <!-- Set tema SEBELUM apa pun dirender, supaya tidak ada "flash" light->dark.
-         Harus inline (bukan file eksternal) dan di posisi paling atas <head>. -->
     <script is:inline>
       (function () {
         const saved = localStorage.getItem('kk-theme') || 'light';
@@ -88,6 +87,7 @@ const organizationSchema = {
       path={path}
       enPath={enPath}
       idPath={idPath}
+      robots={robots}
     />
 
     <!-- Favicons -->

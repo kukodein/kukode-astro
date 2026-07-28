@@ -17,8 +17,15 @@ interface Props {
   path: string; // path halaman ini TANPA domain, contoh: "/about/" atau "/id/tentang/" — dipakai untuk canonical
   enPath?: string; // path versi EN TANPA domain TANPA prefix, mis. "/article/foo" — untuk hreflang
   idPath?: string; // path versi ID TANPA domain TANPA prefix "/id", mis. "/article/artikel-foo" — untuk hreflang
-  robots?: string; // default "index, follow" — override kalau suatu saat butuh noindex halaman tertentu
+  robots?: string; // opsional override manual per halaman — kalau tidak diisi, pakai default environment-aware di bawah
 }
+
+// Default robots otomatis berdasarkan environment Vercel (VERCEL_ENV: 'production' | 'preview' | 'development').
+// Di luar Production (Preview/staging), default jadi noindex — mencegah Google index situs staging.
+// VERCEL_ENV tidak ke-set kalau build dijalankan di luar Vercel (mis. lokal) -> dianggap production
+// (index, follow), supaya build lokal biasa tidak tiba-tiba noindex tanpa disadari.
+const isNonProductionOnVercel = process.env.VERCEL_ENV && process.env.VERCEL_ENV !== 'production';
+const defaultRobots = isNonProductionOnVercel ? 'noindex, nofollow' : 'index, follow';
 
 const {
   locale,
@@ -31,10 +38,10 @@ const {
   path,
   enPath,
   idPath,
-  robots = 'index, follow',
+  robots = defaultRobots,
 } = Astro.props;
 
-const siteUrl = Astro.site?.origin ?? 'https://domain.com';
+const siteUrl = Astro.site?.origin ?? 'https://kukode.com';
 const canonicalUrl = `${siteUrl}${path}`;
 const ogImage = image ?? `/image/default-thumbnail.jpg`; // fallback kalau halaman tidak punya gambar sendiri
 const siteName = 'Kukode';
