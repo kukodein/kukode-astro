@@ -18,6 +18,7 @@ interface Props {
   enPath?: string; // path versi EN TANPA domain TANPA prefix, mis. "/article/foo" — untuk hreflang
   idPath?: string; // path versi ID TANPA domain TANPA prefix "/id", mis. "/article/artikel-foo" — untuk hreflang
   robots?: string; // opsional override manual per halaman — kalau tidak diisi, pakai default environment-aware di bawah
+  breadcrumbItems?: { name: string; url?: string }[]; // untuk JSON-LD BreadcrumbList — array SAMA yang dikirim ke <Breadcrumb items={...} />, url relatif tanpa domain, item terakhir (halaman aktif) boleh tanpa url
 }
 
 // Default robots otomatis berdasarkan environment Vercel (VERCEL_ENV: 'production' | 'preview' | 'development').
@@ -39,6 +40,7 @@ const {
   enPath,
   idPath,
   robots = defaultRobots,
+  breadcrumbItems,
 } = Astro.props;
 
 const siteUrl = Astro.site?.origin ?? 'https://kukode.com';
@@ -105,6 +107,25 @@ function absoluteIdUrl(p: string): string {
       image: ogImage,
       datePublished: new Date(publishedDate).toISOString(),
       dateModified: new Date(modifiedDate || publishedDate).toISOString(),
+    })}
+  />
+)}
+
+{/* JSON-LD BreadcrumbList — array items HARUS sama dengan yang dirender <Breadcrumb />,
+    supaya breadcrumb yang keliatan di halaman dan structured data-nya tidak mismatch. */}
+{breadcrumbItems && breadcrumbItems.length > 1 && (
+  <script
+    is:inline
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: breadcrumbItems.map((item, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: item.name,
+        ...(item.url ? { item: `${siteUrl}${item.url}` } : {}),
+      })),
     })}
   />
 )}
