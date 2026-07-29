@@ -1,3 +1,57 @@
+/* Google Sans - Normal */
+@font-face {
+  font-family: 'Google Sans';
+  src: url('../fonts/GoogleSans-VariableFont_GRAD,opsz,wght.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Google Sans - Italic */
+@font-face {
+  font-family: 'Google Sans';
+  src: url('../fonts/GoogleSans-Italic-VariableFont_GRAD,opsz,wght.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Inter - Normal */
+@font-face {
+  font-family: 'Inter';
+  src: url('../fonts/Inter-VariableFont_opsz,wght.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Inter - Italic */
+@font-face {
+  font-family: 'Inter';
+  src: url('../fonts/Inter-Italic-VariableFont_opsz,wght.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Fira Mono Regular (400) */
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('../fonts/FiraMono-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Fira Mono Medium (500) */
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('../fonts/FiraMono-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --bs-primary-rgb: 62, 99, 221;
   --bs-border-radius: 1rem;
@@ -15,6 +69,7 @@
   --kk-code-bg: #0f1117;
   --kk-code-text: #d4d8e6;
   --font-title: 'Google Sans', sans-serif;
+  --font-code: 'Fira Mono', monospace;
 }
 [data-bs-theme="dark"] {
   --bs-body-bg: #08090d;
@@ -36,9 +91,10 @@
 
 body { transition: background-color 0.2s ease, color 0.2s ease; }
 h1, h2, h3, h4, h5, h6, .font-heading { font-family: var(--font-title); color: var(--kk-heading); letter-spacing: -0.02em; }
+code, pre, .code-block, .kk-mono { font-family: var(--font-code) }
+
 .text-muted-kk { color: var(--kk-muted) !important; }
 .bg-surface { background: var(--kk-surface); }
-code, .kk-mono { font-family: 'JetBrains Mono', monospace; }
 .fs-7 {font-size: 14px;}
 .w-16px {width: 16px;}
 
