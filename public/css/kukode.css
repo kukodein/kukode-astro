@@ -239,11 +239,22 @@ article img { width: 100%; border-radius: 6px; }
 .kk-why-card { height: 100%; }
 .kk-why-card .kk-icon-circle { margin-bottom: 1rem; }
 
-/* Testimonial swiper */
+/* Testimonial swiper 
 .kk-testi-swiper { padding-bottom: 3rem !important; }
 .kk-testi-swiper .swiper-pagination-bullet { background: var(--bs-primary); opacity: 0.3; }
 .kk-testi-swiper .swiper-pagination-bullet-active { opacity: 1; }
 .kk-testi-slide { height: auto; }
+*/
+
+/* Testimonial carousel (Bootstrap) — indicator dots styled to match brand color */
+#kkTestiCarousel .carousel-indicators button {
+  background-color: var(--bs-primary);
+  opacity: 0.3;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+}
+#kkTestiCarousel .carousel-indicators button.active { opacity: 1; }
 
 /* Contact CTA band */
 .kk-cta-band {
