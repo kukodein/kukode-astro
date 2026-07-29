@@ -200,7 +200,7 @@ article img { width: 100%; border-radius: 6px; }
 .kk-browser-bar { background: var(--kk-surface-2); padding: 0.5rem 0.8rem; display: flex; gap: 5px; }
 .kk-browser-bar span { width: 7px; height: 7px; border-radius: 50%; background: var(--bs-warning); display: inline-block; }
 .kk-browser-body { position: relative; overflow: hidden; border-radius: 11px; margin: 5px;}
-.kk-browser-body img { width: 100%; display: block; transition: transform 0.35s ease; }
+.kk-browser-body img { width: 100%; height: auto; display: block; transition: transform 0.35s ease; }
 .kk-portfolio-card:hover img { transform: scale(1.04); }
 .kk-overlay { position: absolute; inset: 0; background: color-mix(in srgb, #000 55%, transparent); opacity: 0; transition: opacity 0.25s ease; display: flex; align-items: center; justify-content: center; }
 .kk-portfolio-card:hover .kk-overlay { opacity: 1; }
