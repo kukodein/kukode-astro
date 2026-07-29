@@ -180,8 +180,8 @@ article img { width: 100%; border-radius: 6px; }
 .kk-code-dots span { width: 9px; height: 9px; border-radius: 50%; display: inline-block; margin-right: 5px; }
 .kk-c-blue { color: #7aa2f7; } .kk-c-green { color: #9ece6a; } .kk-c-muted2 { color: #565f89; }
 
-.kk-logo-strip { display: flex; flex-wrap: wrap; gap: 2.5rem; align-items: center; justify-content: center; opacity: 0.6; }
-.kk-logo-strip span { font-family: var(--font-title); font-weight: 700; font-size: 1.1rem; color: var(--kk-muted); }
+.kk-logo-strip { display: flex; flex-wrap: wrap; gap: 2.5rem; align-items: center; justify-content: center; }
+.kk-logo-strip span { font-family: var(--font-title); font-weight: 700; font-size: 1.1rem; }
 
 .kk-stat-num { font-family: var(--font-title); font-weight: 800; font-size: 2.4rem; color: var(--kk-heading); }
 
