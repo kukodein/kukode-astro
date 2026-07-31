@@ -9,6 +9,6 @@ const { title, bodyHtml, featuredImage } = Astro.props;
 
 <article class="py-5">
   <h1 class="px-3 pt-5 mb-4">{title}</h1>
-  {featuredImage && <img src={featuredImage} alt={title} class="img-fluid mb-4 w-100" />}
+  {featuredImage && <img src={featuredImage} alt={title} class="img-fluid mb-4 w-100" loading="lazy" />}
   <div class="kk-page-body px-3 pb-5" set:html={bodyHtml} />
 </article>

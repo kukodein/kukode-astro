@@ -40,7 +40,7 @@ const { items, currentPage, lastPage } = Astro.props;
         <div class="col-md-6 col-lg-4">
           <a href={`/portfolio/${item.slug}/`} class="text-decoration-none text-reset d-block">
             {item.featured_image && (
-              <img src={item.featured_image} alt={item.title} class="img-fluid rounded-3 mb-2 w-100 aspect-ratio-16-9" />
+              <img src={item.featured_image} alt={item.title} class="img-fluid rounded-3 mb-2 w-100 aspect-ratio-16-9" loading="lazy" />
             )}
             <h2 class="h6 font-heading fw-bold">{item.title}</h2>
           </a>

@@ -39,7 +39,7 @@ const serviceSchema = {
     {priceFrom && (
       <p class="text-muted-kk mb-4">{priceLabel} <span class="fw-bold text-body">{priceFrom}</span></p>
     )}
-    {featuredImage && <img src={featuredImage} alt={title} class="img-fluid rounded mb-4" />}
+    {featuredImage && <img src={featuredImage} alt={title} class="img-fluid rounded mb-4" loading="lazy" />}
     <div class="kk-page-body mb-4" set:html={bodyHtml} />
     <a href={contactHref} class="btn btn-primary">{ctaLabel}</a>
   </div>
