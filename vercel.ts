@@ -17,5 +17,24 @@ export const config: VercelConfig = {
         value: robotsHeaderValue 
       }
     ]),
+    // Vendor libs (Bootstrap dkk) jarang berubah — cache lebih lama (1 minggu).
+    routes.header('/vendor/(.*)', [
+      { 
+        key: 'Cache-Control', 
+        value: 'public, max-age=604800, must-revalidate' },
+    ]),
+    // Custom CSS/JS kami sendiri — cache lebih pendek (1 hari), karena ini yang
+    // paling sering diupdate. must-revalidate supaya browser tetap cek freshness
+    // setelah expired, bukan diam-diam pakai versi lama.
+    routes.header('/css/(.*)', [
+      { 
+        key: 'Cache-Control', 
+        value: 'public, max-age=86400, must-revalidate' },
+    ]),
+    routes.header('/js/(.*)', [
+      { 
+        key: 'Cache-Control', 
+        value: 'public, max-age=86400, must-revalidate' },
+    ]),
   ],
 };

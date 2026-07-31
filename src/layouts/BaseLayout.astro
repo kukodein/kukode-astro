@@ -56,7 +56,7 @@ const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID;
 // Organization schema — global, di semua halaman. Field sosial (instagram/facebook/dst)
 // OPSIONAL di sheet Settings — kalau belum diisi, cuma tidak ikut di sameAs (bukan error).
 const settings = await getSettings();
-const siteUrl = Astro.site?.origin ?? 'https://domain.com';
+const siteUrl = Astro.site?.origin ?? 'https://kukode.com';
 const socialLinks = [
   settings.instagram,
   settings.facebook,
@@ -130,6 +130,13 @@ const organizationSchema = {
         </script>
       </>
     )}
+
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Kukode Blog"
+      href={locale === 'en' ? '/rss.xml' : '/id/rss.xml'}
+    />
   </head>
   <body>
     <Header locale={locale} switchLangHref={switchLangHref} />
@@ -141,10 +148,10 @@ const organizationSchema = {
     <Footer locale={locale} />
 
     <!-- Bootstrap JS -->
-    <script is:inline src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script is:inline src="/vendor/bootstrap/js/bootstrap.min.js" defer></script>
 
     <!-- Custom Script Global -->
-    <script is:inline src="/js/kukode-global.js"></script>
+    <script is:inline src="/js/kukode-global.js" defer></script>
 
     <!-- Snippet Additional JS Script -->
     <slot name="extra-scripts" />
