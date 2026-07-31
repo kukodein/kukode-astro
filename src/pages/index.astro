@@ -81,7 +81,7 @@ const faqPageSchema = {
   idPath="/"
 >
   <Fragment slot="extra-head">
-    <link href="/vendor/swiper/swiper-bundle.min.css" rel="stylesheet" />
+    <!-- <link href="" rel="stylesheet" /> -->
   </Fragment>
 
   <section id="section-hero" class="kk-hero pb-4 pt-1 py-lg-5 py-xxl-0">
@@ -99,7 +99,7 @@ const faqPageSchema = {
         <div class="col-lg-6 order-lg-2 order-1">
           <div class="position-relative">
             <div class="kk-card p-2 border-0 bg-transparent">
-              <img src="/image/en-home-section-hero.png" alt="Kukode product preview" class="img-fluid rounded-3 w-100" />
+              <img src="/image/en-home-section-hero.png" alt="Kukode product preview" class="img-fluid rounded-3 w-100" height="530px" width="530px"/>
             </div>
             <div class="kk-float-card" style="position:absolute; top:100px; left:5px; background:var(--bs-body-bg); border-radius:var(--bs-border-radius-sm); box-shadow:0 20px 50px rgba(0,0,0,0.18); padding:0.75rem 1rem; font-size:0.8rem; font-weight:500;">⚡ 98/100 average site speed score</div>
             <div class="kk-float-card" style="position:absolute; bottom:100px; right:5px; background:var(--bs-body-bg); border-radius:var(--bs-border-radius-sm); box-shadow:0 20px 50px rgba(0,0,0,0.18); padding:0.75rem 1rem; font-size:0.8rem; font-weight:500;">🔍 Built SEO-ready from day one</div>
@@ -109,9 +109,9 @@ const faqPageSchema = {
     </div>
   </section>
 
-  <section id="trusted" class="py-4 bg-light">
+  <section id="trusted" class="py-4 bg-light position-relative" style="z-index: 1;">
     <div class="container">
-      <p class="text-center text-muted-kk small mb-4">Businesses we've helped go online</p>
+      <p class="text-center small mb-4">Businesses we've helped go online</p>
       <div class="kk-logo-strip"><span>Acme</span><span>Northwind</span><span>Globex</span><span>Initech</span><span>Umbrella</span><span>Soylent</span></div>
     </div>
   </section>
@@ -157,7 +157,7 @@ const faqPageSchema = {
     <div class="container">
       <div class="row align-items-center g-4">
         <div class="col-lg-6">
-          <img src="/image/en-home-section-tentang.png" alt="Kukode team at work" class="img-fluid" />
+          <img src="/image/en-home-section-tentang.png" alt="Kukode team at work" class="img-fluid" width="546px" height="364px" />
         </div>
         <div class="col-lg-6">
           <p class="kk-eyebrow mb-2">About Kukode</p>
@@ -246,12 +246,12 @@ const faqPageSchema = {
         <a href="/portfolio/" class="btn btn-outline-kk btn-sm">See All Projects</a>
       </div>
       <div class="row g-3">
-        <div class="col-6 col-lg-4"><a href="#" class="kk-portfolio-card text-decoration-none text-reset d-block"><div class="kk-browser-frame"><div class="kk-browser-bar"><span></span><span></span><span></span></div><div class="kk-browser-body"><img src="https://picsum.photos/600/400?41" alt="Project one" /><div class="kk-overlay"><span class="btn btn-light btn-sm rounded-pill">View project</span></div></div></div><div class="m-2"><p class="text-muted-kk small mt-2 mb-1">Company Profile</p><h3 class="h6 font-heading fw-bold">Project One</h3></div></a></div>
-        <div class="col-6 col-lg-4"><a href="#" class="kk-portfolio-card text-decoration-none text-reset d-block"><div class="kk-browser-frame"><div class="kk-browser-bar"><span></span><span></span><span></span></div><div class="kk-browser-body"><img src="https://picsum.photos/600/400?42" alt="Project two" /><div class="kk-overlay"><span class="btn btn-light btn-sm rounded-pill">View project</span></div></div></div><div class="m-2"><p class="text-muted-kk small mt-2 mb-1">E-Commerce</p><h3 class="h6 font-heading fw-bold">Project Two</h3></div></a></div>
-        <div class="col-6 col-lg-4"><a href="#" class="kk-portfolio-card text-decoration-none text-reset d-block"><div class="kk-browser-frame"><div class="kk-browser-bar"><span></span><span></span><span></span></div><div class="kk-browser-body"><img src="https://picsum.photos/600/400?43" alt="Project three" /><div class="kk-overlay"><span class="btn btn-light btn-sm rounded-pill">View project</span></div></div></div><div class="m-2"><p class="text-muted-kk small mt-2 mb-1">Landing Page</p><h3 class="h6 font-heading fw-bold">Project Three</h3></div></a></div>
-        <div class="col-6 col-lg-4"><a href="#" class="kk-portfolio-card text-decoration-none text-reset d-block"><div class="kk-browser-frame"><div class="kk-browser-bar"><span></span><span></span><span></span></div><div class="kk-browser-body"><img src="https://picsum.photos/600/400?44" alt="Project four" /><div class="kk-overlay"><span class="btn btn-light btn-sm rounded-pill">View project</span></div></div></div><div class="m-2"><p class="text-muted-kk small mt-2 mb-1">Blog</p><h3 class="h6 font-heading fw-bold">Project Four</h3></div></a></div>
-        <div class="col-6 col-lg-4"><a href="#" class="kk-portfolio-card text-decoration-none text-reset d-block"><div class="kk-browser-frame"><div class="kk-browser-bar"><span></span><span></span><span></span></div><div class="kk-browser-body"><img src="https://picsum.photos/600/400?45" alt="Project five" /><div class="kk-overlay"><span class="btn btn-light btn-sm rounded-pill">View project</span></div></div></div><div class="m-2"><p class="text-muted-kk small mt-2 mb-1">Portfolio</p><h3 class="h6 font-heading fw-bold">Project Five</h3></div></a></div>
-        <div class="col-6 col-lg-4"><a href="#" class="kk-portfolio-card text-decoration-none text-reset d-block"><div class="kk-browser-frame"><div class="kk-browser-bar"><span></span><span></span><span></span></div><div class="kk-browser-body"><img src="https://picsum.photos/600/400?46" alt="Project six" /><div class="kk-overlay"><span class="btn btn-light btn-sm rounded-pill">View project</span></div></div></div><div class="m-2"><p class="text-muted-kk small mt-2 mb-1">Web App</p><h3 class="h6 font-heading fw-bold">Project Six</h3></div></a></div>
+        <div class="col-6 col-lg-4"><a href="#" class="kk-portfolio-card text-decoration-none text-reset d-block"><div class="kk-browser-frame"><div class="kk-browser-bar"><span></span><span></span><span></span></div><div class="kk-browser-body"><img src="https://picsum.photos/600/400?41" alt="Project one" width="600px" height="400px" /><div class="kk-overlay"><span class="btn btn-light btn-sm rounded-pill">View project</span></div></div></div><div class="m-2"><p class="text-muted-kk small mt-2 mb-1">Company Profile</p><h3 class="h6 font-heading fw-bold">Project One</h3></div></a></div>
+        <div class="col-6 col-lg-4"><a href="#" class="kk-portfolio-card text-decoration-none text-reset d-block"><div class="kk-browser-frame"><div class="kk-browser-bar"><span></span><span></span><span></span></div><div class="kk-browser-body"><img src="https://picsum.photos/600/400?42" alt="Project two" width="600px" height="400px" /><div class="kk-overlay"><span class="btn btn-light btn-sm rounded-pill">View project</span></div></div></div><div class="m-2"><p class="text-muted-kk small mt-2 mb-1">E-Commerce</p><h3 class="h6 font-heading fw-bold">Project Two</h3></div></a></div>
+        <div class="col-6 col-lg-4"><a href="#" class="kk-portfolio-card text-decoration-none text-reset d-block"><div class="kk-browser-frame"><div class="kk-browser-bar"><span></span><span></span><span></span></div><div class="kk-browser-body"><img src="https://picsum.photos/600/400?43" alt="Project three" width="600px" height="400px" /><div class="kk-overlay"><span class="btn btn-light btn-sm rounded-pill">View project</span></div></div></div><div class="m-2"><p class="text-muted-kk small mt-2 mb-1">Landing Page</p><h3 class="h6 font-heading fw-bold">Project Three</h3></div></a></div>
+        <div class="col-6 col-lg-4"><a href="#" class="kk-portfolio-card text-decoration-none text-reset d-block"><div class="kk-browser-frame"><div class="kk-browser-bar"><span></span><span></span><span></span></div><div class="kk-browser-body"><img src="https://picsum.photos/600/400?44" alt="Project four" width="600px" height="400px" /><div class="kk-overlay"><span class="btn btn-light btn-sm rounded-pill">View project</span></div></div></div><div class="m-2"><p class="text-muted-kk small mt-2 mb-1">Blog</p><h3 class="h6 font-heading fw-bold">Project Four</h3></div></a></div>
+        <div class="col-6 col-lg-4"><a href="#" class="kk-portfolio-card text-decoration-none text-reset d-block"><div class="kk-browser-frame"><div class="kk-browser-bar"><span></span><span></span><span></span></div><div class="kk-browser-body"><img src="https://picsum.photos/600/400?45" alt="Project five" width="600px" height="400px" /><div class="kk-overlay"><span class="btn btn-light btn-sm rounded-pill">View project</span></div></div></div><div class="m-2"><p class="text-muted-kk small mt-2 mb-1">Portfolio</p><h3 class="h6 font-heading fw-bold">Project Five</h3></div></a></div>
+        <div class="col-6 col-lg-4"><a href="#" class="kk-portfolio-card text-decoration-none text-reset d-block"><div class="kk-browser-frame"><div class="kk-browser-bar"><span></span><span></span><span></span></div><div class="kk-browser-body"><img src="https://picsum.photos/600/400?46" alt="Project six" width="600px" height="400px" /><div class="kk-overlay"><span class="btn btn-light btn-sm rounded-pill">View project</span></div></div></div><div class="m-2"><p class="text-muted-kk small mt-2 mb-1">Web App</p><h3 class="h6 font-heading fw-bold">Project Six</h3></div></a></div>
       </div>
     </div>
   </section>
@@ -320,25 +320,49 @@ const faqPageSchema = {
   <section id="testimony" class="kk-section">
     <div class="container">
       <div class="text-center mb-5"><p class="kk-eyebrow mb-2">Testimonials</p><h2>Straight from the people we've worked with.</h2></div>
-      <div class="swiper kk-testi-swiper pt-1">
-        <div class="swiper-wrapper">
-          <div class="swiper-slide kk-testi-slide">
-            <div class="kk-card p-4 h-100"><p class="mb-4">&ldquo;Our new site loads in under a second and our inquiries doubled in the first month.&rdquo;</p><div class="d-flex align-items-center gap-3"><div class="kk-icon-circle mb-0">👨‍💼</div><div><p class="fw-bold mb-0 small">Budi Santoso</p><p class="text-muted-kk small mb-0">CEO, Company A</p></div></div></div>
+      <div id="kkTestiCarousel" class="carousel slide" data-bs-ride="false">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <div class="row g-3 pt-2">
+              <div class="col-md-6 col-lg-3">
+                <div class="kk-card p-4 h-100"><p class="mb-4">&ldquo;Our new site loads in under a second and our inquiries doubled in the first month.&rdquo;</p><div class="d-flex align-items-center gap-3"><div class="kk-icon-circle mb-0">👨‍💼</div><div><p class="fw-bold mb-0 small">Budi Santoso</p><p class="text-muted-kk small mb-0">CEO, Company A</p></div></div></div>
+              </div>
+              <div class="col-md-6 col-lg-3">
+                <div class="kk-card p-4 h-100"><p class="mb-4">&ldquo;I can update the site myself without calling anyone — that alone was worth it.&rdquo;</p><div class="d-flex align-items-center gap-3"><div class="kk-icon-circle mb-0">👩</div><div><p class="fw-bold mb-0 small">Sari Dewi</p><p class="text-muted-kk small mb-0">Owner, Store B</p></div></div></div>
+              </div>
+              <div class="col-md-6 col-lg-3">
+                <div class="kk-card p-4 h-100"><p class="mb-4">&ldquo;They actually explained what they were doing instead of just sending invoices.&rdquo;</p><div class="d-flex align-items-center gap-3"><div class="kk-icon-circle mb-0">👨‍⚕️</div><div><p class="fw-bold mb-0 small">Andi Wijaya</p><p class="text-muted-kk small mb-0">Marketing, Startup C</p></div></div></div>
+              </div>
+              <div class="col-md-6 col-lg-3">
+                <div class="kk-card p-4 h-100"><p class="mb-4">&ldquo;Finally a website that looks like it belongs to 2026, not 2015&rdquo;</p><div class="d-flex align-items-center gap-3"><div class="kk-icon-circle mb-0">👩</div><div><p class="fw-bold mb-0 small">Rina Putri</p><p class="text-muted-kk small mb-0">Founder, Brand D</p></div></div></div>
+              </div>
+            </div>
           </div>
-          <div class="swiper-slide kk-testi-slide">
-            <div class="kk-card p-4 h-100"><p class="mb-4">&ldquo;I can update the site myself without calling anyone — that alone was worth it.&rdquo;</p><div class="d-flex align-items-center gap-3"><div class="kk-icon-circle mb-0">👩</div><div><p class="fw-bold mb-0 small">Sari Dewi</p><p class="text-muted-kk small mb-0">Owner, Store B</p></div></div></div>
-          </div>
-          <div class="swiper-slide kk-testi-slide">
-            <div class="kk-card p-4 h-100"><p class="mb-4">&ldquo;They actually explained what they were doing instead of just sending invoices.&rdquo;</p><div class="d-flex align-items-center gap-3"><div class="kk-icon-circle mb-0">👨‍⚕️</div><div><p class="fw-bold mb-0 small">Andi Wijaya</p><p class="text-muted-kk small mb-0">Marketing, Startup C</p></div></div></div>
-          </div>
-          <div class="swiper-slide kk-testi-slide">
-            <div class="kk-card p-4 h-100"><p class="mb-4">&ldquo;Finally a website that looks like it belongs to 2026, not 2015&rdquo;</p><div class="d-flex align-items-center gap-3"><div class="kk-icon-circle mb-0">👩</div><div><p class="fw-bold mb-0 small">Rina Putri</p><p class="text-muted-kk small mb-0">Founder, Brand D</p></div></div></div>
-          </div>
-          <div class="swiper-slide kk-testi-slide">
-            <div class="kk-card p-4 h-100"><p class="mb-4">&ldquo;Fast replies, fair pricing, and the site actually works on mobile.&rdquo;</p><div class="d-flex align-items-center gap-3"><div class="kk-icon-circle mb-0">👨‍💼</div><div><p class="fw-bold mb-0 small">Dimas Prakoso</p><p class="text-muted-kk small mb-0">Ops Lead, Company E</p></div></div></div>
+          <div class="carousel-item">
+            <div class="row g-3 pt-2">
+              <div class="col-md-6 col-lg-3">
+                <div class="kk-card p-4 h-100"><p class="mb-4">&ldquo;Our new site loads in under a second and our inquiries doubled in the first month.&rdquo;</p><div class="d-flex align-items-center gap-3"><div class="kk-icon-circle mb-0">👨‍💼</div><div><p class="fw-bold mb-0 small">Budi Santoso</p><p class="text-muted-kk small mb-0">CEO, Company A</p></div></div></div>
+              </div>
+              <div class="col-md-6 col-lg-3">
+                <div class="kk-card p-4 h-100"><p class="mb-4">&ldquo;I can update the site myself without calling anyone — that alone was worth it.&rdquo;</p><div class="d-flex align-items-center gap-3"><div class="kk-icon-circle mb-0">👩</div><div><p class="fw-bold mb-0 small">Sari Dewi</p><p class="text-muted-kk small mb-0">Owner, Store B</p></div></div></div>
+              </div>
+              <div class="col-md-6 col-lg-3">
+                <div class="kk-card p-4 h-100"><p class="mb-4">&ldquo;They actually explained what they were doing instead of just sending invoices.&rdquo;</p><div class="d-flex align-items-center gap-3"><div class="kk-icon-circle mb-0">👨‍⚕️</div><div><p class="fw-bold mb-0 small">Andi Wijaya</p><p class="text-muted-kk small mb-0">Marketing, Startup C</p></div></div></div>
+              </div>
+              <div class="col-md-6 col-lg-3">
+                <div class="kk-card p-4 h-100"><p class="mb-4">&ldquo;Finally a website that looks like it belongs to 2026, not 2015&rdquo;</p><div class="d-flex align-items-center gap-3"><div class="kk-icon-circle mb-0">👩</div><div><p class="fw-bold mb-0 small">Rina Putri</p><p class="text-muted-kk small mb-0">Founder, Brand D</p></div></div></div>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="swiper-pagination mt-3"></div>
+        <div class="d-flex justify-content-center align-items-center gap-3 mt-4">
+          <!-- <button class="btn btn-sm btn-outline-kk" type="button" data-bs-target="#kkTestiCarousel" data-bs-slide="prev" aria-label="Previous">&larr;</button> -->
+          <div class="carousel-indicators position-relative m-0" style="width:auto;">
+            <button type="button" data-bs-target="#kkTestiCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#kkTestiCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+          </div>
+          <!-- <button class="btn btn-sm btn-outline-kk" type="button" data-bs-target="#kkTestiCarousel" data-bs-slide="next" aria-label="Next">&rarr;</button> -->
+        </div>
       </div>
     </div>
   </section>
@@ -389,11 +413,11 @@ const faqPageSchema = {
             <div class="mb-3">≈ USD 50 / project</div>
             <div class="text-muted">For businesses just stepping into the digital world with straightforward needs.</div>
             <hr style="border-color:var(--bs-border-color)">
-            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px"> Single-page landing page</div>
-            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px">Fully responsive design</div>
-            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px">WhatsApp button &amp; contact form</div>
-            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px">Figma mockup before coding</div>
-            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px">Delivered in 3–5 working days</div>
+            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px" width="16px" height="16px" width="16px" height="16px"> Single-page landing page</div>
+            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px" width="16px" height="16px" width="16px" height="16px">Fully responsive design</div>
+            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px" width="16px" height="16px" width="16px" height="16px">WhatsApp button &amp; contact form</div>
+            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px" width="16px" height="16px" width="16px" height="16px">Figma mockup before coding</div>
+            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px" width="16px" height="16px" width="16px" height="16px">Delivered in 3–5 working days</div>
             <a href="#contact" class="btn btn-outline-kk w-100 mt-4">Let's Talk</a>
           </div>
         </div>
@@ -404,12 +428,12 @@ const faqPageSchema = {
             <div class="mb-3">≈ USD 95 / project</div>
             <div class="text-muted">For businesses that want to look the part and win client trust from day one.</div>
             <hr style="border-color:var(--bs-border-color)">
-            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px">4–6 page company profile</div>
-            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px">Figma mockup + design revisions</div>
-            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px">Basic on-page SEO setup</div>
-            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px">Google Analytics configured</div>
-            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px">Open revisions within scope</div>
-            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px">Delivered in 7–10 working days</div>
+            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px" width="16px" height="16px">4–6 page company profile</div>
+            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px" width="16px" height="16px">Figma mockup + design revisions</div>
+            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px" width="16px" height="16px">Basic on-page SEO setup</div>
+            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px" width="16px" height="16px">Google Analytics configured</div>
+            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px" width="16px" height="16px">Open revisions within scope</div>
+            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px" width="16px" height="16px">Delivered in 7–10 working days</div>
             <a href="#contact" class="btn btn-primary w-100 mt-4">Choose This Plan</a>
           </div>
         </div>
@@ -420,11 +444,11 @@ const faqPageSchema = {
             <div class="mb-3">≈ USD 158 / project</div>
             <div class="text-muted">For businesses ready to sell online — commission-free, on their own terms.</div>
             <hr style="border-color:var(--bs-border-color)">
-            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px">Full WooCommerce store setup</div>
-            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px">Product catalog &amp; inventory management</div>
-            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px">Payment gateway integration</div>
-            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px">Automatic shipping calculator</div>
-            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px">Admin panel training included</div>
+            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px" width="16px" height="16px">Full WooCommerce store setup</div>
+            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px" width="16px" height="16px">Product catalog &amp; inventory management</div>
+            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px" width="16px" height="16px">Payment gateway integration</div>
+            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px" width="16px" height="16px">Automatic shipping calculator</div>
+            <div class="d-flex align-items-center"><img src="/image/StreamlineColorCheckSquare.png" alt="check-icon" class="me-2 w-16px" width="16px" height="16px">Admin panel training included</div>
             <a href="#contact" class="btn btn-outline-kk w-100 mt-4">Let's Talk</a>
           </div>
         </div>
@@ -475,7 +499,6 @@ const faqPageSchema = {
 
 
   <Fragment slot="extra-scripts">
-    <script is:inline src="/vendor/swiper/swiper-bundle.min.js"></script>
     <script is:inline src="/js/kukode-home.js"></script>
   </Fragment>
 </BaseLayout>

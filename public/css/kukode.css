@@ -1,3 +1,57 @@
+/* Google Sans - Normal */
+@font-face {
+  font-family: 'Google Sans';
+  src: url('../fonts/GoogleSans-VariableFont_GRAD,opsz,wght.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Google Sans - Italic */
+@font-face {
+  font-family: 'Google Sans';
+  src: url('../fonts/GoogleSans-Italic-VariableFont_GRAD,opsz,wght.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Inter - Normal */
+@font-face {
+  font-family: 'Inter';
+  src: url('../fonts/Inter-VariableFont_opsz,wght.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Inter - Italic */
+@font-face {
+  font-family: 'Inter';
+  src: url('../fonts/Inter-Italic-VariableFont_opsz,wght.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Fira Mono Regular (400) */
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('../fonts/FiraMono-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Fira Mono Medium (500) */
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('../fonts/FiraMono-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --bs-primary-rgb: 62, 99, 221;
   --bs-border-radius: 1rem;
@@ -15,6 +69,7 @@
   --kk-code-bg: #0f1117;
   --kk-code-text: #d4d8e6;
   --font-title: 'Google Sans', sans-serif;
+  --font-code: 'Fira Mono', monospace;
 }
 [data-bs-theme="dark"] {
   --bs-body-bg: #08090d;
@@ -36,9 +91,10 @@
 
 body { transition: background-color 0.2s ease, color 0.2s ease; }
 h1, h2, h3, h4, h5, h6, .font-heading { font-family: var(--font-title); color: var(--kk-heading); letter-spacing: -0.02em; }
+code, pre, .code-block, .kk-mono { font-family: var(--font-code) }
+
 .text-muted-kk { color: var(--kk-muted) !important; }
 .bg-surface { background: var(--kk-surface); }
-code, .kk-mono { font-family: 'JetBrains Mono', monospace; }
 .fs-7 {font-size: 14px;}
 .w-16px {width: 16px;}
 
@@ -124,8 +180,8 @@ article img { width: 100%; border-radius: 6px; }
 .kk-code-dots span { width: 9px; height: 9px; border-radius: 50%; display: inline-block; margin-right: 5px; }
 .kk-c-blue { color: #7aa2f7; } .kk-c-green { color: #9ece6a; } .kk-c-muted2 { color: #565f89; }
 
-.kk-logo-strip { display: flex; flex-wrap: wrap; gap: 2.5rem; align-items: center; justify-content: center; opacity: 0.6; }
-.kk-logo-strip span { font-family: var(--font-title); font-weight: 700; font-size: 1.1rem; color: var(--kk-muted); }
+.kk-logo-strip { display: flex; flex-wrap: wrap; gap: 2.5rem; align-items: center; justify-content: center; }
+.kk-logo-strip span { font-family: var(--font-title); font-weight: 700; font-size: 1.1rem; }
 
 .kk-stat-num { font-family: var(--font-title); font-weight: 800; font-size: 2.4rem; color: var(--kk-heading); }
 
@@ -144,7 +200,7 @@ article img { width: 100%; border-radius: 6px; }
 .kk-browser-bar { background: var(--kk-surface-2); padding: 0.5rem 0.8rem; display: flex; gap: 5px; }
 .kk-browser-bar span { width: 7px; height: 7px; border-radius: 50%; background: var(--bs-warning); display: inline-block; }
 .kk-browser-body { position: relative; overflow: hidden; border-radius: 11px; margin: 5px;}
-.kk-browser-body img { width: 100%; display: block; transition: transform 0.35s ease; }
+.kk-browser-body img { width: 100%; height: auto; display: block; transition: transform 0.35s ease; }
 .kk-portfolio-card:hover img { transform: scale(1.04); }
 .kk-overlay { position: absolute; inset: 0; background: color-mix(in srgb, #000 55%, transparent); opacity: 0; transition: opacity 0.25s ease; display: flex; align-items: center; justify-content: center; }
 .kk-portfolio-card:hover .kk-overlay { opacity: 1; }
@@ -183,11 +239,22 @@ article img { width: 100%; border-radius: 6px; }
 .kk-why-card { height: 100%; }
 .kk-why-card .kk-icon-circle { margin-bottom: 1rem; }
 
-/* Testimonial swiper */
+/* Testimonial swiper 
 .kk-testi-swiper { padding-bottom: 3rem !important; }
 .kk-testi-swiper .swiper-pagination-bullet { background: var(--bs-primary); opacity: 0.3; }
 .kk-testi-swiper .swiper-pagination-bullet-active { opacity: 1; }
 .kk-testi-slide { height: auto; }
+*/
+
+/* Testimonial carousel (Bootstrap) — indicator dots styled to match brand color */
+#kkTestiCarousel .carousel-indicators button {
+  background-color: var(--bs-primary);
+  opacity: 0.3;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+}
+#kkTestiCarousel .carousel-indicators button.active { opacity: 1; }
 
 /* Contact CTA band */
 .kk-cta-band {
