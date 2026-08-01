@@ -49,7 +49,7 @@ const breadcrumbItems = [
       <div class="col-lg-8 mx-auto">
         <h1>{article.title}</h1>
         <time datetime={article.published_date} class="text-muted d-block mb-3">{article.published_date}</time>
-        {article.featured_image && <img src={article.featured_image} alt={article.title} class="img-fluid rounded-1 mb-3" />}
+        {article.featured_image && <img src={article.featured_image} alt={article.title} class="img-fluid rounded-1 mb-3" loading="lazy" />}
         <div class="article-body" set:html={bodyHtml} />
       </div>
     </article>

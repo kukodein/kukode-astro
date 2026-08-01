@@ -22,7 +22,7 @@ const { title, items } = Astro.props;
           <div class="bg-white rounded-4 shadow-sm p-4 h-100">
             <p class={`mb-4 ${t.featured ? 'fs-5' : ''}`}>&ldquo;{t.quote}&rdquo;</p>
             <div class="d-flex align-items-center gap-3">
-              {t.avatar && <img src={t.avatar} alt={t.name} class="rounded-circle" width="48" height="48" />}
+              {t.avatar && <img src={t.avatar} alt={t.name} class="rounded-circle" width="48" height="48" loading="lazy" />}
               <div>
                 <p class="fw-bold mb-0">{t.name}</p>
                 <p class="text-muted small mb-0">{t.role}</p>

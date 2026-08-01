@@ -26,7 +26,7 @@ const descriptionHtml = await marked.parse(item.description);
   <div class="container py-5">
     <h1 class="mb-3">{item.title}</h1>
     {item.featured_image && (
-      <img src={item.featured_image} alt={item.title} class="img-fluid rounded-3 mb-4" />
+      <img src={item.featured_image} alt={item.title} class="img-fluid rounded-3 mb-4" loading="lazy" />
     )}
     <div class="kk-portfolio-detail-body" set:html={descriptionHtml} />
     {item.project_url && (

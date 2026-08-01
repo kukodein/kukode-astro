@@ -26,7 +26,7 @@ const { title, items } = Astro.props;
                 <span class="kk-dot bg-success"></span>
               </div>
               <div class="kk-browser-body position-relative">
-                <img src={item.image} alt={item.title} class="w-100" />
+                <img src={item.image} alt={item.title} class="w-100" loading="lazy" />
                 <div class="kk-overlay d-flex align-items-center justify-content-center">
                   <span class="btn btn-light btn-sm">Lihat Project</span>
                 </div>

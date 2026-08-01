@@ -4,6 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getArticles, getArticleAlternateSlug } from '../../lib/sheets';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import { breadcrumbLabels } from '../../lib/i18n-utils';
+import { wrapImagesForLightbox } from '../../lib/wrap-images-for-lightbox';
 
 export async function getStaticPaths() {
   const articles = await getArticles('en');
@@ -14,7 +15,9 @@ export async function getStaticPaths() {
 }
 
 const { article } = Astro.props;
-const bodyHtml = await marked.parse(article.body);
+// const bodyHtml = await marked.parse(article.body);
+const bodyHtml = wrapImagesForLightbox(await marked.parse(article.body));
+
 
 // Cari padanan slug versi ID lewat article_id (bukan lewat slug, karena slug boleh beda per bahasa).
 // Bisa null kalau artikel ini belum diterjemahkan -> hreflang untuk id tidak akan dirender.
@@ -41,6 +44,9 @@ const breadcrumbItems = [
   modifiedDate={article.date_modified}
   breadcrumbItems={breadcrumbItems}
 >
+  <Fragment slot="extra-head">
+    <link href="/vendor/glightbox/css/glightbox.min.css" rel="stylesheet" />
+  </Fragment>
   <div class="container py-5">
     <div class="row">
       <div class="col-lg-8 mx-auto">
@@ -51,9 +57,13 @@ const breadcrumbItems = [
       <div class="col-lg-8 mx-auto">
         <h1>{article.title}</h1>
         <time datetime={article.published_date} class="text-muted d-block mb-3">{article.published_date}</time>
-        {article.featured_image && <img src={article.featured_image} alt={article.title} class="img-fluid rounded-1 mb-3" />}
+        {article.featured_image && <img src={article.featured_image} alt={article.title} class="img-fluid rounded-1 mb-3" loading="lazy" />}
         <div class="article-body" set:html={bodyHtml} />
       </div>
     </article>
   </div>
+  <Fragment slot="extra-scripts">
+    <script is:inline src="/vendor/glightbox/js/glightbox.min.js"></script>
+    <script is:inline src="/js/kukode-article.js"></script>
+  </Fragment>
 </BaseLayout>

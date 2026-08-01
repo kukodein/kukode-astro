@@ -26,7 +26,7 @@ const items = allItems.slice(0, PAGE_SIZE);
             <div class="kk-browser-frame">
               <div class="kk-browser-bar"><span></span><span></span><span></span></div>
               <div class="kk-browser-body">
-                <img src={item.featured_image || '/image/default-featured-image.jpg'} alt={item.title} style="min-height:100px;" />
+                <img src={item.featured_image || '/image/default-featured-image.jpg'} alt={item.title} style="min-height:100px;" loading="lazy" />
                 <div class="kk-overlay"><span class="btn btn-light btn-sm rounded-pill">View project</span></div>
               </div>
             </div>

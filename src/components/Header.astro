@@ -37,6 +37,13 @@ const navItems =
 
 const ctaLabel = locale === 'en' ? 'Get a Quote' : 'Minta Penawaran';
 
+// aria-current="page" cuma bermakna untuk link yang menuju HALAMAN berbeda —
+// nav item di atas (Services/Process/dst) semuanya anchor ke section di
+// homepage yang sama, jadi tidak ada "halaman lain" yang bisa dibedakan di situ.
+// Yang jelas mewakili 1 halaman utuh adalah logo/brand (menuju Home) — itu yang
+// ditandai current kalau sedang di Home.
+const isHomePage = Astro.url.pathname === homePath;
+
 // Language switcher: tampilkan flag bahasa yang SEDANG aktif, title menjelaskan
 // aksi switch ke bahasa lain. href-nya sekarang mengarah ke HALAMAN PADANAN
 // sungguhan (bukan selalu Home) — dihitung di BaseLayout dari enPath/idPath
@@ -49,9 +56,9 @@ const langHref = switchLangHref;
 <header class="kk-navbar-wrap px-2">
   <nav class="navbar navbar-expand-lg kk-navbar container p-1 p-lg-2">
     <div class="container-fluid px-2">
-      <a class="navbar-brand d-flex align-items-center gap-2" href={homePath}>
-        <img src="/image/Logo-Kukode-Landscape.png" class="d-show-light d-none-dark" alt="Kukode" style="min-width: 32px" height="32px" width="101px" />
-        <img src="/image/Logo-Kukode-Landscape-White.png" class="d-show-dark d-none-light" alt="Kukode" style="min-width: 32px" height="32px" width="96px" />
+      <a class="navbar-brand d-flex align-items-center gap-2" href={homePath} aria-current={isHomePage ? 'page' : undefined}>
+        <img src="/image/Logo-Kukode-Landscape.png" class="d-show-light d-none-dark" alt="Kukode" style="min-width: 32px" height="32px" width="101px" loading="lazy" />
+        <img src="/image/Logo-Kukode-Landscape-White.png" class="d-show-dark d-none-light" alt="Kukode" style="min-width: 32px" height="32px" width="96px" loading="lazy" />
       </a>
       <div class="d-flex d-lg-none gap-2">
         <a href={langHref} class="kk-lang-toggle text-decoration-none" title={langTitle}>{langFlag}</a>
