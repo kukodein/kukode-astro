@@ -1,0 +1,58 @@
+---
+interface Props {
+  badgeText: string;
+  title: string;
+  subtitle: string;
+  ctaPrimaryLabel: string;
+  ctaPrimaryHref: string;
+  ctaSecondaryLabel: string;
+  ctaSecondaryHref: string;
+  image: string;
+  imageAlt: string;
+  floatCard1?: string;
+  floatCard2?: string;
+}
+const {
+  badgeText,
+  title,
+  subtitle,
+  ctaPrimaryLabel,
+  ctaPrimaryHref,
+  ctaSecondaryLabel,
+  ctaSecondaryHref,
+  image,
+  imageAlt,
+  floatCard1,
+  floatCard2,
+} = Astro.props;
+---
+
+<section id="section-hero" class="kk-hero pb-4 pt-1 py-lg-5 py-xxl-0">
+  <div class="container kk-hero-content">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-6 text-start order-lg-1 order-2">
+        <div class="kk-badge-pill mb-4"><span class="kk-dot"></span>{badgeText}</div>
+        <h1 class="mb-3">{title}</h1>
+        <p class="fs-5 text-muted-kk mb-4">{subtitle}</p>
+        <div class="d-flex gap-3">
+          <a href={ctaPrimaryHref} class="btn btn-primary"> {ctaPrimaryLabel}</a>
+          <a href={ctaSecondaryHref} class="btn btn-outline-kk">{ctaSecondaryLabel}</a>
+        </div>
+      </div>
+      <div class="col-lg-6 order-lg-2 order-1">
+        <div class="position-relative">
+          <div class="kk-card p-2 border-0 bg-transparent">
+            <img src={image} alt={imageAlt} class="img-fluid rounded-3 w-100" height="530px" width="530px"/>
+          </div>
+          {floatCard1 && (
+            <div class="kk-float-card" style="position:absolute; top:100px; left:5px; background:var(--bs-body-bg); border-radius:var(--bs-border-radius-sm); box-shadow:0 20px 50px rgba(0,0,0,0.18); padding:0.75rem 1rem; font-size:0.8rem; font-weight:500;">{floatCard1}</div>
+          )}
+          {floatCard2 && (
+            <div class="kk-float-card" style="position:absolute; bottom:100px; right:5px; background:var(--bs-body-bg); border-radius:var(--bs-border-radius-sm); box-shadow:0 20px 50px rgba(0,0,0,0.18); padding:0.75rem 1rem; font-size:0.8rem; font-weight:500;">{floatCard2}</div>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+

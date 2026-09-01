@@ -1,0 +1,46 @@
+---
+interface TestimonialItem {
+  quote: string;
+  icon: string;
+  name: string;
+  role: string;
+}
+interface TestimonialSlide {
+  items: TestimonialItem[];
+}
+interface Props {
+  eyebrow: string;
+  title: string;
+  slides: TestimonialSlide[];
+}
+const { eyebrow, title, slides } = Astro.props;
+---
+
+<section id="testimony" class="kk-section">
+  <div class="container">
+    <div class="text-center mb-5"><p class="kk-eyebrow mb-2">{eyebrow}</p><h2>{title}</h2></div>
+    <div id="kkTestiCarousel" class="carousel slide" data-bs-ride="false">
+      <div class="carousel-inner">
+        {slides.map((slide, si) => (
+          <div class={`carousel-item ${si === 0 ? 'active' : ''}`}>
+            <div class="row g-3 pt-2">
+              {slide.items.map((t) => (
+                <div class="col-md-6 col-lg-3">
+                  <div class="kk-card p-4 h-100"><p class="mb-4">&ldquo;{t.quote}&rdquo;</p><div class="d-flex align-items-center gap-3"><div class="kk-icon-circle mb-0">{t.icon}</div><div><p class="fw-bold mb-0 small">{t.name}</p><p class="text-muted-kk small mb-0">{t.role}</p></div></div></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div class="d-flex justify-content-center align-items-center gap-3 mt-4">
+        <div class="carousel-indicators position-relative m-0" style="width:auto;">
+          {slides.map((_, si) => (
+            <button type="button" data-bs-target="#kkTestiCarousel" data-bs-slide-to={si} class={si === 0 ? 'active' : ''} aria-current={si === 0 ? 'true' : undefined} aria-label={`Slide ${si + 1}`}></button>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+

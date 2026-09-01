@@ -1,5 +1,6 @@
 ---
 import type { ArticleRow, Locale } from '../lib/sheets';
+import { getCategories } from '../lib/sheets';
 
 interface Props {
   articles: ArticleRow[];
@@ -7,24 +8,36 @@ interface Props {
 }
 const { articles, locale } = Astro.props;
 const articleBasePath = locale === 'en' ? '/article' : '/id/article';
+
+// Lookup category_id -> nama tampil, sekali fetch untuk semua artikel di grid ini
+const categories = await getCategories();
+const categoryMap = new Map(categories.map((c) => [c.category_id, c]));
 ---
 
 <div class="row g-3">
   <h2 class="visually-hidden">List of Article</h2>
-  {articles.map((article) => (
-    <div class="col-6 col-md-4">
-      <div class="kk-card p-2">
-        <a href={`${articleBasePath}/${article.slug}`} class="text-decoration-none text-reset d-block">
-          <img src={article.featured_image || '/image/default-featured-image.jpg'} alt={article.title} class="img-fluid rounded-3 w-100 aspect-ratio-16-9 bg-light" style="min-height:100px;" loading="lazy" />
-          <div class="m-2">
-            <time datetime={article.published_date} class="text-muted-kk small mb-1 d-block">
-              {article.published_date}
-            </time>
-            <h3 class="h6 font-heading fw-bold mt-2">{article.title}</h3>
-            <p class="text-muted-kk small">{article.excerpt}</p>
-          </div>
-        </a>
+  {articles.map((article) => {
+    const category = categoryMap.get(article.category);
+    const categoryName = category ? (locale === 'en' ? category.name_en : category.name_id) : null;
+
+    return (
+      <div class="col-6 col-md-4">
+        <div class="kk-card p-2">
+          <a href={`${articleBasePath}/${article.slug}`} class="text-decoration-none text-reset d-block">
+            <img src={article.featured_image || '/image/default-featured-image.jpg'} alt={article.title} class="img-fluid rounded-3 w-100 aspect-ratio-16-9 bg-light" style="min-height:100px;" loading="lazy" />
+            <div class="m-2">
+              <div id="meta-post" class="d-flex justify-content-between mt-3">
+                {categoryName && (
+                  <span class="text-muted-kk small text-uppercase">{categoryName}</span>
+                )}
+                <time datetime={article.published_date} class="text-muted-kk small mb-1 d-block">{article.published_date}</time>
+              </div>
+              <h3 class="h6 font-heading mt-2">{article.title}</h3>
+              <p class="text-muted-kk small">{article.excerpt}</p>
+            </div>
+          </a>
+        </div>
       </div>
-    </div>
-  ))}
+    )
+  })}
 </div>

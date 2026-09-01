@@ -112,6 +112,7 @@ export interface ArticleRow {
   status: string;
   meta_title: string; // opsional — kalau kosong, fallback ke `title` saat dipakai
   meta_description: string; // opsional — kalau kosong, fallback ke `excerpt` saat dipakai
+  author: string; // key penghubung ke tab Authors (author_id) — SAMA di kedua bahasa
 }
 
 export interface NavigationRow {
@@ -132,6 +133,19 @@ export interface CategoryRow {
   slug_id: string;
   name_en: string;
   name_id: string;
+}
+
+export interface AuthorRow {
+  author_id: string; // key yang dipakai di kolom `author` Articles — SAMA di kedua bahasa
+  name: string;
+  avatar: string;
+  instagram: string;
+  facebook: string;
+  linkedin: string;
+  slug_en: string;
+  slug_id: string;
+  bio_en: string;
+  bio_id: string;
 }
 
 export interface PortfolioRow {
@@ -410,6 +424,49 @@ export async function getArticlesByCategory(
 ): Promise<ArticleRow[]> {
   const articles = await getArticles(locale);
   return articles.filter((a) => a.category === categoryId);
+}
+
+// ---------- Authors ----------
+
+/**
+ * Ambil semua penulis. AuthorRow tidak per-bahasa (1 tab untuk semua),
+ * jadi tidak perlu filter locale di sini — cuma dipakai untuk lookup slug/nama.
+ */
+export async function getAuthors(): Promise<AuthorRow[]> {
+  return fetchSheet<AuthorRow>('authors');
+}
+
+/**
+ * Cari 1 kategori berdasarkan category_id (key yang sama dipakai di kolom
+ * `category` Articles).
+ */
+export async function getAuthorById(authorId: string): Promise<AuthorRow | undefined> {
+  const authors = await getAuthors();
+  return authors.find((a) => a.author_id === authorId);
+}
+
+/**
+ * Cari 1 kategori berdasarkan slug untuk locale tertentu — dipakai di halaman
+ * /category/[slug]/ untuk resolve slug URL balik ke category_id.
+ */
+export async function getAuthorBySlug(
+  locale: Locale,
+  slug: string
+): Promise<AuthorRow | undefined> {
+  const authors = await getAuthors();
+  const slugKey = locale === 'en' ? 'slug_en' : 'slug_id';
+  return authors.find((a) => a[slugKey] === slug);
+}
+
+/**
+ * Ambil semua artikel published dalam satu kategori (locale tertentu), terurut terbaru dulu.
+ */
+export async function getArticlesByAuthor(
+  locale: Locale,
+  authorId: string
+): Promise<ArticleRow[]> {
+  const articles = await getArticles(locale);
+  return articles.filter((a) => a.author === authorId);
 }
 
 // ---------- Portfolio ----------

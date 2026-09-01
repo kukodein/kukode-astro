@@ -1,0 +1,128 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroSection from '../components/homepage/HeroSection.astro';
+import NumbersSection from '../components/homepage/NumbersSection.astro';
+import TestimonialsSection from '../components/homepage/TestimonialsSection.astro';
+import FaqSection from '../components/homepage/FaqSection.astro';
+import CtaBandSection from '../components/homepage/CtaBandSection.astro';
+
+// Page meta
+const pageTitle = 'Contact Us — Kukode';
+const pageDescription = 'Get in touch with Kukode. Free consultation, no pressure — tell us about your business and we\'ll figure out the best path forward.';
+
+// Stats
+const stats = [
+  { value: '120+', label: 'Websites launched' },
+  { value: '98', label: 'Avg. site speed score' },
+  { value: '5yr', label: 'Building websites' },
+  { value: '99%', label: "Clients who'd hire us again" },
+];
+
+// Testimonials
+const testimonialSlides = [
+  {
+    items: [
+      { quote: 'Our new site loads in under a second and our inquiries doubled in the first month.', icon: '👨‍💼', name: 'Budi Santoso', role: 'CEO, Company A' },
+      { quote: 'I can update the site myself without calling anyone — that alone was worth it.', icon: '👩', name: 'Sari Dewi', role: 'Owner, Store B' },
+      { quote: 'They actually explained what they were doing instead of just sending invoices.', icon: '👨‍⚕️', name: 'Andi Wijaya', role: 'Marketing, Startup C' },
+      { quote: 'Finally a website that looks like it belongs to 2026, not 2015', icon: '👩', name: 'Rina Putri', role: 'Founder, Brand D' },
+    ],
+  },
+];
+
+// FAQ
+const faqItems = [
+  { question: 'How long does a project take?', answer: 'Usually 2–4 weeks depending on complexity.' },
+  { question: 'Can I request a custom design?', answer: 'Yes, we tailor every design to your brand.' },
+  { question: 'How does payment work?', answer: '50% deposit upfront, remainder on completion.' },
+  { question: 'Is hosting included?', answer: 'Depends on the plan — see Pricing for details.' },
+  { question: 'How many revisions are included?', answer: 'Typically 2–3 rounds, depending on your plan.' },
+  { question: 'Is there support after launch?', answer: 'Yes, support period varies by plan.' },
+  { question: 'How do I get started?', answer: 'Reach out via the contact form or WhatsApp below.' },
+  { question: 'Can you migrate from WordPress or into WordPress?', answer: "Yes — that's actually one of our specialties." },
+];
+
+const whatsappNumber = '6281234567890';
+---
+
+<BaseLayout
+  locale="en"
+  title={pageTitle}
+  description={pageDescription}
+  path="/contact/"
+  enPath="/contact/"
+  idPath="/kontak/"
+>
+  <HeroSection
+    badgeText="Get in Touch"
+    title="Let's talk about your project."
+    subtitle="Free consultation, no pressure. Tell us about your business and we'll figure out the best path forward together."
+    ctaPrimaryLabel="Chat on WhatsApp"
+    ctaPrimaryHref={`https://wa.me/${whatsappNumber}`}
+    ctaSecondaryLabel="See Our Work"
+    ctaSecondaryHref="/portfolio/"
+    image="/image/en-home-section-hero.png"
+    imageAlt="Kukode contact"
+  />
+
+  <!-- Inline Contact Form -->
+  <section id="contact-form" class="kk-section">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+          <h2 class="text-center mb-4">Send us a message</h2>
+          <form id="kk-contact-page-form" class="kk-card p-4">
+            <div class="mb-3">
+              <input type="text" id="kk-contact-page-name" class="form-control" placeholder="Your Name" required />
+            </div>
+            <div class="mb-3">
+              <textarea id="kk-contact-page-message" class="form-control" rows="5" placeholder="Your Message" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Send via WhatsApp</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <NumbersSection stats={stats} />
+
+  <TestimonialsSection
+    eyebrow="Testimonials"
+    title="Straight from the people we've worked with."
+    slides={testimonialSlides}
+  />
+
+  <FaqSection
+    eyebrow="FAQ"
+    title="Questions we hear all the time."
+    subtitle="Don't see yours here? Just ask — I reply personally to every message."
+    ctaLabel="Message Me Directly"
+    ctaHref={`https://wa.me/${whatsappNumber}`}
+    items={faqItems}
+  />
+
+  <CtaBandSection
+    eyebrow="Let's Talk"
+    title="Ready to go? Let's have a chat first."
+    subtitle="Free consultation, no pressure. Tell me about your business and I'll figure out the best path forward together."
+    ctaPrimaryLabel="Get a Quote"
+    ctaPrimaryHref={`https://wa.me/${whatsappNumber}`}
+    ctaSecondaryLabel="Chat on WhatsApp"
+    ctaSecondaryHref={`https://wa.me/${whatsappNumber}`}
+  />
+
+  <Fragment slot="extra-scripts">
+    <script is:inline define:vars={{ whatsappNumber }}>
+      const form = document.getElementById('kk-contact-page-form');
+      form?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('kk-contact-page-name').value.trim();
+        const message = document.getElementById('kk-contact-page-message').value.trim();
+        const text = `Halo, saya ${name}.\n\n${message}`;
+        window.location.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`;
+      });
+    </script>
+  </Fragment>
+</BaseLayout>
+

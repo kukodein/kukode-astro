@@ -1,0 +1,32 @@
+---
+interface ProjectItem {
+  title: string;
+  category: string;
+  image: string;
+  imageAlt: string;
+  href: string;
+}
+interface Props {
+  eyebrow: string;
+  title: string;
+  viewAllLabel: string;
+  viewAllHref: string;
+  projects: ProjectItem[];
+}
+const { eyebrow, title, viewAllLabel, viewAllHref, projects } = Astro.props;
+---
+
+<section id="portfolio" class="kk-section">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-end mb-5">
+      <div><p class="kk-eyebrow mb-2">{eyebrow}</p><h2 class="mb-0">{title}</h2></div>
+      <a href={viewAllHref} class="btn btn-outline-kk btn-sm">{viewAllLabel}</a>
+    </div>
+    <div class="row g-3">
+      {projects.map((project) => (
+        <div class="col-6 col-lg-4"><a href={project.href} class="kk-portfolio-card text-decoration-none text-reset d-block"><div class="kk-browser-frame"><div class="kk-browser-bar"><span></span><span></span><span></span></div><div class="kk-browser-body"><img src={project.image} alt={project.imageAlt} width="600px" height="400px" loading="lazy" /><div class="kk-overlay"><span class="btn btn-light btn-sm rounded-pill">View project</span></div></div></div><div class="m-2"><p class="text-muted-kk small mt-2 mb-1">{project.category}</p><h3 class="h6 font-heading fw-bold">{project.title}</h3></div></a></div>
+      ))}
+    </div>
+  </div>
+</section>
+

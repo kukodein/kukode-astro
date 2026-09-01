@@ -1,0 +1,127 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroSection from '../components/homepage/HeroSection.astro';
+import NumbersSection from '../components/homepage/NumbersSection.astro';
+import AboutUsSection from '../components/homepage/AboutUsSection.astro';
+import TechStackSection from '../components/homepage/TechStackSection.astro';
+import TestimonialsSection from '../components/homepage/TestimonialsSection.astro';
+import WhyKukodeSection from '../components/homepage/WhyKukodeSection.astro';
+import CtaBandSection from '../components/homepage/CtaBandSection.astro';
+
+// Page meta
+const pageTitle = 'About Us — Kukode';
+const pageDescription = 'Learn more about Kukode — the web development studio that thinks like a business owner. Indonesia-based, remote-ready.';
+
+// Stats
+const stats = [
+  { value: '120+', label: 'Websites launched' },
+  { value: '98', label: 'Avg. site speed score' },
+  { value: '5yr', label: 'Building websites' },
+  { value: '99%', label: "Clients who'd hire us again" },
+];
+
+// About detail
+const aboutParagraphs = [
+  "We don't just write code. We make sure every website is a genuine business tool. Every design and technical decision is made with your end users and growth goals in mind, not just what looks good on a screen.",
+  "Indonesia-based, remote-ready, and fully committed to every project. You deal directly with Us — the person designing, coding, and delivering your site. No sales reps. No account managers. No end-of-project surprises.",
+];
+
+// Tech Stack
+const techCategories = [
+  { name: 'Frontend', items: ['HTML5', 'CSS3 / SCSS', 'JavaScript', 'Tailwind CSS', 'Next.js'] },
+  { name: 'Backend & CMS', items: ['WordPress', 'Elementor Pro', 'WooCommerce', 'PHP 8'] },
+  { name: 'Design & Tools', items: ['Figma', 'Canva Pro', 'Git / GitHub', 'Yoast SEO', 'Cloudflare'] },
+  { name: 'Payment & API', items: ['Midtrans', 'Xendit', 'WhatsApp API'] },
+  { name: 'Analytics & SEO', items: ['Google Analytics', 'Search Console', 'PageSpeed'] },
+  { name: 'Hosting', items: ['Niagahoster', 'Hostinger', 'cPanel'] },
+];
+
+// Testimonials
+const testimonialSlides = [
+  {
+    items: [
+      { quote: 'Our new site loads in under a second and our inquiries doubled in the first month.', icon: '👨‍💼', name: 'Budi Santoso', role: 'CEO, Company A' },
+      { quote: 'I can update the site myself without calling anyone — that alone was worth it.', icon: '👩', name: 'Sari Dewi', role: 'Owner, Store B' },
+      { quote: 'They actually explained what they were doing instead of just sending invoices.', icon: '👨‍⚕️', name: 'Andi Wijaya', role: 'Marketing, Startup C' },
+      { quote: 'Finally a website that looks like it belongs to 2026, not 2015', icon: '👩', name: 'Rina Putri', role: 'Founder, Brand D' },
+    ],
+  },
+];
+
+// Why Kukode
+const whyReasons = [
+  { icon: '🎯', title: 'Direct access to your developer', description: 'No sales reps or project managers in between. Direct conversations mean faster decisions and zero lost context.', colClass: 'col-12 col-md-4' },
+  { icon: '⚡', title: 'Launched in weeks', description: 'An efficient, well-rehearsed development process gets you live in weeks, not months.', colClass: 'col-6 col-md-4' },
+  { icon: '🔒', title: 'Secure by default', description: 'Modern hosting means far fewer security headaches than an old setup.', colClass: 'col-6 col-md-4' },
+  { icon: '🎯', title: 'Built around your goals', description: 'Every site is built around your content and goals, not squeezed into a theme.', colClass: 'col-6 col-md-4' },
+  { icon: '💬', title: 'Clear communication', description: 'Regular updates so you always know exactly where the project stands.', colClass: 'col-6 col-md-4' },
+  { icon: '📊', title: 'SEO-friendly', description: 'Built with technical SEO best practices baked in from day one, not bolted on later.', colClass: 'col-6 col-md-4' },
+  { icon: '🔄', title: 'Flexible revisions', description: 'Room to iterate as agreed, so the end result actually matches your vision.', colClass: 'col-6 col-md-4' },
+  { icon: '💰', title: 'Transparent pricing', description: 'No hidden fees — what\'s quoted is what you pay, from Starter to E-Commerce.', colClass: 'col-6 col-md-4' },
+  { icon: '🤝', title: 'Post-launch support', description: 'We stick around after launch to fix issues and help you grow the site further.', colClass: 'col-6 col-md-4' },
+];
+---
+
+<BaseLayout
+  locale="en"
+  title={pageTitle}
+  description={pageDescription}
+  path="/about/"
+  enPath="/about/"
+  idPath="/tentang/"
+>
+  <HeroSection
+    badgeText="About Kukode"
+    title="A web development team that thinks like a business owner."
+    subtitle="We don't just write code — we build websites that genuinely drive your business forward. Indonesia-based, remote-ready, and fully committed to every project."
+    ctaPrimaryLabel="Get a Quote"
+    ctaPrimaryHref="/contact/"
+    ctaSecondaryLabel="See Our Work"
+    ctaSecondaryHref="/portfolio/"
+    image="/image/en-home-section-tentang.png"
+    imageAlt="Kukode team at work"
+  />
+
+  <NumbersSection stats={stats} />
+
+  <AboutUsSection
+    eyebrow="Our Story"
+    title="Built by developers who understand business."
+    paragraphs={aboutParagraphs}
+    ctaLabel="Contact Us"
+    ctaHref="/contact/"
+    image="/image/en-home-section-tentang.png"
+    imageAlt="Kukode team at work"
+  />
+
+  <TechStackSection
+    eyebrow="Tech Stack"
+    title="Built with the right tools."
+    subtitle="No chasing trends. Every tool is chosen because it consistently delivers the best outcome for the client's business."
+    categories={techCategories}
+  />
+
+  <WhyKukodeSection
+    eyebrow="Why Kukode"
+    title="Here's what makes us genuinely different."
+    subtitle="Eight reasons clients come back for their next project."
+    reasons={whyReasons}
+  />
+
+  <TestimonialsSection
+    eyebrow="Testimonials"
+    title="Straight from the people we've worked with."
+    slides={testimonialSlides}
+  />
+
+  <CtaBandSection
+    eyebrow="Let's Talk"
+    title="Ready to go? Let's have a chat first."
+    subtitle="Free consultation, no pressure. Tell me about your business and I'll figure out the best path forward together."
+    ctaPrimaryLabel="Get a Quote"
+    ctaPrimaryHref="/contact/"
+    ctaSecondaryLabel="Chat on WhatsApp"
+    ctaSecondaryHref="https://wa.me/6281234567890"
+  />
+</BaseLayout>
+
