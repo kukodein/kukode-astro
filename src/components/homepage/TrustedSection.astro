@@ -1,0 +1,15 @@
+---
+interface Props {
+  label: string;
+  logos: string[];
+}
+const { label, logos } = Astro.props;
+---
+
+<section id="trusted" class="py-4 bg-light position-relative" style="z-index: 1;">
+  <div class="container">
+    <p class="text-center small mb-4">{label}</p>
+    <div class="kk-logo-strip">{logos.map((logo) => <span>{logo}</span>)}</div>
+  </div>
+</section>
+

@@ -1,7 +1,7 @@
 ---
 import { marked } from 'marked';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getArticles, getArticleAlternateSlug } from '../../lib/sheets';
+import { getArticles, getArticleAlternateSlug, getCategories, getAuthors } from '../../lib/sheets';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import { breadcrumbLabels } from '../../lib/i18n-utils';
 import { wrapImagesForLightbox } from '../../lib/wrap-images-for-lightbox';
@@ -15,9 +15,15 @@ export async function getStaticPaths() {
 }
 
 const { article } = Astro.props;
-// const bodyHtml = await marked.parse(article.body);
 const bodyHtml = wrapImagesForLightbox(await marked.parse(article.body));
 
+// 1. Ambil data kategori (seperti sebelumnya)
+const categories = await getCategories();
+const categoryMap = new Map(categories.map((c) => [c.category_id, c]));
+
+// 2. AMBIL DATA AUTHOR: Ambil semua authors, lalu cari yang cocok dengan artikel ini
+const authors = await getAuthors();
+const author = authors.find((a) => a.slug_en === article.author || a.author_id === article.author);
 
 // Cari padanan slug versi ID lewat article_id (bukan lewat slug, karena slug boleh beda per bahasa).
 // Bisa null kalau artikel ini belum diterjemahkan -> hreflang untuk id tidak akan dirender.
@@ -29,6 +35,10 @@ const breadcrumbItems = [
   { name: labels.articles, url: '/article/' },
   { name: article.title },
 ];
+
+const category = categoryMap.get(article.category);
+const categoryName = category ? category.name_en : null;
+const categoryUrl = category ? `/category/${category.slug_en}` : null;
 ---
 
 <BaseLayout
@@ -47,19 +57,68 @@ const breadcrumbItems = [
   <Fragment slot="extra-head">
     <link href="/vendor/glightbox/css/glightbox.min.css" rel="stylesheet" />
   </Fragment>
+  <style>html{scroll-behavior:smooth;}</style>
   <div class="container py-5">
-    <div class="row">
+    <div class="row hidden">
       <div class="col-lg-8 mx-auto">
-        <Breadcrumb items={breadcrumbItems} />
       </div>
     </div>
-    <article class="row">
+    <article class="row gx-4 gx-lg-5">
       <div class="col-lg-8 mx-auto">
+        <Breadcrumb items={breadcrumbItems} />
         <h1>{article.title}</h1>
-        <time datetime={article.published_date} class="text-muted d-block mb-3">{article.published_date}</time>
+        <div id="meta-post" class="d-flex justify-content-between my-3">
+          {categoryName && categoryUrl && (
+            <a href={categoryUrl} class="small text-uppercase text-decoration-none">{categoryName}</a>
+          )}
+          <time datetime={article.published_date} class="text-muted-kk small mb-1 d-block">{article.published_date}</time>
+        </div>
         {article.featured_image && <img src={article.featured_image} alt={article.title} class="img-fluid rounded-1 mb-3" loading="lazy" />}
         <div class="article-body" set:html={bodyHtml} />
+
+        <!-- Author section -->
+        <!-- Author section (Dibuat dinamis menggunakan data author yang ditemukan) -->
+        {author && (
+          <div class="d-flex gap-3 align-items-start border rounded-1 p-4 mt-4">
+            <a href={`/author/${author.slug_en}`} class="col-1 wh-72px">
+              <img src={author.avatar} alt={author.name} class="rounded-circle img-thumbnail" loading="lazy">
+            </a>
+            <div>
+              <a class="text-decoration-none mb-0 fw-bold" href={`/author/${author.slug_en}`}>{author.name}</a>
+              <p class="text-muted-kk mb-2 small">Content Writer</p>
+              <p class="text-muted-kk small">{author.bio_en}</p>
+              
+              <!-- Sosial media author (opsional jika datanya ada di Google Sheets) -->
+              <div class="d-flex gap-2">
+                {author.author_id ? <a class="kk-icon-circle kk-icon-circle-small link-primary" aria-label="Email penulis" href={`mailto:${author.author_id}`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M2 6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm2.217-.217L12 11.5l7.783-5.717A.2.2 0 0 0 19.6 5H4.4a.2.2 0 0 0-.183.283M4 7.868V18h16V7.868l-7.882 5.79a.5.5 0 0 1-.590 0z"></path></svg>
+                  </a> : ''}
+                {author.instagram ? <a class="kk-icon-circle kk-icon-circle-small link-primary" target="_blank" aria-label="Instagram penulis" href={author.instagram} rel="noopener noreferrer">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M13.028 2c1.125.003 1.696.009 2.189.023l.194.007c.224.008.445.018.712.03c1.064.05 1.79.218 2.427.465c.66.254 1.216.598 1.772 1.153a4.9 4.9 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428c.012.266.022.487.03.712l.006.194c.015.492.021 1.063.023 2.188l.001.746v1.31a79 79 0 0 1-.023 2.188l-.006.194c-.008.225-.018.446-.03.712c-.05 1.065-.22 1.79-.466 2.428a4.9 4.9 0 0 1-1.153 1.772a4.9 4.9 0 0 1-1.772 1.153c-.637.247-1.363.415-2.427.465l-.712.03l-.194.006c-.493.014-1.064.021-2.189.023l-.746.001h-1.309a78 78 0 0 1-2.189-.023l-.194-.006a63 63 0 0 1-.712-.031c-1.064-.05-1.79-.218-2.428-.465a4.9 4.9 0 0 1-1.771-1.153a4.9 4.9 0 0 1-1.154-1.772c-.247-.637-.415-1.363-.465-2.428l-.03-.712l-.005-.194A79 79 0 0 1 2 13.028v-2.056a79 79 0 0 1 .022-2.188l.007-.194c.008-.225.018-.446.03-.712c.05-1.065.218-1.79.465-2.428A4.9 4.9 0 0 1 3.68 3.678a4.9 4.9 0 0 1 1.77-1.153c.638-.247 1.363-.415 2.428-.465c.266-.012.488-.022.712-.03l.194-.006a79 79 0 0 1 2.188-.023zM12 7a5 5 0 1 0 0 10a5 5 0 0 0 0-10m0 2a3 3 0 1 1 .001 6a3 3 0 0 1 0-6m5.25-3.5a1.25 1.25 0 0 0 0 2.5a1.25 1.25 0 0 0 0-2.5"></path></svg>
+                </a> : ''}
+                {author.linkedin ? <a class="kk-icon-circle kk-icon-circle-small link-primary" target="_blank" aria-label="LinkedIn penulis" href={author.linkedin} rel="noopener noreferrer">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM8.34 18v-8.4H5.67V18zM7.01 8.48c.9 0 1.47-.6 1.47-1.34c-.02-.76-.56-1.34-1.44-1.34S5.6 6.38 5.6 7.14c0 .74.56 1.34 1.42 1.34zM18.34 18v-4.83c0-2.6-1.39-3.8-3.23-3.8c-1.49 0-2.16.82-2.53 1.4V9.6h-2.67v8.4h2.67v-4.69c0-.25.02-.5.09-.68c.2-.5.66-1.02 1.43-1.02c1.01 0 1.41.77 1.41 1.9V18z"></path></svg>
+                </a> : ''}
+                {author.facebook ? <a class="kk-icon-circle kk-icon-circle-small link-primary" target="_blank" aria-label="Facebook penulis" href={author.facebook} rel="noopener noreferrer">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M12.001 2c-5.523 0-10 4.477-10 10c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89c1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.344 21.129 22 16.992 22 12c0-5.523-4.477-10-10-10"></path></svg>
+                </a> : ''}
+              </div>
+            </div>
+          </div>
+        )}
+
       </div>
+
+      <!-- Table of contents sidebar -->
+      <div class="col-lg-4 d-none d-lg-block">
+        <aside class="kk-toc-sidebar sticky-top" style="top: 6rem;">
+          <p class="kk-toc-title mb-0 font-heading">Daftar Isi</p>
+          <nav class="kk-toc-nav" id="kk-toc-nav">
+            <!-- Diisi otomatis oleh JS dari heading (h2/h3) di .article-body -->
+          </nav>
+        </aside>
+      </div>
+
     </article>
   </div>
   <Fragment slot="extra-scripts">

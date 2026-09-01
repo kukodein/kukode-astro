@@ -1,0 +1,37 @@
+---
+interface ServiceItem {
+  icon: string;
+  title: string;
+  description: string;
+  width: string;
+}
+interface Props {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  services: ServiceItem[];
+}
+const { eyebrow, title, subtitle, services } = Astro.props;
+---
+
+<section id="services" class="kk-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <p class="kk-eyebrow mb-2">{eyebrow}</p>
+      <h2>{title}</h2>
+      <p>{subtitle}</p>
+    </div>
+    <div class="row g-3">
+      {services.map((service) => (
+        <div class={`col-6 col-md-${service.width}`}>
+          <div class="kk-card p-4 kk-why-card">
+            <div class="kk-icon-circle">{service.icon}</div>
+            <h3 class="h6 font-heading fw-bold mb-1">{service.title}</h3>
+            <p class="text-muted-kk small mb-0">{service.description}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+

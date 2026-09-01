@@ -1,0 +1,29 @@
+---
+interface ReasonItem {
+  icon: string;
+  title: string;
+  description: string;
+  colClass?: string;
+}
+interface Props {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  reasons: ReasonItem[];
+}
+const { eyebrow, title, subtitle, reasons } = Astro.props;
+---
+
+<section id="why-kukode" class="kk-section bg-surface">
+  <div class="container">
+    <div class="text-center mb-5"><p class="kk-eyebrow mb-2">{eyebrow}</p><h2>{title}</h2><p class="text-muted-kk mx-auto" style="max-width:560px;">{subtitle}</p></div>
+    <div class="row g-3">
+      {reasons.map((r) => (
+        <div class={r.colClass || 'col-6 col-md-4'}>
+          <div class="kk-card p-4 kk-why-card"><div class="kk-icon-circle">{r.icon}</div><h3 class="h6 font-heading fw-bold mb-1">{r.title}</h3><p class="text-muted-kk small mb-0">{r.description}</p></div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+

@@ -1,0 +1,27 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  ctaPrimaryLabel: string;
+  ctaPrimaryHref: string;
+  ctaSecondaryLabel: string;
+  ctaSecondaryHref: string;
+}
+const { eyebrow, title, subtitle, ctaPrimaryLabel, ctaPrimaryHref, ctaSecondaryLabel, ctaSecondaryHref } = Astro.props;
+---
+
+<section id="contact" class="kk-section">
+  <div class="container">
+    <div class="kk-cta-band">
+      <p class="kk-eyebrow mb-2" style="color:rgba(255,255,255,0.85);">{eyebrow}</p>
+      <h2 class="mb-3">{title}</h2>
+      <p class="mb-4 mx-auto" style="max-width:480px;">{subtitle}</p>
+      <div class="d-flex gap-3 justify-content-center flex-wrap">
+        <a href={ctaPrimaryHref} class="btn btn-light">{ctaPrimaryLabel}</a>
+        <a href={ctaSecondaryHref} target="_blank" rel="noopener noreferrer" class="btn btn-outline-light">{ctaSecondaryLabel}</a>
+      </div>
+    </div>
+  </div>
+</section>
+

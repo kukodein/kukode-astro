@@ -1,0 +1,21 @@
+---
+interface StatItem {
+  value: string;
+  label: string;
+}
+interface Props {
+  stats: StatItem[];
+}
+const { stats } = Astro.props;
+---
+
+<section id="numbers" class="kk-section">
+  <div class="container">
+    <div class="row g-4 text-center">
+      {stats.map((stat) => (
+        <div class="col-6 col-md-3"><div class="kk-stat-num">{stat.value}</div><p class="text-muted-kk small mb-0">{stat.label}</p></div>
+      ))}
+    </div>
+  </div>
+</section>
+

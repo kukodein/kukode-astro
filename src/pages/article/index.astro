@@ -2,17 +2,27 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ArticleGrid from '../../components/ArticleGrid.astro';
 import Pagination from '../../components/Pagination.astro';
-import { getArticles } from '../../lib/sheets';
+import { getArticles, getCategories } from '../../lib/sheets';
 
 const PAGE_SIZE = 12;
 const allArticles = await getArticles('en');
 const lastPage = Math.max(1, Math.ceil(allArticles.length / PAGE_SIZE));
 const articles = allArticles.slice(0, PAGE_SIZE);
+const categories = await getCategories();
 ---
 
 <BaseLayout locale="en" title="Articles" description="Latest articles" enPath="/article/" idPath="/article/" path="/article/">
   <div class="container py-5">
-    <h1 class="mb-4">Articles</h1>
+    <div class="text-center mb-5">
+      <p class="kk-eyebrow mb-3">Articles & News</p>
+      <h1 class="mb-4">What can We help you with your business?</h1>
+      <p>From a brand-new site to a full overhaul of what you already have — every project is built by me, to the same high standard.</p>
+    </div>
+    <nav aria-label="Pagination" class="d-flex justify-content-center gap-2 my-5">
+      {categories.map((cat) => (
+        <a href={`/category/${cat.slug_en}/`} class="btn px-3 py-1 btn-outline-kk">{cat.name_en}</a>
+      ))}
+    </nav>
     <ArticleGrid articles={articles} locale="en" />
     <Pagination currentPage={1} lastPage={lastPage} basePath="/article" />
   </div>

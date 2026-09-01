@@ -1,0 +1,29 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  paragraphs: string[];
+  ctaLabel: string;
+  ctaHref: string;
+  image: string;
+  imageAlt: string;
+}
+const { eyebrow, title, paragraphs, ctaLabel, ctaHref, image, imageAlt } = Astro.props;
+---
+
+<section id="about-us" class="kk-section kk-gradient-alt">
+  <div class="container">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-6">
+        <img src={image} alt={imageAlt} class="img-fluid" width="546px" height="364px" loading="lazy" />
+      </div>
+      <div class="col-lg-6">
+        <p class="kk-eyebrow mb-2">{eyebrow}</p>
+        <h2 class="mb-3">{title}</h2>
+        {paragraphs.map((p) => <p>{p}</p>)}
+        <a href={ctaHref} class="btn btn-outline-kk">{ctaLabel}</a>
+      </div>
+    </div>
+  </div>
+</section>
+

@@ -26,6 +26,7 @@ export const SHEET_GIDS = {
   pages: requireEnv('PUBLIC_SHEET_GID_PAGES'),
   categories: requireEnv('PUBLIC_SHEET_GID_CATEGORIES'),
   portfolio: requireEnv('PUBLIC_SHEET_GID_PORTFOLIO'),
+  authors: requireEnv('PUBLIC_SHEET_GID_AUTHORS'),
 } as const;
 
 export type SheetKey = keyof typeof SHEET_GIDS;

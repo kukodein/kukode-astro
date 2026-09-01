@@ -1,0 +1,50 @@
+---
+interface PricingFeature {
+  label: string;
+}
+interface PricingTier {
+  name: string;
+  price: string;
+  priceNote: string;
+  description: string;
+  features: PricingFeature[];
+  ctaLabel: string;
+  ctaHref: string;
+  popular?: boolean;
+  popularLabel?: string;
+  checkIcon: string;
+}
+interface Props {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  tiers: PricingTier[];
+}
+const { eyebrow, title, subtitle, tiers } = Astro.props;
+---
+
+<section id="pricing" class="kk-section kk-gradient-alt">
+  <div class="container">
+    <div class="text-center mb-5"><p class="kk-eyebrow mb-2">{eyebrow}</p><h2>{title}</h2><p>{subtitle}</p></div>
+    <div class="row g-3 align-items-stretch">
+      {tiers.map((tier) => (
+        <div class="col-lg-4">
+          <div class={`kk-card p-4 h-100 ${tier.popular ? 'kk-pricing-popular' : ''}`}>
+            <h3 class="h5 font-heading fw-bold mb-0">
+              {tier.name} {tier.popular && <span class="badge rounded-pill text-bg-primary fw-normal">{tier.popularLabel || 'Most popular'}</span>}
+            </h3>
+            <div class="fs-3 fw-bold">{tier.price}</div>
+            <div class="mb-3">{tier.priceNote}</div>
+            <div class="text-muted">{tier.description}</div>
+            <hr style="border-color:var(--bs-border-color)" />
+            {tier.features.map((f) => (
+              <div class="d-flex align-items-center"><img src={tier.checkIcon} alt="check-icon" class="me-2 w-16px" width="16px" height="16px" loading="lazy" />{f.label}</div>
+            ))}
+            <a href={tier.ctaHref} class={`btn w-100 mt-4 ${tier.popular ? 'btn-primary' : 'btn-outline-kk'}`}>{tier.ctaLabel}</a>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
