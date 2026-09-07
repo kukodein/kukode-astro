@@ -1,27 +1,346 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getPageFields } from '../../lib/sheets';
+import JsonLd from '../../components/JsonLd.astro';
+import BlogSection from '../../components/home/BlogSection.astro';
+import HeroSection from '../../components/homepage/HeroSection.astro';
+import TrustedSection from '../../components/homepage/TrustedSection.astro';
+import MarqueeSection from '../../components/homepage/MarqueeSection.astro';
+import NumbersSection from '../../components/homepage/NumbersSection.astro';
+import AboutUsSection from '../../components/homepage/AboutUsSection.astro';
+import ServicesSection from '../../components/homepage/ServicesSection.astro';
+import ProcessSection from '../../components/homepage/ProcessSection.astro';
+import PortfolioSection from '../../components/homepage/PortfolioSection.astro';
+import TechStackSection from '../../components/homepage/TechStackSection.astro';
+import TestimonialsSection from '../../components/homepage/TestimonialsSection.astro';
+import WhyKukodeSection from '../../components/homepage/WhyKukodeSection.astro';
+import PricingSection from '../../components/homepage/PricingSection.astro';
+import FaqSection from '../../components/homepage/FaqSection.astro';
+import CtaBandSection from '../../components/homepage/CtaBandSection.astro';
+import { getPageFields, getArticles, parseIndexedList } from '../../lib/sheets';
 
-// CATATAN: Home versi ID ini masih pakai template sederhana lama (belum di-redesign
-// menyusul versi EN yang sudah full custom section) — gap yang sudah tercatat
-// sebelumnya, di luar scope perubahan sistem Pages kali ini.
-const homeFields = await getPageFields('home');
-const title = homeFields?.title_id || 'Kukode';
-const description = homeFields?.meta_description_id || '';
-const metaTitle = homeFields?.meta_title_id || title;
-const image = homeFields?.featured_image;
+const [homeFields, articles] = await Promise.all([
+  getPageFields('home'),
+  getArticles('id'),
+]);
+
+// Limit for showing Articles
+const latestArticles = articles.slice(0, 3);
+
+
+// Home body tetap hardcode di bawah — ini cuma override title/meta/gambar
+// dari sheet Pages (page_id: "home"), kalau baris itu ada & diisi.
+const pageTitle = homeFields?.title_en || 'Kukode — Web Development Studio';
+const pageDescription =
+  homeFields?.meta_description_en ||
+  'We design and build modern websites that load fast, rank well, and convert.';
+const pageMetaTitle = homeFields?.meta_title_en || pageTitle;
+const pageImage = homeFields?.featured_image;
+
+// Services — array-in-cell dari sheet Pages (baris "home"), format:
+//   service_1 = icon|title|description|width(opsional, col-md-N, default 4)
+// Kalau belum diisi di sheet sama sekali, fallback ke default di bawah supaya
+// section ini tidak kosong.
+const serviceRows = parseIndexedList(homeFields ?? {}, 'service');
+const DEFAULT_SERVICES = [
+  { icon: '💻', title: 'Development', description: 'Hand-built websites, coded to load fast and scale as you grow.', width: '8' },
+  { icon: '🎨', title: 'Web design', description: 'Custom design that reflects your brand — not a recycled template.', width: '4' },
+  { icon: '🛒', title: 'Online Store Development', description: 'E-commerce sites ready to take orders and payments from launch day.', width: '4' },
+  { icon: '🔍', title: 'SEO Optimization', description: 'On-page SEO built in from the start, so you show up when people search.', width: '4' },
+  { icon: '🛠️', title: 'Website Maintenance', description: 'Ongoing updates, monitoring, and fixes — so the site keeps running smoothly.', width: '4' },
+  { icon: '🚀', title: 'Hosting & Deployment', description: 'Fast, reliable hosting setup — without locking you into expensive plans.', width: '4' },
+  { icon: '📱', title: 'Mobile-Friendly Design', description: 'Every site is built to look and work great on phones first.', width: '4' },
+  { icon: '📈', title: 'Analytics & Tracking', description: 'Know exactly how visitors find and use your site.', width: '4' },
+];
+const services =
+  serviceRows.length > 0
+    ? serviceRows.map(([icon, title, description, width]) => ({
+        icon,
+        title,
+        description,
+        width: width || '4',
+      }))
+    : DEFAULT_SERVICES;
+
+// FAQ — array jadi single source of truth untuk HTML yang tampil DAN JSON-LD FAQPage schema,
+// supaya isi keduanya tidak pernah beda (syarat wajib Google untuk structured data).
+const faqItems = [
+  { question: 'How long does a project take?', answer: 'Usually 2–4 weeks depending on complexity.' },
+  { question: 'Can I request a custom design?', answer: 'Yes, we tailor every design to your brand.' },
+  { question: 'How does payment work?', answer: '50% deposit upfront, remainder on completion.' },
+  { question: 'Is hosting included?', answer: 'Depends on the plan — see Pricing for details.' },
+  { question: 'How many revisions are included?', answer: 'Typically 2–3 rounds, depending on your plan.' },
+  { question: 'Is there support after launch?', answer: 'Yes, support period varies by plan.' },
+  { question: 'How do I get started?', answer: 'Reach out via the contact form or WhatsApp below.' },
+  { question: 'Can you migrate from WordPress or into WordPress?', answer: "Yes — that's actually one of our specialties." },
+];
+
+// Trusted logos
+const trustedLogos = ['Acme', 'Northwind', 'Globex', 'Initech', 'Umbrella', 'Soylent'];
+
+// Marquee items
+const marqueeItems = [
+  'Company Profile', 'Landing Page', 'Toko Online', 'Redesign Website', 'WordPress',
+  'Next.js', 'UI/UX Figma', 'WooCommerce', 'SEO Ready', 'Mobile First',
+];
+
+// Stats
+const stats = [
+  { value: '120+', label: 'Websites launched' },
+  { value: '98', label: 'Avg. site speed score' },
+  { value: '5yr', label: 'Building websites' },
+  { value: '99%', label: "Clients who'd hire us again" },
+];
+
+// About Us
+const aboutParagraphs = [
+  "We don't just write code. We make sure every website is a genuine business tool. Every design and technical decision is made with your end users and growth goals in mind, not just what looks good on a screen.",
+  "Indonesia-based, remote-ready, and fully committed to every project. You deal directly with Us — the person designing, coding, and delivering your site. No sales reps. No account managers. No end-of-project surprises.",
+];
+
+// Process steps
+const processSteps = [
+  { number: 1, tag: 'Week 1', title: 'Discovery Meet', description: 'We talk through your business, goals, and what your current site is missing.' },
+  { number: 2, tag: 'Week 1–2', title: 'Design', description: "You'll see wireframes first, then a full visual design matching your brand." },
+  { number: 3, tag: 'Week 2–3', title: 'Development', description: 'We build the real thing — fast, responsive, and ready for search engines.' },
+  { number: 4, tag: 'Week 3–4', title: 'Testing & Review', description: 'We test across devices, check page speed and SEO, then walk through it with you.' },
+  { number: 5, tag: 'Week 4', title: 'Launch & Support', description: 'Your site goes live, and we stay on to handle anything that comes up.' },
+];
+
+// Portfolio
+const portfolioProjects = [
+  { title: 'Project One', category: 'Company Profile', image: 'https://picsum.photos/600/400?41', imageAlt: 'Project one', href: '#' },
+  { title: 'Project Two', category: 'E-Commerce', image: 'https://picsum.photos/600/400?42', imageAlt: 'Project two', href: '#' },
+  { title: 'Project Three', category: 'Landing Page', image: 'https://picsum.photos/600/400?43', imageAlt: 'Project three', href: '#' },
+  { title: 'Project Four', category: 'Blog', image: 'https://picsum.photos/600/400?44', imageAlt: 'Project four', href: '#' },
+  { title: 'Project Five', category: 'Portfolio', image: 'https://picsum.photos/600/400?45', imageAlt: 'Project five', href: '#' },
+  { title: 'Project Six', category: 'Web App', image: 'https://picsum.photos/600/400?46', imageAlt: 'Project six', href: '#' },
+];
+
+// Tech Stack
+const techCategories = [
+  { name: 'Frontend', items: ['HTML5', 'CSS3 / SCSS', 'JavaScript', 'Tailwind CSS', 'Next.js'] },
+  { name: 'Backend & CMS', items: ['WordPress', 'Elementor Pro', 'WooCommerce', 'PHP 8'] },
+  { name: 'Design & Tools', items: ['Figma', 'Canva Pro', 'Git / GitHub', 'Yoast SEO', 'Cloudflare'] },
+  { name: 'Payment & API', items: ['Midtrans', 'Xendit', 'WhatsApp API'] },
+  { name: 'Analytics & SEO', items: ['Google Analytics', 'Search Console', 'PageSpeed'] },
+  { name: 'Hosting', items: ['Niagahoster', 'Hostinger', 'cPanel'] },
+];
+
+// Testimonials
+const testimonialSlides = [
+  {
+    items: [
+      { quote: 'Our new site loads in under a second and our inquiries doubled in the first month.', icon: '👨‍💼', name: 'Budi Santoso', role: 'CEO, Company A' },
+      { quote: 'I can update the site myself without calling anyone — that alone was worth it.', icon: '👩', name: 'Sari Dewi', role: 'Owner, Store B' },
+      { quote: 'They actually explained what they were doing instead of just sending invoices.', icon: '👨‍⚕️', name: 'Andi Wijaya', role: 'Marketing, Startup C' },
+      { quote: 'Finally a website that looks like it belongs to 2026, not 2015', icon: '👩', name: 'Rina Putri', role: 'Founder, Brand D' },
+    ],
+  },
+  {
+    items: [
+      { quote: 'Our new site loads in under a second and our inquiries doubled in the first month.', icon: '👨‍💼', name: 'Budi Santoso', role: 'CEO, Company A' },
+      { quote: 'I can update the site myself without calling anyone — that alone was worth it.', icon: '👩', name: 'Sari Dewi', role: 'Owner, Store B' },
+      { quote: 'They actually explained what they were doing instead of just sending invoices.', icon: '👨‍⚕️', name: 'Andi Wijaya', role: 'Marketing, Startup C' },
+      { quote: 'Finally a website that looks like it belongs to 2026, not 2015', icon: '👩', name: 'Rina Putri', role: 'Founder, Brand D' },
+    ],
+  },
+];
+
+// Why Kukode
+const whyReasons = [
+  { icon: '🎯', title: 'Direct access to your developer', description: 'No sales reps or project managers in between. Direct conversations mean faster decisions and zero lost context.', colClass: 'col-12 col-md-4' },
+  { icon: '⚡', title: 'Launched in weeks', description: 'An efficient, well-rehearsed development process gets you live in weeks, not months.', colClass: 'col-6 col-md-4' },
+  { icon: '🔒', title: 'Secure by default', description: 'Modern hosting means far fewer security headaches than an old setup.', colClass: 'col-6 col-md-4' },
+  { icon: '🎯', title: 'Built around your goals', description: 'Every site is built around your content and goals, not squeezed into a theme.', colClass: 'col-6 col-md-4' },
+  { icon: '💬', title: 'Clear communication', description: 'Regular updates so you always know exactly where the project stands.', colClass: 'col-6 col-md-4' },
+  { icon: '📊', title: 'SEO-friendly', description: 'Built with technical SEO best practices baked in from day one, not bolted on later.', colClass: 'col-6 col-md-4' },
+  { icon: '🔄', title: 'Flexible revisions', description: 'Room to iterate as agreed, so the end result actually matches your vision.', colClass: 'col-6 col-md-4' },
+  { icon: '💰', title: 'Transparent pricing', description: 'No hidden fees — what\'s quoted is what you pay, from Starter to E-Commerce.', colClass: 'col-6 col-md-4' },
+  { icon: '🤝', title: 'Post-launch support', description: 'We stick around after launch to fix issues and help you grow the site further.', colClass: 'col-6 col-md-4' },
+];
+
+// Pricing
+const checkIcon = '/image/StreamlineColorCheckSquare.png';
+const pricingTiers = [
+  {
+    name: 'Starter',
+    price: 'IDR 800K',
+    priceNote: '≈ USD 50 / project',
+    description: 'For businesses just stepping into the digital world with straightforward needs.',
+    features: [
+      { label: 'Single-page landing page' },
+      { label: 'Fully responsive design' },
+      { label: 'WhatsApp button & contact form' },
+      { label: 'Figma mockup before coding' },
+      { label: 'Delivered in 3–5 working days' },
+    ],
+    ctaLabel: "Let's Talk",
+    ctaHref: '#contact',
+    checkIcon,
+  },
+  {
+    name: 'Professional',
+    price: 'IDR 1.5M',
+    priceNote: '≈ USD 95 / project',
+    description: 'For businesses that want to look the part and win client trust from day one.',
+    features: [
+      { label: '4–6 page company profile' },
+      { label: 'Figma mockup + design revisions' },
+      { label: 'Basic on-page SEO setup' },
+      { label: 'Google Analytics configured' },
+      { label: 'Open revisions within scope' },
+      { label: 'Delivered in 7–10 working days' },
+    ],
+    ctaLabel: 'Choose This Plan',
+    ctaHref: '#contact',
+    popular: true,
+    popularLabel: 'Most popular',
+    checkIcon,
+  },
+  {
+    name: 'E-Commerce',
+    price: 'IDR 2.5M',
+    priceNote: '≈ USD 158 / project',
+    description: 'For businesses ready to sell online — commission-free, on their own terms.',
+    features: [
+      { label: 'Full WooCommerce store setup' },
+      { label: 'Product catalog & inventory management' },
+      { label: 'Payment gateway integration' },
+      { label: 'Automatic shipping calculator' },
+      { label: 'Admin panel training included' },
+    ],
+    ctaLabel: "Let's Talk",
+    ctaHref: '#contact',
+    checkIcon,
+  },
+];
+
 ---
 
 <BaseLayout
   locale="id"
-  title={metaTitle}
-  description={description}
-  image={image}
-  enPath="/" idPath="/"
-  path="/id/"
+  title={pageMetaTitle}
+  description={pageDescription}
+  image={pageImage}
+  path="/"
+  enPath="/"
+  idPath="/"
 >
-  <div class="container py-5">
-    <h1>{title}</h1>
-    <p>{description}</p>
-  </div>
+  <Fragment slot="extra-head">
+    <!-- <link href="" rel="stylesheet" /> -->
+  </Fragment>
+
+  <HeroSection
+    badgeText="Menerima Project Baru"
+    title="We build websites that genuinely work for your business."
+    subtitle="Not just good-looking — every site we build is fast, professional, and designed to convert. You talk directly to the developer, to Us, Kukode. No middlemen, no guesswork."
+    ctaPrimaryLabel="Kontak Kami"
+    ctaPrimaryHref="#contact"
+    ctaSecondaryLabel="Lihat Portfolio"
+    ctaSecondaryHref="#portfolio"
+    image="/image/en-home-section-hero.png"
+    imageAlt="Kukode product preview"
+    floatCard1="⚡ 98/100 average site speed score"
+    floatCard2="🔍 Built SEO-ready from day one"
+  />
+
+  <TrustedSection
+    label="Businesses we've helped go online"
+    logos={trustedLogos}
+  />
+
+  <MarqueeSection items={marqueeItems} />
+
+  <NumbersSection stats={stats} />
+
+  <AboutUsSection
+    eyebrow="About Kukode"
+    title="A web development team that thinks like a business owner."
+    paragraphs={aboutParagraphs}
+    ctaLabel="Learn more about us"
+    ctaHref="/about/"
+    image="/image/en-home-section-tentang.png"
+    imageAlt="Kukode team at work"
+  />
+
+  <ServicesSection
+    eyebrow="Services"
+    title="What can We help you with your business?"
+    subtitle="From a brand-new site to a full overhaul of what you already have — every project is built by me, to the same high standard."
+    services={services}
+  />
+
+  <ProcessSection
+    eyebrow="How We Work"
+    title="Simple, transparent, no drama."
+    subtitle="From the first conversation to launch day — you always know exactly where your project stands."
+    steps={processSteps}
+  />
+
+  <PortfolioSection
+    eyebrow="Our Work"
+    title="Work that speaks for itself."
+    viewAllLabel="See All Projects"
+    viewAllHref="/portfolio/"
+    projects={portfolioProjects}
+  />
+
+  <TechStackSection
+    eyebrow="Tech Stack"
+    title="Built with the right tools."
+    subtitle="No chasing trends. Every tool is chosen because it consistently delivers the best outcome for the client's business."
+    categories={techCategories}
+  />
+
+  <TestimonialsSection
+    eyebrow="Testimonials"
+    title="Straight from the people we've worked with."
+    slides={testimonialSlides}
+  />
+
+  <WhyKukodeSection
+    eyebrow="Why Kukode"
+    title="Here's what makes us genuinely different."
+    subtitle="Eight reasons clients come back for their next project."
+    reasons={whyReasons}
+  />
+
+  <PricingSection
+    eyebrow="Pricing"
+    title="An investment that actually makes sense."
+    subtitle="No project is too small or too large. Everything is open for discussion — tailored to what you actually need."
+    tiers={pricingTiers}
+  />
+
+  <BlogSection
+    title="Latest Articles"
+    locale="id"
+    eyebrow="Blog"
+    articles={latestArticles}
+    viewAllLabel="View All"
+  />
+
+  <FaqSection
+    eyebrow="FAQ"
+    title="Questions we hear all the time."
+    subtitle="Don't see yours here? Just ask — I reply personally to every message."
+    ctaLabel="Message Me Directly"
+    ctaHref="https://wa.me/6281234567890"
+    items={faqItems}
+    withSchema={true}
+  />
+
+  <CtaBandSection
+    eyebrow="Let's Talk"
+    title="Ready to go? Let's have a chat first."
+    subtitle="Free consultation, no pressure. Tell me about your business and I'll figure out the best path forward together."
+    ctaPrimaryLabel="Get a Quote"
+    ctaPrimaryHref="/contact/"
+    ctaSecondaryLabel="Chat on WhatsApp"
+    ctaSecondaryHref="https://wa.me/6281234567890"
+  />
+
+  <Fragment slot="extra-scripts">
+    <script is:inline src="/js/kukode-home.js"></script>
+  </Fragment>
 </BaseLayout>
